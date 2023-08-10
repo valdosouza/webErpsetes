@@ -1,1 +1,0 @@
-enum OptionYesNo { S, N }

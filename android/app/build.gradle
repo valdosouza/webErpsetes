@@ -26,7 +26,11 @@ if (flutterMinSdkVersion == null) {
 }
 def flutterTargetSdkVersion = localProperties.getProperty('flutter.targetSdkVersion')      
 if (flutterTargetSdkVersion == null) {
+<<<<<<< HEAD
     flutterTargetSdkVersion = '29'
+=======
+    flutterTargetSdkVersion = '31'
+>>>>>>> 996f3e8a11efb8a1967883a2267275d3d0dfcbad
 }
 
 apply plugin: 'com.android.application'
@@ -59,7 +63,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.setes.erpsetes"
+        applicationId "com.industriadechocolatesamor.consigna"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion flutterMinSdkVersion
