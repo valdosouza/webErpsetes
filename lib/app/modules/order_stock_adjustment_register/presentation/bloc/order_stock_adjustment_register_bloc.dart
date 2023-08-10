@@ -42,6 +42,9 @@ class OrderStockAdjustmentRegisterBloc extends Bloc<
   OrderStockAdjustmentRegisterItemsModel orderItem =
       OrderStockAdjustmentRegisterItemsModel.empty();
   List<ProductListModel> products = [];
+  List<ProductListModel> productsTemp = [];
+  int pageProducts = 0;
+
   List<StockListModel> stocks = [];
   List<EntityListModel> entities = [];
   StockListModel stock = StockListModel.empty();
@@ -127,33 +130,59 @@ class OrderStockAdjustmentRegisterBloc extends Bloc<
     });
   }
 
+  Future<String> _validadePost() async {
+    if (orderMain.order.tbEntityId == 0) {
+      return "Informe o campo entidade.";
+    }
+    if (orderMain.order.tbStockListId == 0) {
+      return "Informe o campo estoque.";
+    }
+    if (orderMain.items.isEmpty) {
+      return "Informe pelo menos um item na lista.";
+    }
+    return "";
+  }
+
   orderPost() {
     on<OrderPostEvent>((event, emit) async {
       emit(OrderLoadingState());
+      String errorValidate = await _validadePost();
 
-      var response = await postOrderStockAdjustment
-          .call(ParamsPostOrderStockAdjustmentRegister(model: orderMain));
+      if (errorValidate.isNotEmpty) {
+        emit(OrderPostErrorState(error: errorValidate));
+      } else {
+        var response = await postOrderStockAdjustment
+            .call(ParamsPostOrderStockAdjustmentRegister(model: orderMain));
 
-      response.fold((l) => emit(OrderPostErrorState()), (r) {
-        orderStockAdjustments.add(r);
-        emit(OrderPostSuccessState());
-      });
+        response.fold((l) {
+          emit(OrderPostErrorState(error: l.toString()));
+        }, (r) {
+          orderStockAdjustments.add(r);
+          emit(OrderPostSuccessState());
+        });
+      }
     });
   }
 
   orderPut() {
     on<OrderPutEvent>((event, emit) async {
       emit(OrderLoadingState());
+      String errorValidate = await _validadePost();
 
-      var response = await putOrderStockAdjustment
-          .call(ParamsPutOrderStockAdjustmentRegister(model: orderMain));
+      if (errorValidate.isNotEmpty) {
+        emit(OrderPutErrorState(error: errorValidate));
+      } else {
+        var response = await putOrderStockAdjustment
+            .call(ParamsPutOrderStockAdjustmentRegister(model: orderMain));
 
-      response.fold((l) => emit(OrderPutErrorState()), (r) {
-        orderStockAdjustments[orderStockAdjustments
-            .indexWhere((element) => element.id == r.id)] = r;
+        response.fold((l) => emit(OrderPutErrorState(error: l.toString())),
+            (r) {
+          orderStockAdjustments[orderStockAdjustments
+              .indexWhere((element) => element.id == r.id)] = r;
 
-        emit(OrderPutSuccessState());
-      });
+          emit(OrderPutSuccessState());
+        });
+      }
     });
   }
 
@@ -178,7 +207,7 @@ class OrderStockAdjustmentRegisterBloc extends Bloc<
       modelStatus.tbInstitutionId = orderMain.order.tbInstitutionId;
       modelStatus.id = orderMain.order.id;
       modelStatus.dtRecord = CustomDate.newDate();
-      modelStatus.direction = "V";
+      modelStatus.direction = orderMain.order.direction;
       var response = await closureOrderStockAdjustment
           .call(ParamsOrderStockAdjustmentClosure(model: modelStatus));
 
@@ -199,8 +228,7 @@ class OrderStockAdjustmentRegisterBloc extends Bloc<
       modelStatus.tbInstitutionId = orderMain.order.tbInstitutionId;
       modelStatus.id = orderMain.order.id;
       modelStatus.dtRecord = CustomDate.newDate();
-      modelStatus.direction = "V";
-
+      modelStatus.direction = orderMain.order.direction;
       var response = await reopenOrderStockAdjustment
           .call(ParamsOrderStockAdjustmentReopen(model: modelStatus));
 
@@ -226,12 +254,6 @@ class OrderStockAdjustmentRegisterBloc extends Bloc<
         orderMain = r;
         emit(OrderGetLoadedState());
       });
-    });
-  }
-
-  orderReturnMaster() {
-    on<OrderReturnMasterEvent>((event, emit) async {
-      emit(OrderReturnMasterState());
     });
   }
 
@@ -270,6 +292,12 @@ class OrderStockAdjustmentRegisterBloc extends Bloc<
     });
   }
 
+  orderReturnMaster() {
+    on<OrderReturnMainEvent>((event, emit) async {
+      emit(OrderReturnMasterState());
+    });
+  }
+
   itemsUpdate() {
     on<OrderItemUpdateEvent>((event, emit) {
       if (orderItem.id > 0) {
@@ -293,11 +321,18 @@ class OrderStockAdjustmentRegisterBloc extends Bloc<
   getProducts() {
     on<ProductsGetEvent>((event, emit) async {
       emit(OrderLoadingState());
-
-      final response = await productGetlist.call(ParamsGetlistProduct(id: 1));
+      if (event.params.page == 0) {
+        products.clear();
+        productsTemp.clear;
+        pageProducts = 1;
+      } else {
+        pageProducts += 1;
+      }
+      event.params.page = pageProducts;
+      final response = await productGetlist.call(event.params);
 
       response.fold((l) => emit(ProductGetErrorState()), (r) {
-        products = r;
+        products += r;
         emit(ProductGetSucessState());
       });
     });
@@ -331,24 +366,22 @@ class OrderStockAdjustmentRegisterBloc extends Bloc<
 
   searchProducts() {
     on<ProductsSearchEvent>((event, emit) async {
+      if (productsTemp.length < products.length) {
+        productsTemp = products;
+      } else {
+        products = productsTemp;
+      }
       if (search.isNotEmpty) {
-        var productstSearched = products.where((element) {
-          String name = element.description;
-          int id = element.id;
-          return (name
+        products = products
+            .where(
+              (element) => element.description
                   .toLowerCase()
                   .trim()
-                  .contains(search.toLowerCase().trim()) ||
-              id.toString() == search);
-        }).toList();
-        if (productstSearched.isNotEmpty) {
-          emit(ProductSearchSucessState());
-        } else {
-          emit(ProductSearchErrorState());
-        }
-      } else {
-        emit(ProductSearchErrorState());
+                  .contains(search.toLowerCase().trim()),
+            )
+            .toList();
       }
+      emit(ProductSearchSucessState());
     });
   }
 

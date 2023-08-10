@@ -1,3 +1,5 @@
+import 'package:appweb/app/modules/order_stock_adjustment_register/data/model/params_get_list_product_model.dart';
+
 abstract class OrderStockAdjustmentRegisterEvent {}
 
 //======================Master============================
@@ -23,7 +25,7 @@ class OrderReopenEvent extends OrderStockAdjustmentRegisterEvent {
 
 class OrderSearchEvent extends OrderStockAdjustmentRegisterEvent {}
 
-class OrderReturnMasterEvent extends OrderStockAdjustmentRegisterEvent {}
+class OrderReturnMainEvent extends OrderStockAdjustmentRegisterEvent {}
 
 //======================Master - Auxiliar============================
 class StocksGetEvent extends OrderStockAdjustmentRegisterEvent {}
@@ -50,7 +52,10 @@ class OrderItemUpdateEvent extends OrderStockAdjustmentRegisterEvent {}
 class OrderItemDeleteEvent extends OrderStockAdjustmentRegisterEvent {}
 
 //======================Detail - Auxiliar=========================
-class ProductsGetEvent extends OrderStockAdjustmentRegisterEvent {}
+class ProductsGetEvent extends OrderStockAdjustmentRegisterEvent {
+  ParamsGetlistProductModel params;
+  ProductsGetEvent(this.params);
+}
 
 class ProductsSearchEvent extends OrderStockAdjustmentRegisterEvent {}
 

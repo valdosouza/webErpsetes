@@ -34,8 +34,8 @@ class StockPageDesktopState extends State<StockPageDesktop> {
       body: SizedBox(
         height: size.height,
         width: size.width,
-        child: Row(
-          children: const [
+        child: const Row(
+          children: [
             DrawerPageMain(),
             StockMenuMain(),
             Expanded(

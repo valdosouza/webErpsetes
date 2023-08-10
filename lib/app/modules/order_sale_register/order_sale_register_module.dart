@@ -1,18 +1,15 @@
 import 'package:appweb/app/modules/Core/core_module.dart';
-import 'package:appweb/app/modules/order_sale_register/data/datasource/order_sale_register_datasource.dart';
-import 'package:appweb/app/modules/order_sale_register/data/repository/order_sale_register_repository_impl.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/entities_list_getlist.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/order_sale_register_closure.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/order_sale_register_delete.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/order_sale_main_get.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/order_sale_register_get_list.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/order_sale_register_post.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/order_sale_register_put.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/order_sale_register_reopen.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/product_get_list.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/stock_list_getlist.dart';
-import 'package:appweb/app/modules/order_sale_register/presentation/bloc/order_sale_register_bloc.dart';
-import 'package:appweb/app/modules/order_sale_register/presentation/page/order_sale_register_page.dart';
+import 'package:appweb/app/modules/order_sale_register/data/datasource/datasource.dart';
+import 'package:appweb/app/modules/order_sale_register/data/repository/repository_impl.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_main.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_prices.dart';
+import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
+import 'package:appweb/app/modules/order_sale_register/presentation/page/page.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,72 +20,49 @@ class OrderSaleRegisterModule extends Module {
       ];
   @override
   List<Bind> get binds => [
-        Bind.factory<OrderSaleRegisterDataSource>(
-          (i) => OrderSaleRegisterDataSourceImpl(
-            httpClient: http.Client(),
-          ),
+        Bind.factory<DataSource>(
+          (i) => DataSourceImpl(httpClient: http.Client()),
         ),
         Bind.factory(
-          (i) => OrderSaleRegisterRepositoryImpl(
-              datasource: i.get<OrderSaleRegisterDataSource>()),
+          (i) => RepositoryImpl(datasource: i.get<DataSource>()),
         ),
         Bind.factory(
-          (i) => OrderSaleMainGet(
-              repository: i.get<OrderSaleRegisterRepositoryImpl>()),
+          (i) => GetOrderList(repository: i.get<RepositoryImpl>()),
         ),
         Bind.factory(
-          (i) => OrderSaleRegisterGetlist(
-              repository: i.get<OrderSaleRegisterRepositoryImpl>()),
+          (i) => GetOrderMain(repository: i.get<RepositoryImpl>()),
         ),
         Bind.factory(
-          (i) => OrderSaleRegisterPost(
-              repository: i.get<OrderSaleRegisterRepositoryImpl>()),
+          (i) => GetCustomerList(repository: i.get<RepositoryImpl>()),
         ),
         Bind.factory(
-          (i) => OrderSaleRegisterPut(
-              repository: i.get<OrderSaleRegisterRepositoryImpl>()),
+          (i) => GetPaymentTypesList(repository: i.get<RepositoryImpl>()),
         ),
         Bind.factory(
-          (i) => OrderSaleRegisterDelete(
-              repository: i.get<OrderSaleRegisterRepositoryImpl>()),
+          (i) => GetItemsList(repository: i.get<RepositoryImpl>()),
         ),
         Bind.factory(
-          (i) => OrderSaleRegisterClosure(
-              repository: i.get<OrderSaleRegisterRepositoryImpl>()),
+          (i) => GetProductList(repository: i.get<RepositoryImpl>()),
         ),
         Bind.factory(
-          (i) => OrderSaleRegisterReopen(
-              repository: i.get<OrderSaleRegisterRepositoryImpl>()),
+          (i) => GetProductPrices(repository: i.get<RepositoryImpl>()),
         ),
-        Bind.factory(
-          (i) => ProductGetlist(
-              repository: i.get<OrderSaleRegisterRepositoryImpl>()),
+        Bind.singleton(
+          (i) => OrderSaleRegisterBloc(
+              getOrderList: i.get<GetOrderList>(),
+              getOrderMain: i.get<GetOrderMain>(),
+              getCustomerList: i.get<GetCustomerList>(),
+              getPaymentTypesList: i.get<GetPaymentTypesList>(),
+              getItemsList: i.get<GetItemsList>(),
+              getProductList: i.get<GetProductList>(),
+              getProductPrices: i.get<GetProductPrices>()),
         ),
-        Bind.factory(
-          (i) => StockListGetlist(
-              repository: i.get<OrderSaleRegisterRepositoryImpl>()),
-        ),
-        Bind.factory(
-          (i) => EntitiesListGetlist(
-              repository: i.get<OrderSaleRegisterRepositoryImpl>()),
-        ),
-        Bind.singleton((i) => OrderSaleRegisterBloc(
-            getOrderSale: i.get<OrderSaleMainGet>(),
-            getlistOrderSale: i.get<OrderSaleRegisterGetlist>(),
-            postOrderSale: i.get<OrderSaleRegisterPost>(),
-            putOrderSale: i.get<OrderSaleRegisterPut>(),
-            deleteOrderSale: i.get<OrderSaleRegisterDelete>(),
-            closureOrderStocktransfer: i.get<OrderSaleRegisterClosure>(),
-            reopenOrderStocktransfer: i.get<OrderSaleRegisterReopen>(),
-            productGetlist: i.get<ProductGetlist>(),
-            stockListGetlist: i.get<StockListGetlist>(),
-            entitiesListGetlist: i.get<EntitiesListGetlist>())),
       ];
   @override
   final List<ModularRoute> routes = [
     ChildRoute(
       '/',
-      child: (_, args) => const OrderSaleRegisterPage(),
+      child: (_, args) => const Page(),
     ),
   ];
 }

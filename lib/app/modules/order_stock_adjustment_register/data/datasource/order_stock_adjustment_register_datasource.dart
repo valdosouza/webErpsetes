@@ -7,6 +7,7 @@ import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/data/model/order_stock_adjustment_list_model.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/data/model/order_stock_adjustment_main_model.dart';
 import 'package:appweb/app/modules/Core/data/model/stock_list_model.dart';
+import 'package:appweb/app/modules/order_stock_adjustment_register/data/model/params_get_list_product_model.dart';
 import 'package:flutter/foundation.dart';
 
 abstract class OrderStockAdjustmentRegisterDataSource extends Gateway {
@@ -21,7 +22,8 @@ abstract class OrderStockAdjustmentRegisterDataSource extends Gateway {
   Future<String> delete({required int id});
   Future<List<StockListModel>> getListStock();
   Future<List<EntityListModel>> getListEntity();
-  Future<List<ProductListModel>> getListProduct();
+  Future<List<ProductListModel>> getListProduct(
+      ParamsGetlistProductModel params);
   Future<String> closure({required OrderStatusModel model});
   Future<String> reopen({required OrderStatusModel model});
 }
@@ -84,14 +86,20 @@ class OrderStockAdjustmentRegisterDataSourceImpl
   }
 
   @override
-  Future<List<ProductListModel>> getListProduct() async {
-    String tbInstitutionId = '1';
+  Future<List<ProductListModel>> getListProduct(
+      ParamsGetlistProductModel params) async {
+    params.tbInstitutionId = 1;
     await getInstitutionId().then((value) {
-      tbInstitutionId = value.toString();
+      (kIsWeb)
+          ? params.tbInstitutionId = value
+          : params.tbInstitutionId = int.parse(value);
     });
 
+    final body = jsonEncode(params.toJson());
     return await request(
-      'product/getlist/$tbInstitutionId',
+      'product/getlist/',
+      method: HTTPMethod.post,
+      data: body,
       (payload) {
         final data = json.decode(payload);
         products = (data as List).map((json) {

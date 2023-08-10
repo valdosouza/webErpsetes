@@ -164,7 +164,7 @@ class ContentProductListState extends State<ContentProductList> {
           return AlertDialog(
             title: const Text("Insere Item"),
             content: SizedBox(
-              height: height - 530,
+              height: height * .50,
               width: width,
               child: Column(
                 children: [

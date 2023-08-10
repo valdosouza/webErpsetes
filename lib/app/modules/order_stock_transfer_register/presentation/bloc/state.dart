@@ -36,9 +36,19 @@ class OrderGetErrorState extends OrderStockTransferRegisterState {}
 
 class OrderLoadedErrorState extends OrderStockTransferRegisterState {}
 
-class OrderPostErrorState extends OrderStockTransferRegisterState {}
+class OrderPostErrorState extends OrderStockTransferRegisterState {
+  final String error;
+  OrderPostErrorState({
+    required this.error,
+  });
+}
 
-class OrderPutErrorState extends OrderStockTransferRegisterState {}
+class OrderPutErrorState extends OrderStockTransferRegisterState {
+  final String error;
+  OrderPutErrorState({
+    required this.error,
+  });
+}
 
 class OrderDeleteErrorState extends OrderStockTransferRegisterState {}
 

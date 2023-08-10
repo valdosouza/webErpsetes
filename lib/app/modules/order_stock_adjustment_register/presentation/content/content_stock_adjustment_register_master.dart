@@ -1,8 +1,10 @@
+import 'package:appweb/app/core/shared/theme.dart';
 import 'package:appweb/app/core/shared/widgets/custom_imput_button.dart';
 import 'package:appweb/app/core/shared/widgets/custom_input.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/order_stock_adjustment_register_module.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/bloc/order_stock_adjustment_register_bloc.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/bloc/order_stock_adjustment_register_event.dart';
+import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/widget/order_stock_adjustment_register_direction_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -80,6 +82,10 @@ class _ContentOrderStockAdjustmentRegisterMasterState
                       : null
                 }),
           ),
+          const SizedBox(height: 10),
+          const Text("Direção da Operação", style: kLabelStyle),
+          OrderStockAdjustmentRegisterDirectionWidget(
+              orderStockAdjust: bloc.orderMain.order),
           const SizedBox(height: 10),
           CustomInput(
               readOnly: (bloc.orderMain.order.status == "F"),

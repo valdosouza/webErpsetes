@@ -14,6 +14,7 @@ class OrderStockAdjustmentRegisterModel
     String? dtRecord,
     int? tbStockListId,
     String? nameStockList,
+    String? direction,
     String? note,
     String? status,
     List<OrderStockAdjustmentRegisterItemsModel>? items,
@@ -27,6 +28,7 @@ class OrderStockAdjustmentRegisterModel
           dtRecord: dtRecord ?? "",
           tbStockListId: tbStockListId ?? 0,
           nameStockList: nameStockList ?? "",
+          direction: direction ?? "S",
           note: note ?? "",
           status: status ?? "",
           items: items ??
@@ -52,6 +54,7 @@ class OrderStockAdjustmentRegisterModel
             ? int.parse(json['number'])
             : json['number'],
         dtRecord: CustomDate.formatDateIn(json['dt_record']),
+        direction: json['direction'] as String? ?? "",
         note: json['note'] as String? ?? "",
         tbStockListId: json['tb_stock_list_id'] is String
             ? int.parse(json['tb_stock_list_id'])
@@ -76,6 +79,7 @@ class OrderStockAdjustmentRegisterModel
     data['dt_record'] = CustomDate.formatDateOut(dtRecord);
     data['tb_stock_list_id'] = tbStockListId;
     data['name_stock_list'] = nameStockList;
+    data['direction'] = direction;
     data['note'] = note;
     data['status'] = status;
     return data;

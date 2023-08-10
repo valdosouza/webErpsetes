@@ -7,6 +7,7 @@ import 'package:appweb/app/modules/order_stock_adjustment_register/data/datasour
 import 'package:appweb/app/modules/order_stock_adjustment_register/data/model/order_stock_adjustment_list_model.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/data/model/order_stock_adjustment_main_model.dart';
 import 'package:appweb/app/modules/Core/data/model/stock_list_model.dart';
+import 'package:appweb/app/modules/order_stock_adjustment_register/data/model/params_get_list_product_model.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/domain/repository/order_stock_adjustment_register_respository.dart';
 import 'package:dartz/dartz.dart';
 
@@ -58,9 +59,10 @@ class OrderStockAdjustmentRegisterRepositoryImpl
   }
 
   @override
-  Future<Either<Failure, List<ProductListModel>>> getListProducts() async {
+  Future<Either<Failure, List<ProductListModel>>> getListProducts(
+      ParamsGetlistProductModel params) async {
     try {
-      final list = await datasource.getListProduct();
+      final list = await datasource.getListProduct(params);
 
       return Right(list);
     } on ServerException {

@@ -14,11 +14,13 @@ class OrderStockAdjustmentMainModel {
   factory OrderStockAdjustmentMainModel.fromJson(Map<String, dynamic> json) =>
       OrderStockAdjustmentMainModel(
         order: OrderStockAdjustmentRegisterModel.fromJson(json["Order"]),
-        items: List<OrderStockAdjustmentRegisterItemsModel>.from(
-          json["Items"].map(
-            (x) => OrderStockAdjustmentRegisterItemsModel.fromJson(x),
-          ),
-        ),
+        items: json["Items"] != null
+            ? List<OrderStockAdjustmentRegisterItemsModel>.from(
+                json["Items"].map(
+                  (x) => OrderStockAdjustmentRegisterItemsModel.fromJson(x),
+                ),
+              )
+            : [],
       );
 
   factory OrderStockAdjustmentMainModel.empty() =>

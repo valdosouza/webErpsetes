@@ -10,6 +10,7 @@ class OrderStockAdjustmentRegisterEntity {
   String dtRecord;
   int tbStockListId;
   String nameStockList;
+  String direction;
   String note;
   String status;
   List<OrderStockAdjustmentRegisterItemsModel> items;
@@ -24,6 +25,7 @@ class OrderStockAdjustmentRegisterEntity {
     required this.dtRecord,
     required this.tbStockListId,
     required this.nameStockList,
+    required this.direction,
     required this.note,
     required this.status,
     required this.items,

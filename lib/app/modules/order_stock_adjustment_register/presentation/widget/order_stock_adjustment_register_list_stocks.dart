@@ -56,7 +56,7 @@ class OrderStockAdjustmentRegisterStocksListWidgetState
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             bloc.tabIndex = 0;
-            bloc.add(OrderReturnMasterEvent());
+            bloc.add(OrderReturnMainEvent());
           },
         ),
       ),
@@ -102,7 +102,7 @@ class OrderStockAdjustmentRegisterStocksListWidgetState
                               bloc.stocks[index].description;
 
                           bloc.tabIndex = 0;
-                          bloc.add(OrderReturnMasterEvent());
+                          bloc.add(OrderReturnMainEvent());
                         },
                         child: ListTile(
                           leading: CircleAvatar(

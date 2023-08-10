@@ -89,9 +89,13 @@ class OrderStockTransferRegisterDataSourceImpl
   Future<List<ProductListModel>> getListProduct(
       ParamsGetlistProductModel params) async {
     params.tbInstitutionId = 1;
+
     await getInstitutionId().then((value) {
-      params.tbInstitutionId = int.parse(value);
+      (kIsWeb)
+          ? params.tbInstitutionId = value
+          : params.tbInstitutionId = int.parse(value);
     });
+
     final body = jsonEncode(params.toJson());
 
     return await request(

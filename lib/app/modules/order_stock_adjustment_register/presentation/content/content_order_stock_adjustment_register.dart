@@ -15,11 +15,9 @@ statesOrderStockAdjustment(OrderStockAdjustmentRegisterState state) {
   } else if (state is OrderPutSuccessState) {
     CustomToast.showToast("Cadastro atualizado com sucesso.");
   } else if (state is OrderPostErrorState) {
-    CustomToast.showToast(
-        "Erro ao atualizar o cadastro. Tente novamente mais tarde.");
+    CustomToast.showToast(state.error);
   } else if (state is OrderPutErrorState) {
-    CustomToast.showToast(
-        "Erro editar o cadastro. Tente novamente mais tarde.");
+    CustomToast.showToast(state.error);
   } else if (state is OrderGetErrorState) {
     CustomToast.showToast(
         "Erro ao buscar os dados do cadastro. Tente novamente mais tarde.");

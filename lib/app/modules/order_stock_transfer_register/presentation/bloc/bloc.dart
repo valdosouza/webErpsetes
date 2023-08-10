@@ -129,33 +129,61 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
+  Future<String> _validadePost() async {
+    if (orderMain.order.tbEntityId == 0) {
+      return "Informe o campo entidade.";
+    }
+    if (orderMain.order.tbStockListIdOri == 0) {
+      return "Informe o campo estoque de origem.";
+    }
+    if (orderMain.order.tbStockListIdDes == 0) {
+      return "Informe o campo estoque de destino.";
+    }
+    if (orderMain.items.isEmpty) {
+      return "Informe pelo menos um item na lista.";
+    }
+    return "";
+  }
+
   orderPost() {
     on<OrderPostEvent>((event, emit) async {
       emit(OrderLoadingState());
+      String errorValidate = await _validadePost();
 
-      var response = await postOrderStockTransfer
-          .call(ParamsPostOrderStockTransferRegister(model: orderMain));
+      if (errorValidate.isNotEmpty) {
+        emit(OrderPostErrorState(error: errorValidate));
+      } else {
+        var response = await postOrderStockTransfer
+            .call(ParamsPostOrderStockTransferRegister(model: orderMain));
 
-      response.fold((l) => emit(OrderPostErrorState()), (r) {
-        orderStockTransfers.add(r);
-        emit(OrderPostSuccessState());
-      });
+        response.fold((l) => emit(OrderPostErrorState(error: l.toString())),
+            (r) {
+          orderStockTransfers.add(r);
+          emit(OrderPostSuccessState());
+        });
+      }
     });
   }
 
   orderPut() {
     on<OrderPutEvent>((event, emit) async {
       emit(OrderLoadingState());
+      String errorValidate = await _validadePost();
 
-      var response = await putOrderStockTransfer
-          .call(ParamsPutOrderStockTransferRegister(model: orderMain));
+      if (errorValidate.isNotEmpty) {
+        emit(OrderPostErrorState(error: errorValidate));
+      } else {
+        var response = await putOrderStockTransfer
+            .call(ParamsPutOrderStockTransferRegister(model: orderMain));
 
-      response.fold((l) => emit(OrderPutErrorState()), (r) {
-        orderStockTransfers[orderStockTransfers
-            .indexWhere((element) => element.id == r.id)] = r;
+        response.fold((l) => emit(OrderPutErrorState(error: l.toString())),
+            (r) {
+          orderStockTransfers[orderStockTransfers
+              .indexWhere((element) => element.id == r.id)] = r;
 
-        emit(OrderPutSuccessState());
-      });
+          emit(OrderPutSuccessState());
+        });
+      }
     });
   }
 
@@ -180,7 +208,6 @@ class OrderStockTransferRegisterBloc extends Bloc<
       modelStatus.tbInstitutionId = orderMain.order.tbInstitutionId;
       modelStatus.id = orderMain.order.id;
       modelStatus.dtRecord = CustomDate.newDate();
-      modelStatus.direction = "V";
       var response = await closureOrderStocktransfer
           .call(ParamsOrderStockTransferClosure(model: modelStatus));
 
@@ -201,7 +228,6 @@ class OrderStockTransferRegisterBloc extends Bloc<
       modelStatus.tbInstitutionId = orderMain.order.tbInstitutionId;
       modelStatus.id = orderMain.order.id;
       modelStatus.dtRecord = CustomDate.newDate();
-      modelStatus.direction = "V";
 
       var response = await reopenOrderStocktransfer
           .call(ParamsOrderStocktransferReopen(model: modelStatus));

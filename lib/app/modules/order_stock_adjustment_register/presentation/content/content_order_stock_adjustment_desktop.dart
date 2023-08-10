@@ -1,3 +1,4 @@
+import 'package:appweb/app/modules/order_stock_adjustment_register/data/model/params_get_list_product_model.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/order_stock_adjustment_register_module.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/bloc/order_stock_adjustment_register_bloc.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/bloc/order_stock_adjustment_register_event.dart';
@@ -113,7 +114,12 @@ class _ContentOrderStockAdjustmentRegisterDesktopState
                       trailing: IconButton(
                         onPressed: () {
                           if (bloc.orderMain.order.status != "F") {
-                            bloc.add(OrderItemNewEvent());
+                            bloc.add(ProductsGetEvent(ParamsGetlistProductModel(
+                              tbInstitutionId: 0,
+                              page: 0,
+                              id: 0,
+                              nameProduct: "",
+                            )));
                           }
                         },
                         icon: const Icon(Icons.add, color: Colors.white),

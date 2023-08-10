@@ -19,8 +19,8 @@ class HomePageDesktop extends StatelessWidget {
       body: SizedBox(
         height: size.height,
         width: size.width,
-        child: Row(
-          children: const [
+        child: const Row(
+          children: [
             DrawerPageMain(),
             Expanded(
               flex: 5,

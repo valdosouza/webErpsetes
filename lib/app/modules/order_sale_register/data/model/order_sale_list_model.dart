@@ -4,44 +4,41 @@ import 'package:appweb/app/modules/order_sale_register/domain/entity/order_sale_
 class OrderSaleListModel extends OrderSaleListEntity {
   OrderSaleListModel({
     int? id,
-    int? tbUserId,
-    int? tbEntityId,
-    String? nameEntity,
     int? number,
     String? dtRecord,
+    int? tbCustomerId,
+    String? nameCustomer,
+    String? docCustomer,
+    int? tbSalesmanId,
+    String? nameSalesman,
+    String? docSalesman,
     String? status,
   }) : super(
           id: id ?? 0,
-          tbUserId: tbUserId ?? 0,
-          tbEntityId: tbEntityId ?? 0,
-          nameEntity: nameEntity ?? "",
           number: number ?? 0,
           dtRecord: dtRecord ?? "",
+          tbCustomerId: tbSalesmanId ?? 0,
+          nameCustomer: nameCustomer ?? "",
+          docCustomer: docCustomer ?? "",
+          tbSalesmanId: tbSalesmanId ?? 0,
+          nameSalesman: nameSalesman ?? "",
+          docSalesman: docSalesman ?? "",
           status: status ?? "",
         );
 
   factory OrderSaleListModel.fromJson(Map<String, dynamic> json) {
     return OrderSaleListModel(
       id: json['id'],
-      tbUserId: json['tb_user_id'],
-      tbEntityId: json['tb_entity_id'],
-      nameEntity: json['name_entity'] as String? ?? "",
       number: json['number'],
       dtRecord: CustomDate.formatDateIn(json['dt_record']),
-      status: json['status'] as String? ?? "",
+      tbCustomerId: json['tb_customer_id'],
+      nameCustomer: json['name_customer'],
+      docCustomer: json['doc_customer'],
+      tbSalesmanId: json['tb_salesman_id'],
+      nameSalesman: json['name_salesman'],
+      docSalesman: json['doc_salesman'],
+      status: json['status'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['tb_user_id'] = tbUserId;
-    data['tb_entity_id'] = tbEntityId;
-    data['name_entity'] = nameEntity;
-    data['number'] = number;
-    data['dt_record'] = CustomDate.formatDateOut(dtRecord);
-    data['status'] = status;
-    return {"Order": data};
   }
 
   factory OrderSaleListModel.empty() {

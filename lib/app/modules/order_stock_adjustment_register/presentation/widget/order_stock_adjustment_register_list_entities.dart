@@ -52,7 +52,7 @@ class OrderStockAdjustmentRegisterEntitiesListWidgetState
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             bloc.tabIndex = 0;
-            bloc.add(OrderReturnMasterEvent());
+            bloc.add(OrderReturnMainEvent());
           },
         ),
       ),
@@ -97,7 +97,7 @@ class OrderStockAdjustmentRegisterEntitiesListWidgetState
                           bloc.orderMain.order.tbEntityId =
                               bloc.entities[index].id;
                           bloc.tabIndex = 0;
-                          bloc.add(OrderReturnMasterEvent());
+                          bloc.add(OrderReturnMainEvent());
                         },
                         child: ListTile(
                           leading: CircleAvatar(

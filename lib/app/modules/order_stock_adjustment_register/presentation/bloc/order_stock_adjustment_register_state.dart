@@ -32,9 +32,15 @@ class OrderGetErrorState extends OrderStockAdjustmentRegisterState {}
 
 class OrderLoadedErrorState extends OrderStockAdjustmentRegisterState {}
 
-class OrderPostErrorState extends OrderStockAdjustmentRegisterState {}
+class OrderPostErrorState extends OrderStockAdjustmentRegisterState {
+  final String error;
+  OrderPostErrorState({required this.error});
+}
 
-class OrderPutErrorState extends OrderStockAdjustmentRegisterState {}
+class OrderPutErrorState extends OrderStockAdjustmentRegisterState {
+  final String error;
+  OrderPutErrorState({required this.error});
+}
 
 class OrderDeleteErrorState extends OrderStockAdjustmentRegisterState {}
 

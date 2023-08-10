@@ -7,7 +7,6 @@ import 'package:appweb/app/modules/order_stock_transfer_register/presentation/bl
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/bloc/state.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/content/desktop/content_order_stock_transfer_desktop.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/content/desktop/content_order_stock_transfer_register.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/presentation/content/desktop/content_order_stock_transfer_register_edit_item.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/widget/desktop/order_stock_transfer_register_list_entities.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/widget/desktop/order_stock_transfer_register_list_products.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/widget/desktop/order_stock_transfer_register_list_stocks.dart';
@@ -54,14 +53,16 @@ class OrderStockTransferRegisterPageDesktopState extends State<PageDesktop> {
 
         if ((state is OrderGetLoadedState) ||
             (state is OrderReturnMasterState) ||
-            (state is OrderNewLoadedState)) {
+            (state is OrderNewLoadedState) ||
+            (state is OrderPostErrorState) ||
+            (state is OrderPutErrorState)) {
           return ContentOrderStockTransferRegisterDesktop(
             tabIndex: bloc.tabIndex,
           );
         }
-
-        if (state is ProductGetSucessState) {
-          return const OrderStockTransferRegisterProductsListWidget();
+        if ((state is ProductGetSucessState) ||
+            (state is ProductSearchSucessState)) {
+          return const OrderStockTransferRegisterListProducts();
         }
 
         if (state is StocksLoadSuccessState) {
@@ -70,11 +71,6 @@ class OrderStockTransferRegisterPageDesktopState extends State<PageDesktop> {
 
         if (state is EntitiesLoadSuccessState) {
           return const OrderStockTransferRegisterEntitiesListWidget();
-        }
-
-        if ((state is OrderItemPageEditState) ||
-            (state is ProductChosenSucessState)) {
-          return const ContentOrderStockTransferRegisterEditItem();
         }
 
         if (state is OrderItemUpdateSuccessState) {

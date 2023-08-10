@@ -30,7 +30,7 @@ class _ContentOrderListState extends State<ContentOrderList> {
         flexibleSpace: Container(
           decoration: kBoxDecorationflexibleSpace,
         ),
-        title: const Text('Lista de Carregamentos'),
+        title: const Text('Lista de Pedidos'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {

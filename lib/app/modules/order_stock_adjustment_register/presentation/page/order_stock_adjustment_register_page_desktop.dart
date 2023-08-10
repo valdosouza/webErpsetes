@@ -7,7 +7,6 @@ import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/
 import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/bloc/order_stock_adjustment_register_state.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/content/content_order_stock_adjustment_desktop.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/content/content_order_stock_adjustment_register.dart';
-import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/content/content_order_stock_adjustment_register_edit_item.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/widget/order_stock_adjustment_register_list_entities.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/widget/order_stock_adjustment_register_list_products.dart';
 import 'package:appweb/app/modules/order_stock_adjustment_register/presentation/widget/order_stock_adjustment_register_list_stocks.dart';
@@ -55,14 +54,17 @@ class OrderStockAdjustmentRegisterPageDesktopState
 
         if ((state is OrderGetLoadedState) ||
             (state is OrderReturnMasterState) ||
-            (state is OrderNewLoadedState)) {
+            (state is OrderNewLoadedState) ||
+            (state is OrderPostErrorState) ||
+            (state is OrderPutErrorState)) {
           return ContentOrderStockAdjustmentRegisterDesktop(
             tabIndex: bloc.tabIndex,
           );
         }
 
-        if (state is ProductGetSucessState) {
-          return const OrderStockAdjustmentRegisterProductsListWidget();
+        if ((state is ProductGetSucessState) ||
+            (state is ProductSearchSucessState)) {
+          return const OrderStockAdjustmentRegisterListProducts();
         }
 
         if (state is StocksLoadSuccessState) {
@@ -71,11 +73,6 @@ class OrderStockAdjustmentRegisterPageDesktopState
 
         if (state is EntitiesLoadSuccessState) {
           return const OrderStockAdjustmentRegisterEntitiesListWidget();
-        }
-
-        if ((state is OrderItemPageEditState) ||
-            (state is ProductChosenSucessState)) {
-          return const ContentOrderStockAdjustmentRegisterEditItem();
         }
 
         if (state is OrderItemUpdateSuccessState) {

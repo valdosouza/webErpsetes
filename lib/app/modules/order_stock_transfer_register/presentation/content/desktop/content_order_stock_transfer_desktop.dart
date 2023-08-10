@@ -1,3 +1,4 @@
+import 'package:appweb/app/modules/order_stock_transfer_register/data/model/params_get_list_product_model.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/order_stock_transfer_register_module.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/bloc/event.dart';
@@ -112,7 +113,12 @@ class _ContentOrderStockTransferRegisterDesktopState
                       trailing: IconButton(
                         onPressed: () {
                           if (bloc.orderMain.order.status != "F") {
-                            bloc.add(OrderItemNewEvent());
+                            bloc.add(ProductsGetEvent(ParamsGetlistProductModel(
+                              tbInstitutionId: 0,
+                              page: 0,
+                              id: 0,
+                              nameProduct: "",
+                            )));
                           }
                         },
                         icon: const Icon(Icons.add, color: Colors.white),
