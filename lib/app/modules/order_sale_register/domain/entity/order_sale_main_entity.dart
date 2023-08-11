@@ -1,35 +1,21 @@
-import 'package:appweb/app/modules/order_stock_transfer_register/data/model/order_stock_transfer_register_items_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_billing_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_sale_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_totalizer_model.dart';
 
 class OrderSaleMainEntity {
-  int id;
-  int tbInstitutionId;
-  int tbUserId;
-  int tbEntityId;
-  String nameEntity;
-  int number;
-  String dtRecord;
-  int tbStockListIdOri;
-  String nameStockListOri;
-  int tbStockListIdDes;
-  String nameStockListDes;
-  String note;
-  String status;
-  List<OrderStockTransferRegisterItemsModel> items;
+  OrderModel order;
+  OrderSaleModel orderSale;
+  OrderBillingModel orderBilling;
+  OrderTotalizerModel orderTotalizer;
+  List<OrderSaleItemModel> items;
 
   OrderSaleMainEntity({
-    required this.id,
-    required this.tbInstitutionId,
-    required this.tbUserId,
-    required this.tbEntityId,
-    required this.nameEntity,
-    required this.number,
-    required this.dtRecord,
-    required this.tbStockListIdOri,
-    required this.nameStockListOri,
-    required this.tbStockListIdDes,
-    required this.nameStockListDes,
-    required this.note,
-    required this.status,
+    required this.order,
+    required this.orderSale,
+    required this.orderBilling,
+    required this.orderTotalizer,
     required this.items,
   });
 }

@@ -1,7 +1,7 @@
 import 'package:appweb/app/core/shared/utils/toast.dart';
 import 'package:appweb/app/core/shared/widgets/custom_imput_button.dart';
 import 'package:appweb/app/core/shared/widgets/custom_input.dart';
-import 'package:appweb/app/modules/order_sale_register/data/model/items_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
@@ -61,7 +61,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
               onPressed: () {},
             ),
             title: Text(
-              "Pedido ${bloc.orderMain.order.number}",
+              "Pedido ${bloc.orderMain.orderSale.number}",
               style: kHintTextStyle.copyWith(fontSize: 20.0),
             ),
           ),
@@ -118,7 +118,9 @@ class _ContentOrderMainState extends State<ContentOrderMain>
           ),
           floatingActionButton: (bloc.orderMain.order.status != "F")
               ? FloatingActionButton(
-                  onPressed: () async {},
+                  onPressed: () async {
+                    bloc.add(PostOrderEvent());
+                  },
                   backgroundColor: Colors.black,
                   child: const Icon(Icons.save),
                 )
@@ -144,16 +146,17 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     return CustomInput(
         readOnly: (bloc.orderMain.order.status == "F"),
         title: "Número",
-        initialValue: bloc.orderMain.order.number.toString(),
+        initialValue: bloc.orderMain.orderSale.number.toString(),
         keyboardType: TextInputType.number,
         inputAction: TextInputAction.go,
-        onChanged: (value) => {bloc.orderMain.order.number = int.parse(value)});
+        onChanged: (value) =>
+            {bloc.orderMain.orderSale.number = int.parse(value)});
   }
 
   _customer() {
     return CustomInputButton(
       readOnly: (bloc.orderMain.order.status != "F"),
-      initialValue: bloc.orderMain.order.nameCustomer,
+      initialValue: bloc.orderMain.orderSale.nameCustomer,
       title: "Descrição da Cliente",
       suffixIcon: const Icon(
         Icons.search,
@@ -189,14 +192,21 @@ class _ContentOrderMainState extends State<ContentOrderMain>
   }
 
   _totalOrder() {
-    double total = 0;
-    for (ItemsModel item in bloc.orderMain.items) {
-      total += (item.quantity * item.unitValue);
+    double productValue = 0;
+    double productQtde = 0;
+    double itemsQtde = 0;
+    for (OrderSaleItemModel item in bloc.orderMain.items) {
+      productValue += (item.quantity * item.unitValue);
+      productQtde += 1;
+      itemsQtde += item.quantity;
     }
+    bloc.orderMain.orderTotalizer.productValue = productValue;
+    bloc.orderMain.orderTotalizer.productQtde = productQtde;
+    bloc.orderMain.orderTotalizer.itemsQtde = itemsQtde;
     return CustomInput(
       readOnly: true,
       title: "Valor do Pedido",
-      initialValue: total.toStringAsFixed(2),
+      initialValue: productValue.toStringAsFixed(2),
       textAlign: TextAlign.right,
       keyboardType: TextInputType.number,
       inputAction: TextInputAction.go,
@@ -206,7 +216,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
 
   _paymentTypes() {
     return CustomInputButton(
-      initialValue: bloc.orderMain.order.namePaymentTypes,
+      initialValue: bloc.orderMain.orderBilling.namePayment,
       title: "Descrição do Forma de Pagamento",
       onAction: (() => {
             (bloc.orderMain.order.status != "F")
@@ -240,9 +250,9 @@ class _ContentOrderMainState extends State<ContentOrderMain>
                   hoverColor: Colors.transparent,
                   onPressed: () {
                     setState(() {
-                      bloc.orderMain.order.plots -= 1;
-                      if (bloc.orderMain.order.plots < 0) {
-                        bloc.orderMain.order.plots = 0;
+                      bloc.orderMain.orderBilling.plots -= 1;
+                      if (bloc.orderMain.orderBilling.plots < 0) {
+                        bloc.orderMain.orderBilling.plots = 0;
                       }
                     });
                   },
@@ -257,7 +267,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10.0),
                   child: Text(
-                    bloc.orderMain.order.plots.toString(),
+                    bloc.orderMain.orderBilling.plots.toString(),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -272,7 +282,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
                   hoverColor: Colors.transparent,
                   onPressed: () {
                     setState(() {
-                      bloc.orderMain.order.plots += 1;
+                      bloc.orderMain.orderBilling.plots += 1;
                     });
                   },
                   icon: const Icon(
@@ -293,10 +303,10 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     return CustomInput(
         readOnly: false,
         title: "Parcelamento em dias ex: 028/056",
-        initialValue: bloc.orderMain.order.deadline,
+        initialValue: bloc.orderMain.orderBilling.deadline,
         keyboardType: TextInputType.text,
         inputAction: TextInputAction.go,
-        onChanged: (value) => {bloc.orderMain.order.deadline = value});
+        onChanged: (value) => {bloc.orderMain.orderBilling.deadline = value});
   }
 
   _observation() {

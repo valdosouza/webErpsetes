@@ -1,13 +1,17 @@
-import 'package:appweb/app/modules/order_sale_register/data/model/items_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
 
 abstract class OrderSaleRegisterEvent {}
 
 //======================content_order_sale============================
-class GetOrderListEvent extends OrderSaleRegisterEvent {}
+class GetOrderListEvent extends OrderSaleRegisterEvent {
+  ParamsOrderList params;
+  GetOrderListEvent({required this.params});
+}
 
 class SearchOrderEvent extends OrderSaleRegisterEvent {}
 
@@ -26,6 +30,8 @@ class GetOrderMainEvent extends OrderSaleRegisterEvent {
 }
 
 class ReturnToOrderMainEvent extends OrderSaleRegisterEvent {}
+
+class PostOrderEvent extends OrderSaleRegisterEvent {}
 
 //======================widget_customer_list============================
 class GetCustomerListEvent extends OrderSaleRegisterEvent {
@@ -78,11 +84,11 @@ class GetProductPricesEvent extends OrderSaleRegisterEvent {
 
 //======================content_item_edit============================
 class GetItemToEditEvent extends OrderSaleRegisterEvent {
-  final ItemsModel itemEdit;
+  final OrderSaleItemModel itemEdit;
   GetItemToEditEvent({required this.itemEdit});
 }
 
 class SetItemUpdateEvent extends OrderSaleRegisterEvent {
-  final ItemsModel itemEdit;
+  final OrderSaleItemModel itemEdit;
   SetItemUpdateEvent({required this.itemEdit});
 }

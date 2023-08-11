@@ -1,7 +1,7 @@
 import 'package:appweb/app/core/error/failures.dart';
+import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
-import 'package:appweb/app/modules/order_sale_register/data/model/items_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
@@ -15,16 +15,25 @@ import 'package:dartz/dartz.dart';
 
 abstract class Repository {
   Future<Either<Failure, List<OrderSaleListModel>>> getOrderList();
-  Future<Either<Failure, OrderMainModel>> getOrderMain(
+
+  Future<Either<Failure, OrderSaleMainModel>> getOrderMain(
       {required int tbOrderId});
+
   Future<Either<Failure, List<CustomerListModel>>> getCustomerList(
       {required ParamsCustomerList params});
+
   Future<Either<Failure, List<PaymentTypesListModel>>> getPaymentTypesList(
       {required ParamsPaymentList params});
-  Future<Either<Failure, List<ItemsModel>>> getItemsList(
+
+  Future<Either<Failure, List<OrderSaleItemModel>>> getItemsList(
       {required ParamsItemsList params});
+
   Future<Either<Failure, List<ProductListModel>>> getProductList(
       {required ParamsProductList params});
+
   Future<Either<Failure, ProductPricesModel>> getProductPrices(
       {required ParamsProductPrices params});
+
+  Future<Either<Failure, OrderSaleListModel>> post(
+      {required OrderSaleMainModel params});
 }

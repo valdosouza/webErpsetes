@@ -5,13 +5,15 @@ import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_lis
 import 'package:appweb/app/modules/order_sale_register/domain/repository/respository.dart';
 import 'package:dartz/dartz.dart';
 
-class GetOrderList implements UseCase<List<OrderSaleListModel>, String> {
+class GetOrderList
+    implements UseCase<List<OrderSaleListModel>, ParamsOrderList> {
   final Repository repository;
 
   GetOrderList({required this.repository});
 
   @override
-  Future<Either<Failure, List<OrderSaleListModel>>> call(String params) async {
+  Future<Either<Failure, List<OrderSaleListModel>>> call(
+      ParamsOrderList params) async {
     try {
       final list = await repository.getOrderList();
       return list;
@@ -21,4 +23,23 @@ class GetOrderList implements UseCase<List<OrderSaleListModel>, String> {
   }
 }
 
-class ParamsGetListStock {}
+class ParamsOrderList {
+  int tbInstitutionId;
+  int page;
+  int? id;
+  int tbSalesmanId;
+  ParamsOrderList({
+    required this.tbInstitutionId,
+    required this.page,
+    required this.tbSalesmanId,
+    this.id,
+  });
+  Map<dynamic, dynamic> toJson() {
+    final Map<dynamic, dynamic> data = <dynamic, dynamic>{};
+    data['tb_institution_id'] = tbInstitutionId;
+    data['page'] = page;
+    data['id'] = id;
+    data['tb_salesman_id'] = tbSalesmanId;
+    return data;
+  }
+}

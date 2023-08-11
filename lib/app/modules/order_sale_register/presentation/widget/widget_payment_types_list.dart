@@ -112,9 +112,9 @@ class WidgetPaymentTypesListtState extends State<WidgetPaymentTypesList> {
                     itemCount: widget.paymentTypesList.length,
                     itemBuilder: (context, index) => InkWell(
                       onTap: () {
-                        bloc.orderMain.order.namePaymentTypes =
+                        bloc.orderMain.orderBilling.namePayment =
                             widget.paymentTypesList[index].description;
-                        bloc.orderMain.order.tbPaymentTypesId =
+                        bloc.orderMain.orderBilling.tbPaymentTypesId =
                             widget.paymentTypesList[index].id;
                         bloc.add(
                             FormOrderEvent(tbOrderId: bloc.orderMain.order.id));

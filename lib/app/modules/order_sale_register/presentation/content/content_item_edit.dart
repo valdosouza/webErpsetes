@@ -1,6 +1,6 @@
 import 'package:appweb/app/core/shared/widgets/custom_imput_button.dart';
 import 'package:appweb/app/core/shared/widgets/custom_input.dart';
-import 'package:appweb/app/modules/order_sale_register/data/model/items_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:appweb/app/core/shared/theme.dart';
@@ -8,7 +8,7 @@ import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.da
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
 
 class ContentItemEdit extends StatefulWidget {
-  final ItemsModel itemEdit;
+  final OrderSaleItemModel itemEdit;
 
   const ContentItemEdit({
     Key? key,

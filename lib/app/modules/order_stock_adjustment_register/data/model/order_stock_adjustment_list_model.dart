@@ -41,7 +41,7 @@ class OrderStockAdjustmentListModel extends OrderStockAdjustmentListEntity {
     data['number'] = number;
     data['dt_record'] = CustomDate.formatDateOut(dtRecord);
     data['status'] = status;
-    return {"Order": data};
+    return {"order": data};
   }
 
   factory OrderStockAdjustmentListModel.empty() {

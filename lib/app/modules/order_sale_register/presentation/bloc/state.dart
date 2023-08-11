@@ -1,6 +1,6 @@
+import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
-import 'package:appweb/app/modules/order_sale_register/data/model/items_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/product_prices_model.dart';
@@ -12,6 +12,20 @@ class LoadingState extends OrderSaleRegisterState {}
 class ErrorState extends OrderSaleRegisterState {
   final String message;
   ErrorState({
+    required this.message,
+  });
+}
+
+class OrderPostSuccessState extends OrderSaleRegisterState {
+  final List<OrderSaleListModel> orderlist;
+  OrderPostSuccessState({
+    required this.orderlist,
+  });
+}
+
+class OrderPostPutErrorState extends OrderSaleRegisterState {
+  final String message;
+  OrderPostPutErrorState({
     required this.message,
   });
 }
@@ -49,7 +63,7 @@ class PaymentTypesListLoadedSate extends OrderSaleRegisterState {
 
 //======================widget_payment_types_list============================
 class ItemsListLoadedSate extends OrderSaleRegisterState {
-  final List<ItemsModel> itemsList;
+  final List<OrderSaleItemModel> itemsList;
   ItemsListLoadedSate({
     required this.itemsList,
   });
@@ -79,7 +93,7 @@ class ProductPricesLoadedState extends OrderSaleRegisterState {
 
 //======================content_item_edit============================
 class GetItemToEditLoaded extends OrderSaleRegisterState {
-  final ItemsModel itemEdit;
+  final OrderSaleItemModel itemEdit;
   GetItemToEditLoaded({required this.itemEdit});
 }
 

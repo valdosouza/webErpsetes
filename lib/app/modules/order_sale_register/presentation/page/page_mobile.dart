@@ -1,4 +1,5 @@
 import 'package:appweb/app/core/shared/widgets/custom_circular_progress_indicator.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
 import 'package:appweb/app/modules/order_sale_register/order_sale_register_module.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
@@ -33,7 +34,12 @@ class PageMobileState extends State<PageMobile> {
       await Modular.isModuleReady<OrderSaleRegisterModule>();
     });
     if (bloc.orderList.isEmpty) {
-      bloc.add(GetOrderListEvent());
+      bloc.add(GetOrderListEvent(
+          params: ParamsOrderList(
+        tbInstitutionId: 0,
+        page: bloc.pageOrder,
+        tbSalesmanId: 0,
+      )));
     }
   }
 
@@ -79,6 +85,9 @@ class PageMobileState extends State<PageMobile> {
         }
         if (state is GetItemToEditLoaded) {
           return ContentItemEdit(itemEdit: state.itemEdit);
+        }
+        if (state is OrderPostSuccessState) {
+          return ContentOrderList(orderlist: bloc.orderList);
         }
         return Container();
       },

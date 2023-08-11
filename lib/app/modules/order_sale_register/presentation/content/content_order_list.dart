@@ -1,8 +1,10 @@
 import 'package:appweb/app/core/shared/theme.dart';
 import 'package:appweb/app/core/shared/utils/toast.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -19,11 +21,35 @@ class ContentOrderList extends StatefulWidget {
 
 class _ContentOrderListState extends State<ContentOrderList> {
   late final OrderSaleRegisterBloc bloc;
-
+  late final ScrollController _scrollController;
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(infiniteScrolling);
     bloc = Modular.get<OrderSaleRegisterBloc>();
+  }
+
+  infiniteScrolling() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      bloc.add(
+        GetOrderListEvent(
+          params: ParamsOrderList(
+            tbInstitutionId: 0,
+            tbSalesmanId: 0,
+            page: bloc.pageOrder,
+            id: 0,
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -47,7 +73,7 @@ class _ContentOrderListState extends State<ContentOrderList> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             buildSearchInput(),
-            const SizedBox(height: 30.0),
+            const SizedBox(height: 10.0),
             buildListView(),
           ],
         ),
@@ -92,44 +118,79 @@ class _ContentOrderListState extends State<ContentOrderList> {
           ? const Center(
               child: Text("Não encontramos nenhum registro em nossa base."))
           : ListView.separated(
+              controller: _scrollController,
               itemCount: widget.orderlist.length,
               itemBuilder: (context, index) => InkWell(
                 onTap: () {},
                 child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: (Colors.black),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Text((index + 1).toString()),
+                  title: SizedBox(
+                    height: 83,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("Número",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 5.0),
+                                  Text(widget.orderlist[index].number
+                                      .toString()),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("Data",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 5.0),
+                                  Text(widget.orderlist[index].dtRecord),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("Situação",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 5.0),
+                                  Text((widget.orderlist[index].status != "F")
+                                      ? "Aberta"
+                                      : "Fechada"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Nome do Cliente",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 5.0),
+                            AutoSizeText(widget.orderlist[index].nameCustomer,
+                                maxFontSize: 14),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                  title: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text("Data",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 5.0),
-                            Text(widget.orderlist[index].dtRecord),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text("Situação",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 5.0),
-                            Text((widget.orderlist[index].status != "F")
-                                ? "Aberta"
-                                : "Fechada"),
-                          ],
-                        ),
-                      ),
-                    ],
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.remove),
@@ -140,7 +201,8 @@ class _ContentOrderListState extends State<ContentOrderList> {
                   ),
                 ),
               ),
-              separatorBuilder: (_, __) => const Divider(),
+              separatorBuilder: (_, __) =>
+                  const Divider(height: 3, color: kPrimaryColor),
             ),
     );
   }

@@ -1,6 +1,6 @@
+import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
-import 'package:appweb/app/modules/order_sale_register/data/model/items_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/product_prices_model.dart';
@@ -31,7 +31,7 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<Either<Failure, OrderMainModel>> getOrderMain(
+  Future<Either<Failure, OrderSaleMainModel>> getOrderMain(
       {required int tbOrderId}) async {
     try {
       final orderMain = await datasource.getOrderMain(tbOrderId: tbOrderId);
@@ -64,7 +64,7 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<Either<Failure, List<ItemsModel>>> getItemsList(
+  Future<Either<Failure, List<OrderSaleItemModel>>> getItemsList(
       {required ParamsItemsList params}) async {
     try {
       final list = await datasource.getItemsList(params: params);
@@ -91,6 +91,17 @@ class RepositoryImpl implements Repository {
     try {
       final list = await datasource.getProductPrices(params: params);
       return Right(list);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, OrderSaleListModel>> post(
+      {required OrderSaleMainModel params}) async {
+    try {
+      final orderSale = await datasource.post(params: params);
+      return Right(orderSale);
     } on ServerException {
       return Left(ServerFailure());
     }

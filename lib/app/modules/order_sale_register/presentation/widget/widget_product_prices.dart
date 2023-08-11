@@ -1,5 +1,5 @@
 import 'package:appweb/app/core/shared/widgets/custom_imput_button.dart';
-import 'package:appweb/app/modules/order_sale_register/data/model/items_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -93,7 +93,7 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
                 ),
                 onPressed: () {
                   bloc.add(GetItemToEditEvent(
-                      itemEdit: ItemsModel(
+                      itemEdit: OrderSaleItemModel(
                     id: 0,
                     tbProductId: widget.productPrices.id,
                     nameProduct: widget.productPrices.nameProduct,

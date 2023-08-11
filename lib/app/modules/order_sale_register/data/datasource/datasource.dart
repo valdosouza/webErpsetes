@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/core/gateway.dart';
+import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
-import 'package:appweb/app/modules/order_sale_register/data/model/items_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
@@ -13,6 +13,7 @@ import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_prices.dart';
+
 import 'package:flutter/foundation.dart';
 
 abstract class DataSource extends Gateway {
@@ -20,7 +21,7 @@ abstract class DataSource extends Gateway {
 
   Future<List<OrderSaleListModel>> getOrderList();
 
-  Future<OrderMainModel> getOrderMain({required int tbOrderId});
+  Future<OrderSaleMainModel> getOrderMain({required int tbOrderId});
 
   Future<List<CustomerListModel>> getCustomerList(
       {required ParamsCustomerList params});
@@ -28,13 +29,15 @@ abstract class DataSource extends Gateway {
   Future<List<PaymentTypesListModel>> getPaymentTypesList(
       {required ParamsPaymentList params});
 
-  Future<List<ItemsModel>> getItemsList({required ParamsItemsList params});
+  Future<List<OrderSaleItemModel>> getItemsList(
+      {required ParamsItemsList params});
 
   Future<List<ProductListModel>> getProductList(
       {required ParamsProductList params});
 
   Future<ProductPricesModel> getProductPrices(
       {required ParamsProductPrices params});
+  Future<OrderSaleListModel> post({required OrderSaleMainModel params});
 }
 
 class DataSourceImpl extends DataSource {
@@ -42,7 +45,7 @@ class DataSourceImpl extends DataSource {
   List<OrderSaleListModel> orderList = [];
   List<CustomerListModel> customerList = [];
   List<PaymentTypesListModel> paymentTypesList = [];
-  List<ItemsModel> itemsList = [];
+  List<OrderSaleItemModel> itemsList = [];
   List<ProductListModel> productList = [];
   ProductPricesModel productPrices = ProductPricesModel.empty();
 
@@ -77,7 +80,7 @@ class DataSourceImpl extends DataSource {
   }
 
   @override
-  Future<OrderMainModel> getOrderMain({required int tbOrderId}) async {
+  Future<OrderSaleMainModel> getOrderMain({required int tbOrderId}) async {
     String tbInstitutionId = '1';
     await getInstitutionId().then((value) {
       tbInstitutionId = value.toString();
@@ -86,9 +89,9 @@ class DataSourceImpl extends DataSource {
       'orderSale/getOrderMain/$tbInstitutionId/${tbOrderId.toString()}',
       (payload) {
         final data = json.decode(payload);
-        OrderMainModel order = OrderMainModel.empty();
+        OrderSaleMainModel order = OrderSaleMainModel.empty();
         if (data.length > 0) {
-          order = OrderMainModel.fromJson(data);
+          order = OrderSaleMainModel.fromJson(data);
         }
         return order;
       },
@@ -155,7 +158,7 @@ class DataSourceImpl extends DataSource {
   }
 
   @override
-  Future<List<ItemsModel>> getItemsList(
+  Future<List<OrderSaleItemModel>> getItemsList(
       {required ParamsItemsList params}) async {
     String tbInstitutionId = "";
     await getInstitutionId().then((value) {
@@ -169,7 +172,7 @@ class DataSourceImpl extends DataSource {
 
         if (data.length > 0) {
           itemsList = (data as List).map((json) {
-            return ItemsModel.fromJson(json);
+            return OrderSaleItemModel.fromJson(json);
           }).toList();
         }
         return itemsList;
@@ -224,6 +227,36 @@ class DataSourceImpl extends DataSource {
         productPrices = ProductPricesModel.fromJson(data);
 
         return productPrices;
+      },
+      onError: (error) {
+        return ServerException;
+      },
+    );
+  }
+
+  @override
+  Future<OrderSaleListModel> post({required OrderSaleMainModel params}) async {
+    int tbInstitutionId = 1;
+    await getInstitutionId().then((value) {
+      (kIsWeb) ? tbInstitutionId = value : tbInstitutionId = int.parse(value);
+    });
+    int tbUserId = 1;
+    await getUserId().then((value) {
+      (kIsWeb) ? tbUserId = value : tbUserId = int.parse(value);
+    });
+    params.order.tbInstitutionId = tbInstitutionId;
+    params.order.tbUserId = tbUserId;
+    params.orderSale.tbSalesmanId = tbUserId;
+
+    final body = jsonEncode(params.toJson());
+    return request(
+      'ordersale',
+      method: HTTPMethod.post,
+      data: body,
+      (payload) {
+        final data = json.decode(payload);
+        var model = OrderSaleListModel.fromJson(data);
+        return model;
       },
       onError: (error) {
         return ServerException;

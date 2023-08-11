@@ -13,10 +13,10 @@ class OrderStockAdjustmentMainModel {
 
   factory OrderStockAdjustmentMainModel.fromJson(Map<String, dynamic> json) =>
       OrderStockAdjustmentMainModel(
-        order: OrderStockAdjustmentRegisterModel.fromJson(json["Order"]),
-        items: json["Items"] != null
+        order: OrderStockAdjustmentRegisterModel.fromJson(json["order"]),
+        items: json["items"] != null
             ? List<OrderStockAdjustmentRegisterItemsModel>.from(
-                json["Items"].map(
+                json["items"].map(
                   (x) => OrderStockAdjustmentRegisterItemsModel.fromJson(x),
                 ),
               )
@@ -30,7 +30,7 @@ class OrderStockAdjustmentMainModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "Order": order.toJson(),
-        "Items": items.map((e) => e.toJson()).toList(),
+        "order": order.toJson(),
+        "items": items.map((e) => e.toJson()).toList(),
       };
 }

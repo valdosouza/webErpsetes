@@ -115,9 +115,9 @@ class WidgetCustomerListtState extends State<WidgetCustomerList> {
                     itemCount: widget.customerList.length,
                     itemBuilder: (context, index) => InkWell(
                       onTap: () {
-                        bloc.orderMain.order.nameCustomer =
+                        bloc.orderMain.orderSale.nameCustomer =
                             widget.customerList[index].nickTrade;
-                        bloc.orderMain.order.tbCustomerId =
+                        bloc.orderMain.orderSale.tbCustomerId =
                             widget.customerList[index].id;
                         bloc.add(
                             FormOrderEvent(tbOrderId: bloc.orderMain.order.id));

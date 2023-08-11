@@ -1,3 +1,4 @@
+import 'package:appweb/app/core/shared/utils/custom_date.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
@@ -10,6 +11,7 @@ import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_prices.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/post.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
 import 'package:bloc/bloc.dart';
@@ -23,18 +25,21 @@ class OrderSaleRegisterBloc
   final GetItemsList getItemsList;
   final GetProductList getProductList;
   final GetProductPrices getProductPrices;
+  final Post post;
 
   List<OrderSaleListModel> orderList = [];
-  OrderMainModel orderMain = OrderMainModel.empty();
+  List<OrderSaleListModel> orderListSearch = [];
+  OrderSaleMainModel orderMain = OrderSaleMainModel.empty();
 
   List<CustomerListModel> customerList = [];
-  List<CustomerListModel> customerListTemp = [];
+  List<CustomerListModel> customerListSearch = [];
 
   List<PaymentTypesListModel> paymentTypesList = [];
 
   List<ProductListModel> productList = [];
-  List<ProductListModel> productListTemp = [];
+  List<ProductListModel> productListSearch = [];
 
+  int pageOrder = 1;
   int pageCustomer = 1;
   int pagePaymentTypes = 1;
   int pageProduct = 1;
@@ -53,6 +58,7 @@ class OrderSaleRegisterBloc
     required this.getItemsList,
     required this.getProductList,
     required this.getProductPrices,
+    required this.post,
   }) : super(LoadingState()) {
     _getOrderList();
     _getFormOrder();
@@ -66,16 +72,23 @@ class OrderSaleRegisterBloc
     _getProductPrices();
     _getItemToEdit();
     _setitemsUpdate();
+    _post();
   }
 
   _getOrderList() {
     on<GetOrderListEvent>((event, emit) async {
       emit(LoadingState());
-
-      var response = await getOrderList.call('');
+      if (event.params.page == 0) {
+        orderList.clear();
+        pageOrder = 1;
+      } else {
+        pageOrder += 1;
+      }
+      event.params.page = pageOrder;
+      var response = await getOrderList.call(event.params);
 
       response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
-        orderList = r;
+        orderList += r;
         emit(OrderListLoadedState(orderList: orderList));
       });
     });
@@ -84,6 +97,7 @@ class OrderSaleRegisterBloc
   _getFormOrder() {
     on<FormOrderEvent>((event, emit) async {
       emit(LoadingState());
+      orderMain.order.dtRecord = CustomDate.newDate();
       emit(FormOrderLoadedState(tbOrderId: event.tbOrderId));
     });
   }
@@ -115,7 +129,6 @@ class OrderSaleRegisterBloc
       emit(LoadingState());
       if (event.params.page == 0) {
         customerList.clear();
-        customerListTemp.clear;
         pageCustomer = 1;
       } else {
         pageCustomer += 1;
@@ -163,7 +176,6 @@ class OrderSaleRegisterBloc
       emit(LoadingState());
       if (event.params.page == 0) {
         productList.clear();
-        productListTemp.clear;
         pageProduct = 1;
       } else {
         pageProduct += 1;
@@ -219,6 +231,21 @@ class OrderSaleRegisterBloc
       }
 
       emit(SetItemUpdateSuccessState());
+    });
+  }
+
+  _post() {
+    on<PostOrderEvent>((event, emit) async {
+      emit(LoadingState());
+
+      var response = await post.call(orderMain);
+
+      response.fold((l) {
+        emit(OrderPostPutErrorState(message: l.toString()));
+      }, (r) {
+        orderList.insert(0, r);
+        emit(OrderPostSuccessState(orderlist: orderList));
+      });
     });
   }
 }
