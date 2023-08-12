@@ -1,6 +1,7 @@
 import 'package:appweb/app/modules/Core/core_module.dart';
 import 'package:appweb/app/modules/order_sale_register/data/datasource/datasource.dart';
 import 'package:appweb/app/modules/order_sale_register/data/repository/repository_impl.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
@@ -9,6 +10,7 @@ import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_paymen
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_prices.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/post.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/put.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/page/page.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -51,6 +53,12 @@ class OrderSaleRegisterModule extends Module {
         Bind.factory(
           (i) => Post(repository: i.get<RepositoryImpl>()),
         ),
+        Bind.factory(
+          (i) => Put(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.factory(
+          (i) => Delete(repository: i.get<RepositoryImpl>()),
+        ),
         Bind.singleton(
           (i) => OrderSaleRegisterBloc(
               getOrderList: i.get<GetOrderList>(),
@@ -60,7 +68,9 @@ class OrderSaleRegisterModule extends Module {
               getItemsList: i.get<GetItemsList>(),
               getProductList: i.get<GetProductList>(),
               getProductPrices: i.get<GetProductPrices>(),
-              post: i.get<Post>()),
+              post: i.get<Post>(),
+              put: i.get<Put>(),
+              delete: i.get<Delete>()),
         ),
       ];
   @override

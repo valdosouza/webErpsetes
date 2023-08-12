@@ -1,5 +1,4 @@
 import 'package:appweb/app/core/shared/theme.dart';
-import 'package:appweb/app/core/shared/utils/toast.dart';
 import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
@@ -26,6 +25,32 @@ class _ContentItemsListState extends State<ContentItemsList> {
   void initState() {
     super.initState();
     bloc = Modular.get<OrderSaleRegisterBloc>();
+  }
+
+  Future<bool?> showConfirmationDeleteItem() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Deletar o item?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("Cancelar"),
+            ),
+            OutlinedButton(
+              onPressed: () {
+                bloc.add(DeleteItemEvent(
+                  item: bloc.elementItemDelete,
+                ));
+                Navigator.pop(context, false);
+              },
+              child: const Text("Sim"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -100,11 +125,13 @@ class _ContentItemsListState extends State<ContentItemsList> {
   }
 
   buildListView() {
+    final List<OrderSaleItemModel> itemslistEnabled =
+        widget.itemslist.where((i) => i.updateStatus != "D").toList();
     return Expanded(
-      child: widget.itemslist.isEmpty
+      child: itemslistEnabled.isEmpty
           ? const Center(child: Text("Pedidos sem Itens."))
           : ListView.separated(
-              itemCount: widget.itemslist.length,
+              itemCount: itemslistEnabled.length,
               itemBuilder: (context, index) => InkWell(
                 onTap: () {},
                 child: SizedBox(
@@ -129,7 +156,7 @@ class _ContentItemsListState extends State<ContentItemsList> {
                                       TextStyle(fontWeight: FontWeight.bold)),
                               const SizedBox(height: 5.0),
                               AutoSizeText(
-                                widget.itemslist[index].nameProduct,
+                                itemslistEnabled[index].nameProduct,
                                 maxFontSize: 12,
                               ),
                             ],
@@ -138,8 +165,8 @@ class _ContentItemsListState extends State<ContentItemsList> {
                         trailing: IconButton(
                           icon: const Icon(Icons.remove),
                           onPressed: () {
-                            CustomToast.showToast(
-                                "Funcionalidade em desenvolvimento.");
+                            bloc.elementItemDelete = itemslistEnabled[index];
+                            showConfirmationDeleteItem();
                           },
                         ),
                       ),
@@ -160,7 +187,8 @@ class _ContentItemsListState extends State<ContentItemsList> {
                                   ),
                                   const SizedBox(height: 5.0),
                                   Text(
-                                    (widget.itemslist[index].quantity
+                                    (itemslistEnabled[index]
+                                        .quantity
                                         .toStringAsFixed(0)),
                                     textAlign: TextAlign.center,
                                   ),
@@ -182,7 +210,8 @@ class _ContentItemsListState extends State<ContentItemsList> {
                                   ),
                                   const SizedBox(height: 5.0),
                                   Text(
-                                    (widget.itemslist[index].unitValue
+                                    (itemslistEnabled[index]
+                                        .unitValue
                                         .toStringAsFixed(2)),
                                     textAlign: TextAlign.right,
                                   ),
@@ -204,8 +233,8 @@ class _ContentItemsListState extends State<ContentItemsList> {
                                   ),
                                   const SizedBox(height: 5.0),
                                   Text(
-                                    ((widget.itemslist[index].quantity *
-                                            widget.itemslist[index].unitValue)
+                                    ((itemslistEnabled[index].quantity *
+                                            itemslistEnabled[index].unitValue)
                                         .toStringAsFixed(2)),
                                     textAlign: TextAlign.right,
                                   ),

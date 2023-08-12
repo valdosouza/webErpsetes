@@ -1,9 +1,10 @@
-import 'package:appweb/app/core/shared/utils/custom_date.dart';
+import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
@@ -12,6 +13,7 @@ import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_paymen
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_prices.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/post.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/put.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
 import 'package:bloc/bloc.dart';
@@ -26,6 +28,8 @@ class OrderSaleRegisterBloc
   final GetProductList getProductList;
   final GetProductPrices getProductPrices;
   final Post post;
+  final Put put;
+  final Delete delete;
 
   List<OrderSaleListModel> orderList = [];
   List<OrderSaleListModel> orderListSearch = [];
@@ -50,6 +54,9 @@ class OrderSaleRegisterBloc
   String searchProduct = "";
   String searchItem = "";
 
+  int indexDeleteOrder = 0;
+  OrderSaleItemModel elementItemDelete = OrderSaleItemModel.empty();
+
   OrderSaleRegisterBloc({
     required this.getOrderList,
     required this.getOrderMain,
@@ -59,8 +66,11 @@ class OrderSaleRegisterBloc
     required this.getProductList,
     required this.getProductPrices,
     required this.post,
+    required this.put,
+    required this.delete,
   }) : super(LoadingState()) {
     _getOrderList();
+    _returnOrderList();
     _getFormOrder();
     _getFormItem();
     _getOrderMain();
@@ -71,8 +81,11 @@ class OrderSaleRegisterBloc
     _getFormProductList();
     _getProductPrices();
     _getItemToEdit();
+    _deleteItem();
     _setitemsUpdate();
     _post();
+    _put();
+    _delete();
   }
 
   _getOrderList() {
@@ -94,10 +107,16 @@ class OrderSaleRegisterBloc
     });
   }
 
+  _returnOrderList() {
+    on<ReturnToOrderMainEvent>((event, emit) async {
+      emit(LoadingState());
+      emit(OrderListLoadedState(orderList: orderList));
+    });
+  }
+
   _getFormOrder() {
     on<FormOrderEvent>((event, emit) async {
       emit(LoadingState());
-      orderMain.order.dtRecord = CustomDate.newDate();
       emit(FormOrderLoadedState(tbOrderId: event.tbOrderId));
     });
   }
@@ -118,7 +137,7 @@ class OrderSaleRegisterBloc
 
         response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
           orderMain = r;
-          emit(OrderListLoadedState(orderList: orderList));
+          emit(OrderMainLoadedState());
         });
       }
     });
@@ -158,6 +177,7 @@ class OrderSaleRegisterBloc
   _getItemsList() {
     on<GetItemsListEvent>((event, emit) async {
       emit(LoadingState());
+      /*
       if (event.params.tbOrderId > 0) {
         var response = await getItemsList.call(event.params);
 
@@ -166,8 +186,8 @@ class OrderSaleRegisterBloc
           emit(ItemsListLoadedSate(itemsList: orderMain.items));
         });
       } else {
-        emit(ItemsListLoadedSate(itemsList: orderMain.items));
-      }
+        */
+      emit(ItemsListLoadedSate(itemsList: orderMain.items));
     });
   }
 
@@ -215,19 +235,30 @@ class OrderSaleRegisterBloc
     on<GetItemToEditEvent>((event, emit) async {
       emit(LoadingState());
 
-      emit(GetItemToEditLoaded(itemEdit: event.itemEdit));
+      emit(GetItemToEditLoaded(itemEdit: event.item));
+    });
+  }
+
+  _deleteItem() {
+    on<DeleteItemEvent>((event, emit) async {
+      emit(LoadingState());
+
+      orderMain
+          .items[orderMain.items.indexWhere((element) => element == event.item)]
+          .updateStatus = "D";
+
+      emit(ItemsListLoadedSate(itemsList: orderMain.items));
     });
   }
 
   _setitemsUpdate() {
     on<SetItemUpdateEvent>((event, emit) {
-      if (event.itemEdit.id > 0) {
-        event.itemEdit.updateStatus = "E";
+      if (event.item.id > 0) {
+        event.item.updateStatus = "E";
         orderMain.items[orderMain.items
-                .indexWhere((element) => element.id == event.itemEdit.id)] =
-            event.itemEdit;
+            .indexWhere((element) => element.id == event.item.id)] = event.item;
       } else {
-        orderMain.items.add(event.itemEdit);
+        orderMain.items.add(event.item);
       }
 
       emit(SetItemUpdateSuccessState());
@@ -245,6 +276,38 @@ class OrderSaleRegisterBloc
       }, (r) {
         orderList.insert(0, r);
         emit(OrderPostSuccessState(orderlist: orderList));
+      });
+    });
+  }
+
+  _put() {
+    on<PutOrderEvent>((event, emit) async {
+      emit(LoadingState());
+
+      var response = await put.call(orderMain);
+
+      response.fold((l) {
+        emit(OrderPostPutErrorState(message: l.toString()));
+      }, (r) {
+        orderList[orderList.indexWhere((element) => element.id == r.id)] = r;
+        emit(OrderPutSuccessState());
+      });
+    });
+  }
+
+  _delete() {
+    on<DeleteOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      final orderId = event.params.id;
+      var response = await delete.call(event.params);
+
+      response.fold((l) {
+        emit(OrderDeleteErrorState(message: l.toString()));
+      }, (r) {
+        if (r) {
+          orderList.removeWhere((element) => element.id == orderId);
+        }
+        emit(OrderDeleteSuccessState());
       });
     });
   }

@@ -8,6 +8,7 @@ import 'package:appweb/app/modules/order_sale_register/data/model/order_main_mod
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/product_prices_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
@@ -37,7 +38,12 @@ abstract class DataSource extends Gateway {
 
   Future<ProductPricesModel> getProductPrices(
       {required ParamsProductPrices params});
+
   Future<OrderSaleListModel> post({required OrderSaleMainModel params});
+
+  Future<OrderSaleListModel> put({required OrderSaleMainModel params});
+
+  Future<bool> delete({required ParamsDeleteOrder params});
 }
 
 class DataSourceImpl extends DataSource {
@@ -48,6 +54,7 @@ class DataSourceImpl extends DataSource {
   List<OrderSaleItemModel> itemsList = [];
   List<ProductListModel> productList = [];
   ProductPricesModel productPrices = ProductPricesModel.empty();
+  OrderSaleMainModel order = OrderSaleMainModel.empty();
 
   @override
   Future<List<OrderSaleListModel>> getOrderList() async {
@@ -86,10 +93,10 @@ class DataSourceImpl extends DataSource {
       tbInstitutionId = value.toString();
     });
     return await request(
-      'orderSale/getOrderMain/$tbInstitutionId/${tbOrderId.toString()}',
+      'orderSale/get/$tbInstitutionId/${tbOrderId.toString()}',
       (payload) {
         final data = json.decode(payload);
-        OrderSaleMainModel order = OrderSaleMainModel.empty();
+
         if (data.length > 0) {
           order = OrderSaleMainModel.fromJson(data);
         }
@@ -257,6 +264,59 @@ class DataSourceImpl extends DataSource {
         final data = json.decode(payload);
         var model = OrderSaleListModel.fromJson(data);
         return model;
+      },
+      onError: (error) {
+        return ServerException;
+      },
+    );
+  }
+
+  @override
+  Future<OrderSaleListModel> put({required OrderSaleMainModel params}) async {
+    int tbInstitutionId = 1;
+    await getInstitutionId().then((value) {
+      (kIsWeb) ? tbInstitutionId = value : tbInstitutionId = int.parse(value);
+    });
+    int tbUserId = 1;
+    await getUserId().then((value) {
+      (kIsWeb) ? tbUserId = value : tbUserId = int.parse(value);
+    });
+    params.order.tbInstitutionId = tbInstitutionId;
+    params.order.tbUserId = tbUserId;
+    params.orderSale.tbSalesmanId = tbUserId;
+
+    final body = jsonEncode(params.toJson());
+    return request(
+      'ordersale',
+      method: HTTPMethod.put,
+      data: body,
+      (payload) {
+        final data = json.decode(payload);
+        var model = OrderSaleListModel.fromJson(data);
+        return model;
+      },
+      onError: (error) {
+        return ServerException;
+      },
+    );
+  }
+
+  @override
+  Future<bool> delete({required ParamsDeleteOrder params}) async {
+    int tbInstitutionId = 1;
+    await getInstitutionId().then((value) {
+      (kIsWeb) ? tbInstitutionId = value : tbInstitutionId = int.parse(value);
+    });
+    params.tbInstitutionId = tbInstitutionId;
+    final body = jsonEncode(params.toJson());
+    return request(
+      'ordersale',
+      method: HTTPMethod.delete,
+      data: body,
+      (payload) {
+        final data = json.decode(payload);
+
+        return (data['result'] == true);
       },
       onError: (error) {
         return ServerException;

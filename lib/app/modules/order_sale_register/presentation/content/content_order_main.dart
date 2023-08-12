@@ -16,10 +16,8 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:appweb/app/core/shared/theme.dart';
 
 class ContentOrderMain extends StatefulWidget {
-  final int tbOrderId;
   const ContentOrderMain({
     Key? key,
-    this.tbOrderId = 0,
   }) : super(key: key);
 
   @override
@@ -43,6 +41,8 @@ class _ContentOrderMainState extends State<ContentOrderMain>
 
   @override
   Widget build(BuildContext context) {
+    final List<OrderSaleItemModel> itemslistEnabled =
+        bloc.orderMain.items.where((i) => i.updateStatus != "D").toList();
     return BlocConsumer<OrderSaleRegisterBloc, OrderSaleRegisterState>(
       bloc: bloc,
       listener: (context, state) {
@@ -58,7 +58,9 @@ class _ContentOrderMainState extends State<ContentOrderMain>
             ),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {},
+              onPressed: () {
+                bloc.add(ReturnToOrderMainEvent());
+              },
             ),
             title: Text(
               "Pedido ${bloc.orderMain.orderSale.number}",
@@ -87,7 +89,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
                   const SizedBox(height: 8.0),
                   _customer(),
                   const SizedBox(height: 8.0),
-                  _itemsList(),
+                  _itemsList(itemslistEnabled),
                   const SizedBox(height: 8.0),
                   _paymentTypes(),
                   const SizedBox(height: 8.0),
@@ -97,7 +99,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
                     children: [
                       Expanded(
                         flex: 1,
-                        child: _totalOrder(),
+                        child: _totalOrder(itemslistEnabled),
                       ),
                       const SizedBox(width: 5.0),
                       Expanded(
@@ -119,7 +121,11 @@ class _ContentOrderMainState extends State<ContentOrderMain>
           floatingActionButton: (bloc.orderMain.order.status != "F")
               ? FloatingActionButton(
                   onPressed: () async {
-                    bloc.add(PostOrderEvent());
+                    if (bloc.orderMain.order.id == 0) {
+                      bloc.add(PostOrderEvent());
+                    } else {
+                      bloc.add(PutOrderEvent());
+                    }
                   },
                   backgroundColor: Colors.black,
                   child: const Icon(Icons.save),
@@ -178,11 +184,11 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _itemsList() {
+  _itemsList(List<OrderSaleItemModel> items) {
     return CustomInputButton(
-      initialValue: (bloc.orderMain.items.isEmpty)
+      initialValue: (items.isEmpty)
           ? "Selecione os itens do pedido"
-          : "Selectionado(s) ${bloc.orderMain.items.length.toString()}",
+          : "Selectionado(s) ${items.length.toString()}",
       title: "Lista de Itens do Pedido",
       onAction: (() => {
             bloc.add(GetItemsListEvent(
@@ -191,11 +197,11 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _totalOrder() {
+  _totalOrder(List<OrderSaleItemModel> items) {
     double productValue = 0;
     double productQtde = 0;
     double itemsQtde = 0;
-    for (OrderSaleItemModel item in bloc.orderMain.items) {
+    for (OrderSaleItemModel item in items) {
       productValue += (item.quantity * item.unitValue);
       productQtde += 1;
       itemsQtde += item.quantity;

@@ -33,7 +33,7 @@ class OrderModel extends OrderEntity {
         terminal: json['terminal'],
         tbUserId: json['tb_user_id'],
         docUser: json['doc_user'],
-        dtRecord: json['dt_record'],
+        dtRecord: CustomDate.formatDateIn(json['dt_record']),
         note: json['note'],
         origin: json['origin'],
         status: json['status'],

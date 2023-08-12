@@ -4,6 +4,7 @@ import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_
 import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/product_prices_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
@@ -102,6 +103,28 @@ class RepositoryImpl implements Repository {
     try {
       final orderSale = await datasource.post(params: params);
       return Right(orderSale);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, OrderSaleListModel>> put(
+      {required OrderSaleMainModel params}) async {
+    try {
+      final orderSale = await datasource.put(params: params);
+      return Right(orderSale);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> delete(
+      {required ParamsDeleteOrder params}) async {
+    try {
+      final result = await datasource.delete(params: params);
+      return Right(result);
     } on ServerException {
       return Left(ServerFailure());
     }

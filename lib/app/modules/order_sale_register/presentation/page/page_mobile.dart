@@ -58,7 +58,7 @@ class PageMobileState extends State<PageMobile> {
           return ContentOrderList(orderlist: state.orderList);
         }
         if (state is FormOrderLoadedState) {
-          return ContentOrderMain(tbOrderId: state.tbOrderId);
+          return const ContentOrderMain();
         }
         if (state is CustomerListLoadedState) {
           return WidgetCustomerList(customerList: state.customerList);
@@ -86,8 +86,13 @@ class PageMobileState extends State<PageMobile> {
         if (state is GetItemToEditLoaded) {
           return ContentItemEdit(itemEdit: state.itemEdit);
         }
-        if (state is OrderPostSuccessState) {
+        if ((state is OrderPostSuccessState) ||
+            (state is OrderPutSuccessState) ||
+            (state is OrderDeleteSuccessState)) {
           return ContentOrderList(orderlist: bloc.orderList);
+        }
+        if (state is OrderMainLoadedState) {
+          return const ContentOrderMain();
         }
         return Container();
       },

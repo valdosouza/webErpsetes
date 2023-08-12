@@ -1,4 +1,5 @@
 import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
@@ -32,6 +33,15 @@ class GetOrderMainEvent extends OrderSaleRegisterEvent {
 class ReturnToOrderMainEvent extends OrderSaleRegisterEvent {}
 
 class PostOrderEvent extends OrderSaleRegisterEvent {}
+
+class PutOrderEvent extends OrderSaleRegisterEvent {}
+
+class DeleteOrderEvent extends OrderSaleRegisterEvent {
+  final ParamsDeleteOrder params;
+  DeleteOrderEvent({
+    required this.params,
+  });
+}
 
 //======================widget_customer_list============================
 class GetCustomerListEvent extends OrderSaleRegisterEvent {
@@ -84,11 +94,18 @@ class GetProductPricesEvent extends OrderSaleRegisterEvent {
 
 //======================content_item_edit============================
 class GetItemToEditEvent extends OrderSaleRegisterEvent {
-  final OrderSaleItemModel itemEdit;
-  GetItemToEditEvent({required this.itemEdit});
+  final OrderSaleItemModel item;
+  GetItemToEditEvent({required this.item});
 }
 
 class SetItemUpdateEvent extends OrderSaleRegisterEvent {
-  final OrderSaleItemModel itemEdit;
-  SetItemUpdateEvent({required this.itemEdit});
+  final OrderSaleItemModel item;
+  SetItemUpdateEvent({required this.item});
+}
+
+class DeleteItemEvent extends OrderSaleRegisterEvent {
+  OrderSaleItemModel item;
+  DeleteItemEvent({
+    required this.item,
+  });
 }

@@ -52,7 +52,7 @@ class _ContentItemEditState extends State<ContentItemEdit> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          bloc.add(SetItemUpdateEvent(itemEdit: widget.itemEdit));
+          bloc.add(SetItemUpdateEvent(item: widget.itemEdit));
         },
         backgroundColor: Colors.black,
         child: const Icon(Icons.save),

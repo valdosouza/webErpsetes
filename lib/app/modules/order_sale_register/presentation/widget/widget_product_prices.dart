@@ -93,7 +93,7 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
                 ),
                 onPressed: () {
                   bloc.add(GetItemToEditEvent(
-                      itemEdit: OrderSaleItemModel(
+                      item: OrderSaleItemModel(
                     id: 0,
                     tbProductId: widget.productPrices.id,
                     nameProduct: widget.productPrices.nameProduct,

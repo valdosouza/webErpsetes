@@ -23,9 +23,20 @@ class OrderPostSuccessState extends OrderSaleRegisterState {
   });
 }
 
+class OrderPutSuccessState extends OrderSaleRegisterState {}
+
+class OrderDeleteSuccessState extends OrderSaleRegisterState {}
+
 class OrderPostPutErrorState extends OrderSaleRegisterState {
   final String message;
   OrderPostPutErrorState({
+    required this.message,
+  });
+}
+
+class OrderDeleteErrorState extends OrderSaleRegisterState {
+  final String message;
+  OrderDeleteErrorState({
     required this.message,
   });
 }

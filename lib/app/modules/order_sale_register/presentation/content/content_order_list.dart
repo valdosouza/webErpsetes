@@ -1,6 +1,6 @@
 import 'package:appweb/app/core/shared/theme.dart';
-import 'package:appweb/app/core/shared/utils/toast.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
@@ -44,6 +44,34 @@ class _ContentOrderListState extends State<ContentOrderList> {
         ),
       );
     }
+  }
+
+  Future<bool?> showConfirmationDeleteOrder() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Deletar o Pedido?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("Cancelar"),
+            ),
+            OutlinedButton(
+              onPressed: () {
+                bloc.add(DeleteOrderEvent(
+                  params: ParamsDeleteOrder(
+                      tbInstitutionId: 0,
+                      id: bloc.orderList[bloc.indexDeleteOrder].id),
+                ));
+                Navigator.pop(context, false);
+              },
+              child: const Text("Sim"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -121,7 +149,10 @@ class _ContentOrderListState extends State<ContentOrderList> {
               controller: _scrollController,
               itemCount: widget.orderlist.length,
               itemBuilder: (context, index) => InkWell(
-                onTap: () {},
+                onTap: () {
+                  bloc.add(
+                      GetOrderMainEvent(tbOrderId: widget.orderlist[index].id));
+                },
                 child: ListTile(
                   title: SizedBox(
                     height: 83,
@@ -195,8 +226,8 @@ class _ContentOrderListState extends State<ContentOrderList> {
                   trailing: IconButton(
                     icon: const Icon(Icons.remove),
                     onPressed: () {
-                      CustomToast.showToast(
-                          "Funcionalidade em desenvolvimento.");
+                      bloc.indexDeleteOrder = index;
+                      showConfirmationDeleteOrder();
                     },
                   ),
                 ),
