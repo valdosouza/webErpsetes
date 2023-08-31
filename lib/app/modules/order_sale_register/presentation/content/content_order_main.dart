@@ -162,6 +162,9 @@ class _ContentOrderMainState extends State<ContentOrderMain>
   _customer() {
     return CustomInputButton(
       readOnly: (bloc.orderMain.order.status != "F"),
+      enabled: true,
+      keyboardType: TextInputType.number,
+      inputAction: TextInputAction.go,
       initialValue: bloc.orderMain.orderSale.nameCustomer,
       title: "Descrição da Cliente",
       suffixIcon: const Icon(
@@ -175,9 +178,9 @@ class _ContentOrderMainState extends State<ContentOrderMain>
                     params: ParamsCustomerList(
                     tbInstitutionId: 0,
                     tbSalesmanId: 0,
-                    page: bloc.pageCustomer,
+                    page: 0,
                     id: 0,
-                    nameCustomer: bloc.searchOrder,
+                    nameCustomer: bloc.searchCustomer,
                   )))
                 : null
           }),
@@ -186,6 +189,9 @@ class _ContentOrderMainState extends State<ContentOrderMain>
 
   _itemsList(List<OrderSaleItemModel> items) {
     return CustomInputButton(
+      enabled: true,
+      keyboardType: TextInputType.number,
+      inputAction: TextInputAction.go,
       initialValue: (items.isEmpty)
           ? "Selecione os itens do pedido"
           : "Selectionado(s) ${items.length.toString()}",
@@ -222,6 +228,9 @@ class _ContentOrderMainState extends State<ContentOrderMain>
 
   _paymentTypes() {
     return CustomInputButton(
+      enabled: true,
+      keyboardType: TextInputType.number,
+      inputAction: TextInputAction.go,
       initialValue: bloc.orderMain.orderBilling.namePayment,
       title: "Descrição do Forma de Pagamento",
       onAction: (() => {

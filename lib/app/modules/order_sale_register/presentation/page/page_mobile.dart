@@ -1,3 +1,4 @@
+import 'package:appweb/app/core/shared/utils/toast.dart';
 import 'package:appweb/app/core/shared/widgets/custom_circular_progress_indicator.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
 import 'package:appweb/app/modules/order_sale_register/order_sale_register_module.dart';
@@ -37,8 +38,10 @@ class PageMobileState extends State<PageMobile> {
       bloc.add(GetOrderListEvent(
           params: ParamsOrderList(
         tbInstitutionId: 0,
-        page: bloc.pageOrder,
+        page: 0,
         tbSalesmanId: 0,
+        nickTrade: "",
+        number: 0,
       )));
     }
   }
@@ -47,7 +50,11 @@ class PageMobileState extends State<PageMobile> {
   Widget build(BuildContext context) {
     return BlocConsumer<OrderSaleRegisterBloc, OrderSaleRegisterState>(
       bloc: bloc,
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is ErrorState) {
+          CustomToast.showToast(state.message);
+        }
+      },
       builder: (context, state) {
         if (state is LoadingState) {
           return const Center(
@@ -88,7 +95,9 @@ class PageMobileState extends State<PageMobile> {
         }
         if ((state is OrderPostSuccessState) ||
             (state is OrderPutSuccessState) ||
-            (state is OrderDeleteSuccessState)) {
+            (state is OrderDeleteSuccessState) ||
+            (state is OrderClosureSuccessState) ||
+            (state is OrderReopenSuccessState)) {
           return ContentOrderList(orderlist: bloc.orderList);
         }
         if (state is OrderMainLoadedState) {

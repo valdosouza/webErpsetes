@@ -62,7 +62,9 @@ class _ContentItemEditState extends State<ContentItemEdit> {
 
   _productNameField() {
     return CustomInputButton(
-      readOnly: true,
+      enabled: true,
+      keyboardType: TextInputType.number,
+      inputAction: TextInputAction.go,
       initialValue:
           '${widget.itemEdit.tbProductId} - ${widget.itemEdit.nameProduct}',
       title: "Descrição do Produto",

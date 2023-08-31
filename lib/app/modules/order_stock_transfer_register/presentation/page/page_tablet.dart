@@ -7,11 +7,10 @@ class PageTablet extends StatefulWidget {
   const PageTablet({super.key});
 
   @override
-  State<PageTablet> createState() =>
-      _OrderStockTransferRegisterPageTabletState();
+  State<PageTablet> createState() => _PageTabletState();
 }
 
-class _OrderStockTransferRegisterPageTabletState extends State<PageTablet> {
+class _PageTabletState extends State<PageTablet> {
   @override
   void initState() {
     super.initState();

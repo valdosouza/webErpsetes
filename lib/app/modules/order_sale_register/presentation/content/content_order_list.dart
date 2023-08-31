@@ -1,7 +1,11 @@
 import 'package:appweb/app/core/shared/theme.dart';
+import 'package:appweb/app/core/shared/utils/custom_date.dart';
+import 'package:appweb/app/core/shared/widgets/custom_search_filter.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/closure.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/reopen.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -39,39 +43,12 @@ class _ContentOrderListState extends State<ContentOrderList> {
             tbInstitutionId: 0,
             tbSalesmanId: 0,
             page: bloc.pageOrder,
-            id: 0,
+            number: 0,
+            nickTrade: bloc.searchOrder,
           ),
         ),
       );
     }
-  }
-
-  Future<bool?> showConfirmationDeleteOrder() {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Deletar o Pedido?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text("Cancelar"),
-            ),
-            OutlinedButton(
-              onPressed: () {
-                bloc.add(DeleteOrderEvent(
-                  params: ParamsDeleteOrder(
-                      tbInstitutionId: 0,
-                      id: bloc.orderList[bloc.indexDeleteOrder].id),
-                ));
-                Navigator.pop(context, false);
-              },
-              child: const Text("Sim"),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -108,7 +85,7 @@ class _ContentOrderListState extends State<ContentOrderList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          bloc.add(FormOrderEvent(tbOrderId: 0));
+          bloc.add(NewFormOrderEvent());
         },
         backgroundColor: Colors.black,
         child: const Icon(Icons.add),
@@ -117,26 +94,32 @@ class _ContentOrderListState extends State<ContentOrderList> {
   }
 
   buildSearchInput() {
-    return Container(
-      decoration: kBoxDecorationStyle,
-      child: TextFormField(
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        onChanged: (value) {
-          bloc.searchOrder = value;
-          bloc.add(SearchOrderEvent());
-        },
-        style: const TextStyle(
-          color: Colors.white,
-          fontFamily: 'OpenSans',
-        ),
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.only(left: 10.0),
-          hintText: "Pesquise por número",
-          hintStyle: kHintTextStyle,
-        ),
+    return CustomSearchFilter(
+      title: "Pesquisa ou Filtre aqui",
+      readOnly: false,
+      initialValue: bloc.searchOrder,
+      suffixIcon: const Icon(
+        Icons.search,
+        size: 20.0,
+        color: Colors.white,
       ),
+      onAction: (() => {
+            bloc.add(
+              SearchOrderEvent(
+                params: ParamsOrderList(
+                  tbInstitutionId: 0,
+                  tbSalesmanId: 0,
+                  page: 0,
+                  number: 0,
+                  nickTrade: bloc.searchOrder,
+                ),
+              ),
+            ),
+          }),
+      onChange: ((value) => {
+            bloc.searchOrder = value,
+            bloc.add(FilterOrderEvent()),
+          }),
     );
   }
 
@@ -216,19 +199,61 @@ class _ContentOrderListState extends State<ContentOrderList> {
                               ),
                             ),
                             const SizedBox(height: 5.0),
-                            AutoSizeText(widget.orderlist[index].nameCustomer,
-                                maxFontSize: 14),
+                            AutoSizeText(
+                              widget.orderlist[index].nameCustomer,
+                              maxFontSize: 14,
+                              maxLines: 1,
+                            ),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.remove),
-                    onPressed: () {
-                      bloc.indexDeleteOrder = index;
-                      showConfirmationDeleteOrder();
-                    },
+                  trailing: PopupMenuButton(
+                    itemBuilder: (context) => [
+                      (widget.orderlist[index].status == "F")
+                          ? PopupMenuItem(
+                              onTap: (() => bloc.add(
+                                    ReopenOrderEvent(
+                                      params: ParamsReopenOrder(
+                                        tbInstitutionId: 0,
+                                        tbUserId: 0,
+                                        tbOrderId: widget.orderlist[index].id,
+                                        dtRecord: CustomDate.newDate(),
+                                      ),
+                                    ),
+                                  )),
+                              value: 0,
+                              child: const Text("Reabrir"),
+                            )
+                          : PopupMenuItem(
+                              onTap: (() => bloc.add(
+                                    ClosureOrderEvent(
+                                      params: ParamsClosureOrder(
+                                        tbInstitutionId: 0,
+                                        tbUserId: 0,
+                                        tbOrderId: widget.orderlist[index].id,
+                                        dtRecord: CustomDate.newDate(),
+                                      ),
+                                    ),
+                                  )),
+                              value: 0,
+                              child: const Text("Fechar"),
+                            ),
+                      PopupMenuItem(
+                        onTap: (() => bloc.add(
+                              DeleteOrderEvent(
+                                params: ParamsDeleteOrder(
+                                  tbInstitutionId: 0,
+                                  tbUserId: 0,
+                                  tbOrderId: widget.orderlist[index].id,
+                                ),
+                              ),
+                            )),
+                        value: 0,
+                        child: const Text("Excluir"),
+                      ),
+                    ],
                   ),
                 ),
               ),

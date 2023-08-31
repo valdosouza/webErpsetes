@@ -1,17 +1,25 @@
+import 'package:appweb/app/modules/Core/data/model/order_stock_transfer_item_model.dart';
+import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/data/model/entity_list_model.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/data/model/order_stock_transfer_list_model.dart';
+
 abstract class OrderStockTransferRegisterState {}
 
-//======================MASTER============================
-class OrderLoadingState extends OrderStockTransferRegisterState {}
+class LoadingState extends OrderStockTransferRegisterState {}
 
-class OrderLoadedSucessState extends OrderStockTransferRegisterState {}
+class ErrorState extends OrderStockTransferRegisterState {
+  final String message;
+  ErrorState({
+    required this.message,
+  });
+}
 
-class OrderNewLoadedState extends OrderStockTransferRegisterState {}
-
-class OrderGetLoadedState extends OrderStockTransferRegisterState {}
-
-class OrderReturnMasterState extends OrderStockTransferRegisterState {}
-
-class OrderPostSuccessState extends OrderStockTransferRegisterState {}
+class OrderPostSuccessState extends OrderStockTransferRegisterState {
+  final List<OrderStockTransferListModel> orderlist;
+  OrderPostSuccessState({
+    required this.orderlist,
+  });
+}
 
 class OrderPutSuccessState extends OrderStockTransferRegisterState {}
 
@@ -21,73 +29,63 @@ class OrderClosureSuccessState extends OrderStockTransferRegisterState {}
 
 class OrderReopenSuccessState extends OrderStockTransferRegisterState {}
 
-class EntitiesLoadSuccessState extends OrderStockTransferRegisterState {}
-
-class EntityChosenSuccessState extends OrderStockTransferRegisterState {}
-
-class StocksLoadSuccessState extends OrderStockTransferRegisterState {
-  final String type;
-
-  StocksLoadSuccessState({required this.type});
-}
-
-//======================MASTER - Errors============================
-class OrderGetErrorState extends OrderStockTransferRegisterState {}
-
-class OrderLoadedErrorState extends OrderStockTransferRegisterState {}
-
-class OrderPostErrorState extends OrderStockTransferRegisterState {
-  final String error;
-  OrderPostErrorState({
-    required this.error,
+class OrderPostPutErrorState extends OrderStockTransferRegisterState {
+  final String message;
+  OrderPostPutErrorState({
+    required this.message,
   });
 }
 
-class OrderPutErrorState extends OrderStockTransferRegisterState {
-  final String error;
-  OrderPutErrorState({
-    required this.error,
+//======================content_order_list=======================
+class OrderListLoadedState extends OrderStockTransferRegisterState {
+  final List<OrderStockTransferListModel> orderList;
+  OrderListLoadedState({required this.orderList});
+}
+
+//======================content_order============================
+class FormOrderLoadedState extends OrderStockTransferRegisterState {
+  final int tbOrderId;
+
+  FormOrderLoadedState({required this.tbOrderId});
+}
+
+class OrderMainLoadedState extends OrderStockTransferRegisterState {}
+
+//======================widget_entity_list============================
+class EntityListLoadedState extends OrderStockTransferRegisterState {
+  final List<EntityListModel> entityList;
+  EntityListLoadedState({
+    required this.entityList,
   });
 }
 
-class OrderDeleteErrorState extends OrderStockTransferRegisterState {}
-
-class EntityLoadErrorState extends OrderStockTransferRegisterState {}
-
-class StocksLoadErrorState extends OrderStockTransferRegisterState {}
-
-class OrderClosureErrorState extends OrderStockTransferRegisterState {
-  OrderClosureErrorState();
+//======================widget_items_list============================
+class ItemsListLoadedSate extends OrderStockTransferRegisterState {
+  final List<OrderStockTransferItemModel> itemsList;
+  ItemsListLoadedSate({
+    required this.itemsList,
+  });
 }
 
-class OrderReopenErrorState extends OrderStockTransferRegisterState {
-  OrderReopenErrorState();
+//======================content_items============================
+class FormItemsLoadedState extends OrderStockTransferRegisterState {
+  final int tbOrderId;
+
+  FormItemsLoadedState({required this.tbOrderId});
 }
 
-//======================Detail============================
-class OrderItemUpdateSuccessState extends OrderStockTransferRegisterState {}
+//======================widget_product_list============================
+class ProductListLoadedState extends OrderStockTransferRegisterState {
+  final List<ProductListModel> productList;
+  ProductListLoadedState({
+    required this.productList,
+  });
+}
 
-class OrderItemPageEditState extends OrderStockTransferRegisterState {}
+//======================content_item_edit============================
+class GetItemToEditLoaded extends OrderStockTransferRegisterState {
+  final OrderStockTransferItemModel itemEdit;
+  GetItemToEditLoaded({required this.itemEdit});
+}
 
-class ProductGetSucessState extends OrderStockTransferRegisterState {}
-
-class ProductSearchSucessState extends OrderStockTransferRegisterState {}
-
-class ProductChosenSucessState extends OrderStockTransferRegisterState {}
-
-class StockSearchSucessState extends OrderStockTransferRegisterState {}
-
-class EntitySearchSucessState extends OrderStockTransferRegisterState {}
-
-//======================Detail - Errors============================
-class OrderItemUpdateErrorState extends OrderStockTransferRegisterState {}
-
-class ProductGetErrorState extends OrderStockTransferRegisterState {}
-
-class ProductSearchErrorState extends OrderStockTransferRegisterState {}
-
-class StockSearchErrorState extends OrderStockTransferRegisterState {}
-
-class EntitySearchErrorState extends OrderStockTransferRegisterState {}
-//=================================================================
-
+class SetItemUpdateSuccessState extends OrderStockTransferRegisterState {}

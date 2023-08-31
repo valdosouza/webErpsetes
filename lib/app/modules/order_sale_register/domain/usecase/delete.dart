@@ -1,16 +1,18 @@
 import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/core/error/failures.dart';
+import 'package:appweb/app/modules/Core/data/model/order_result_action_model.dart';
 import 'package:appweb/app/modules/Core/domain/usecase/usecase.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/repository/respository.dart';
 import 'package:dartz/dartz.dart';
 
-class Delete implements UseCase<bool, ParamsDeleteOrder> {
+class Delete implements UseCase<OrderResultActionModel, ParamsDeleteOrder> {
   final Repository repository;
 
   Delete({required this.repository});
 
   @override
-  Future<Either<Failure, bool>> call(ParamsDeleteOrder params) async {
+  Future<Either<Failure, OrderResultActionModel>> call(
+      ParamsDeleteOrder params) async {
     try {
       final response = await repository.delete(params: params);
       return response;
@@ -22,15 +24,18 @@ class Delete implements UseCase<bool, ParamsDeleteOrder> {
 
 class ParamsDeleteOrder {
   int tbInstitutionId;
-  int? id;
+  int tbOrderId;
+  int tbUserId;
   ParamsDeleteOrder({
     required this.tbInstitutionId,
-    this.id,
+    required this.tbOrderId,
+    required this.tbUserId,
   });
   Map<dynamic, dynamic> toJson() {
     final Map<dynamic, dynamic> data = <dynamic, dynamic>{};
     data['tb_institution_id'] = tbInstitutionId;
-    data['id'] = id;
+    data['tb_order_id'] = tbOrderId;
+    data['tb_user_id'] = tbUserId;
     return data;
   }
 }

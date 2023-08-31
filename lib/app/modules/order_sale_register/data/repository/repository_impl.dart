@@ -1,15 +1,19 @@
+import 'package:appweb/app/modules/Core/data/model/order_result_action_model.dart';
 import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/product_prices_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/closure.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_prices.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/reopen.dart';
 import 'package:dartz/dartz.dart';
 import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/core/error/failures.dart';
@@ -22,9 +26,10 @@ class RepositoryImpl implements Repository {
   RepositoryImpl({required this.datasource});
 
   @override
-  Future<Either<Failure, List<OrderSaleListModel>>> getOrderList() async {
+  Future<Either<Failure, List<OrderSaleListModel>>> getOrderList(
+      {required ParamsOrderList params}) async {
     try {
-      final list = await datasource.getOrderList();
+      final list = await datasource.getOrderList(params: params);
       return Right(list);
     } on ServerException {
       return Left(ServerFailure());
@@ -120,10 +125,32 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<Either<Failure, bool>> delete(
+  Future<Either<Failure, OrderResultActionModel>> delete(
       {required ParamsDeleteOrder params}) async {
     try {
       final result = await datasource.delete(params: params);
+      return Right(result);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, OrderResultActionModel>> closure(
+      {required ParamsClosureOrder params}) async {
+    try {
+      final result = await datasource.closure(params: params);
+      return Right(result);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, OrderResultActionModel>> reopen(
+      {required ParamsReopenOrder params}) async {
+    try {
+      final result = await datasource.reopen(params: params);
       return Right(result);
     } on ServerException {
       return Left(ServerFailure());

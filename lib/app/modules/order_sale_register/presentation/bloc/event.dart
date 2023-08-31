@@ -1,10 +1,12 @@
 import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/closure.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/reopen.dart';
 
 abstract class OrderSaleRegisterEvent {}
 
@@ -14,7 +16,15 @@ class GetOrderListEvent extends OrderSaleRegisterEvent {
   GetOrderListEvent({required this.params});
 }
 
-class SearchOrderEvent extends OrderSaleRegisterEvent {}
+class SearchOrderEvent extends OrderSaleRegisterEvent {
+  final ParamsOrderList params;
+
+  SearchOrderEvent({required this.params});
+}
+
+class FilterOrderEvent extends OrderSaleRegisterEvent {}
+
+class NewFormOrderEvent extends OrderSaleRegisterEvent {}
 
 class FormOrderEvent extends OrderSaleRegisterEvent {
   final int tbOrderId;
@@ -43,13 +53,33 @@ class DeleteOrderEvent extends OrderSaleRegisterEvent {
   });
 }
 
+class ClosureOrderEvent extends OrderSaleRegisterEvent {
+  final ParamsClosureOrder params;
+  ClosureOrderEvent({
+    required this.params,
+  });
+}
+
+class ReopenOrderEvent extends OrderSaleRegisterEvent {
+  final ParamsReopenOrder params;
+  ReopenOrderEvent({
+    required this.params,
+  });
+}
+
 //======================widget_customer_list============================
 class GetCustomerListEvent extends OrderSaleRegisterEvent {
   final ParamsCustomerList params;
   GetCustomerListEvent({required this.params});
 }
 
-class SearchCustomerEvent extends OrderSaleRegisterEvent {}
+class SearchCustomerEvent extends OrderSaleRegisterEvent {
+  final ParamsCustomerList params;
+
+  SearchCustomerEvent({required this.params});
+}
+
+class FilterCustomerEvent extends OrderSaleRegisterEvent {}
 
 //======================widget_payment_types_list============================
 class GetPaymentTypesListEvent extends OrderSaleRegisterEvent {
@@ -57,6 +87,7 @@ class GetPaymentTypesListEvent extends OrderSaleRegisterEvent {
   GetPaymentTypesListEvent({required this.params});
 }
 
+class FilterPaymentTypeEvent extends OrderSaleRegisterEvent {}
 //======================content_items============================
 
 class GetItemsListEvent extends OrderSaleRegisterEvent {
@@ -83,6 +114,14 @@ class GetProductListEvent extends OrderSaleRegisterEvent {
 }
 
 class GetFormProductListEvent extends OrderSaleRegisterEvent {}
+
+class SearchProductEvent extends OrderSaleRegisterEvent {
+  final ParamsProductList params;
+
+  SearchProductEvent({required this.params});
+}
+
+class FilterProductEvent extends OrderSaleRegisterEvent {}
 
 //======================widget_product_prices============================
 

@@ -1,457 +1,434 @@
-import 'package:appweb/app/core/shared/utils/custom_date.dart';
-import 'package:appweb/app/modules/Core/data/model/entity_list_model.dart';
-import 'package:appweb/app/modules/Core/data/model/order_status_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_stock_transfer_item_model.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/data/model/entity_list_model.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/data/model/order_stock_transfer_list_model.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/data/model/order_stock_transfer_main_model.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/data/model/order_stock_transfer_register_items_model.dart';
-import 'package:appweb/app/modules/Core/data/model/stock_list_model.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/entities_list_getlist.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_closure.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_delete.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_main_get.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_get_list.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_post.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_put.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_reopen.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/product_get_list.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/stock_list_getlist.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/closure.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/delete.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_entity_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_items_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_order_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_order_main.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_product_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/post.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/put.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/reopen.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/bloc/state.dart';
 import 'package:bloc/bloc.dart';
 
 class OrderStockTransferRegisterBloc extends Bloc<
     OrderStockTransferRegisterEvent, OrderStockTransferRegisterState> {
-  final OrderStockTransferMainGet getOrderStockTransfer;
-  final OrderStockTransferRegisterGetlist getlistOrderStockTransfer;
-  final OrderStockTransferRegisterPost postOrderStockTransfer;
-  final OrderStockTransferRegisterPut putOrderStockTransfer;
-  final OrderStockTransferRegisterDelete deleteOrderStockTransfer;
-  final OrderStockTransferRegisterClosure closureOrderStocktransfer;
-  final OrderStockTransferRegisterReopen reopenOrderStocktransfer;
+  final GetOrderList getOrderList;
+  final GetOrderMain getOrderMain;
+  final GetEntityList getEntityList;
+  final GetItemsList getItemsList;
+  final GetProductList getProductList;
+  final Post post;
+  final Put put;
+  final Delete delete;
+  final Closure closure;
+  final Reopen reopen;
 
-  final ProductGetlist productGetlist;
-  final StockListGetlist stockListGetlist;
-  final EntitiesListGetlist entitiesListGetlist;
-
-  List<OrderStockTransferListModel> orderStockTransfers = [];
-  OrderStockTransferListModel orderStockTransList =
-      OrderStockTransferListModel();
+  List<OrderStockTransferListModel> orderList = [];
   OrderStockTransferMainModel orderMain = OrderStockTransferMainModel.empty();
-  OrderStockTransferRegisterItemsModel orderItem =
-      OrderStockTransferRegisterItemsModel.empty();
-  List<ProductListModel> products = [];
-  List<ProductListModel> productsTemp = [];
-  int pageProducts = 0;
 
-  List<StockListModel> stocks = [];
-  List<EntityListModel> entities = [];
-  StockListModel stock = StockListModel.empty();
+  List<EntityListModel> entityList = [];
 
-  OrderStatusModel modelStatus = OrderStatusModel.empty();
+  List<ProductListModel> productList = [];
 
-  int tabIndex = 0;
-  String search = "";
+  int pageOrder = 1;
+  int pageEntity = 1;
+
+  int pageProduct = 1;
+
+  String searchOrder = "";
+  String searchEntity = "";
+  String searchPaymentType = "";
+  String searchProduct = "";
+  String searchItem = "";
+
+  int indexOrder = 0;
+  OrderStockTransferItemModel elementItemDelete =
+      OrderStockTransferItemModel.empty();
+
   OrderStockTransferRegisterBloc({
-    required this.getOrderStockTransfer,
-    required this.getlistOrderStockTransfer,
-    required this.postOrderStockTransfer,
-    required this.putOrderStockTransfer,
-    required this.deleteOrderStockTransfer,
-    required this.closureOrderStocktransfer,
-    required this.reopenOrderStocktransfer,
-    required this.productGetlist,
-    required this.stockListGetlist,
-    required this.entitiesListGetlist,
-  }) : super(OrderLoadingState()) {
-    orderGetList();
-
-    orderNew();
-
-    orderGet();
-
-    orderReturnMaster();
-
-    itemsNews();
-
-    itemsEdit();
-
-    itemDelete();
-
-    productChosen();
-
-    itemsUpdate();
-
-    orderPost();
-
-    orderPut();
-
-    orderDelete();
-
-    closureOrder();
-
-    reopenOrder();
-
-    getProducts();
-
-    getStocks();
-
-    getEntities();
-
-    searchProducts();
-
-    searchStocks();
-
-    searchEntities();
-
-    searchOrder();
+    required this.getOrderList,
+    required this.getOrderMain,
+    required this.getEntityList,
+    required this.getItemsList,
+    required this.getProductList,
+    required this.post,
+    required this.put,
+    required this.delete,
+    required this.closure,
+    required this.reopen,
+  }) : super(LoadingState()) {
+    _getOrderList();
+    _searchOrderList();
+    _filterOrderList();
+    _returnOrderList();
+    _getNewFormOrder();
+    _getFormOrder();
+    _getFormItem();
+    _getOrderMain();
+    _getEntityList();
+    _searchEntityList();
+    _filterEntityList();
+    _getItemsList();
+    _getProductList();
+    _searchProductList();
+    _filterProductList();
+    _getFormProductList();
+    _getItemToEdit();
+    _deleteItem();
+    _setitemsUpdate();
+    _post();
+    _put();
+    _delete();
+    _closure();
+    _reopen();
   }
 
-  orderGetList() {
-    on<OrderGetListEvent>((event, emit) async {
-      emit(OrderLoadingState());
+  _getOrderList() {
+    on<GetOrderListEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        orderList.clear();
+        pageOrder = 1;
+      } else {
+        pageOrder += 1;
+      }
+      event.params.page = pageOrder;
+      var response = await getOrderList.call(event.params);
 
-      var response = await getlistOrderStockTransfer
-          .call(ParamsGetlistOrderStockTransferRegister(id: 1));
-
-      response.fold((l) => emit(OrderLoadedErrorState()), (r) {
-        orderStockTransfers = r;
-        emit(OrderLoadedSucessState());
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        orderList += r;
+        emit(OrderListLoadedState(orderList: orderList));
       });
     });
   }
 
-  orderNew() {
-    on<OrderNewEvent>((event, emit) async {
-      emit(OrderLoadingState());
+  _searchOrderList() {
+    on<SearchOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        orderList.clear();
+        pageOrder = 1;
+      } else {
+        pageOrder += 1;
+      }
+      event.params.page = pageOrder;
+      var response = await getOrderList.call(event.params);
+
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        orderList = r;
+        emit(OrderListLoadedState(orderList: orderList));
+      });
+    });
+  }
+
+  _filterOrderList() {
+    on<FilterOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      List<OrderStockTransferListModel> orderListFilter = orderList;
+      if (searchOrder.isNotEmpty) {
+        orderListFilter = orderList.where((element) {
+          String name = element.nameEntity;
+          return name
+              .toLowerCase()
+              .trim()
+              .contains(searchOrder.toLowerCase().trim());
+        }).toList();
+      }
+      emit(OrderListLoadedState(orderList: orderListFilter));
+    });
+  }
+
+  _returnOrderList() {
+    on<ReturnToOrderMainEvent>((event, emit) async {
+      emit(LoadingState());
+      emit(OrderListLoadedState(orderList: orderList));
+    });
+  }
+
+  _getNewFormOrder() {
+    on<NewFormOrderEvent>((event, emit) async {
+      emit(LoadingState());
       orderMain = OrderStockTransferMainModel.empty();
-      emit(OrderNewLoadedState());
+      emit(FormOrderLoadedState(tbOrderId: 0));
     });
   }
 
-  Future<String> _validadePost() async {
-    if (orderMain.order.tbEntityId == 0) {
-      return "Informe o campo entidade.";
-    }
-    if (orderMain.order.tbStockListIdOri == 0) {
-      return "Informe o campo estoque de origem.";
-    }
-    if (orderMain.order.tbStockListIdDes == 0) {
-      return "Informe o campo estoque de destino.";
-    }
-    if (orderMain.items.isEmpty) {
-      return "Informe pelo menos um item na lista.";
-    }
-    return "";
+  _getFormOrder() {
+    on<FormOrderEvent>((event, emit) async {
+      emit(LoadingState());
+
+      emit(FormOrderLoadedState(tbOrderId: event.tbOrderId));
+    });
   }
 
-  orderPost() {
-    on<OrderPostEvent>((event, emit) async {
-      emit(OrderLoadingState());
-      String errorValidate = await _validadePost();
+  _getFormItem() {
+    on<FormItemsEvent>((event, emit) async {
+      emit(LoadingState());
+      emit(FormItemsLoadedState(tbOrderId: event.tbOrderId));
+    });
+  }
 
-      if (errorValidate.isNotEmpty) {
-        emit(OrderPostErrorState(error: errorValidate));
+  _getOrderMain() {
+    on<GetOrderMainEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.tbOrderId == 0) {
+        orderMain = OrderStockTransferMainModel.empty();
       } else {
-        var response = await postOrderStockTransfer
-            .call(ParamsPostOrderStockTransferRegister(model: orderMain));
+        var response = await getOrderMain.call(event.tbOrderId);
 
-        response.fold((l) => emit(OrderPostErrorState(error: l.toString())),
-            (r) {
-          orderStockTransfers.add(r);
-          emit(OrderPostSuccessState());
+        response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+          orderMain = r;
+          emit(OrderMainLoadedState());
         });
       }
     });
   }
 
-  orderPut() {
-    on<OrderPutEvent>((event, emit) async {
-      emit(OrderLoadingState());
-      String errorValidate = await _validadePost();
-
-      if (errorValidate.isNotEmpty) {
-        emit(OrderPostErrorState(error: errorValidate));
+  _getEntityList() {
+    on<GetEntityListEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        entityList.clear();
+        pageEntity = 1;
       } else {
-        var response = await putOrderStockTransfer
-            .call(ParamsPutOrderStockTransferRegister(model: orderMain));
-
-        response.fold((l) => emit(OrderPutErrorState(error: l.toString())),
-            (r) {
-          orderStockTransfers[orderStockTransfers
-              .indexWhere((element) => element.id == r.id)] = r;
-
-          emit(OrderPutSuccessState());
-        });
+        pageEntity += 1;
       }
+      event.params.page = pageEntity;
+      var response = await getEntityList.call(event.params);
+
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        entityList += r;
+        emit(EntityListLoadedState(entityList: entityList));
+      });
     });
   }
 
-  orderDelete() {
-    on<OrderDeleteEvent>((event, emit) async {
-      emit(OrderLoadingState());
+  _searchEntityList() {
+    on<SearchEntityEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        entityList.clear();
+        pageEntity = 1;
+      } else {
+        pageEntity += 1;
+      }
+      event.params.page = pageEntity;
+      var response = await getEntityList.call(event.params);
 
-      var response = await deleteOrderStockTransfer
-          .call(ParamsDeleteOrderStockTransferRegister(id: orderMain.order.id));
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        entityList = r;
+        emit(EntityListLoadedState(entityList: entityList));
+      });
+    });
+  }
 
-      response.fold((l) => emit(OrderDeleteErrorState()), (r) {
-        orderStockTransfers
-            .removeWhere((element) => element.id == orderMain.order.id);
+  _filterEntityList() {
+    on<FilterEntityEvent>((event, emit) async {
+      emit(LoadingState());
+      List<EntityListModel> entityListFilter = entityList;
+      if (searchEntity.isNotEmpty) {
+        entityListFilter = entityList.where((element) {
+          String name = element.nickTrade;
+          return name
+              .toLowerCase()
+              .trim()
+              .contains(searchEntity.toLowerCase().trim());
+        }).toList();
+      }
+      emit(EntityListLoadedState(entityList: entityListFilter));
+    });
+  }
+
+  _getItemsList() {
+    on<GetItemsListEvent>((event, emit) async {
+      emit(LoadingState());
+      emit(ItemsListLoadedSate(itemsList: orderMain.items));
+    });
+  }
+
+  _getProductList() {
+    on<GetProductListEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        productList.clear();
+        pageProduct = 1;
+      } else {
+        pageProduct += 1;
+      }
+      event.params.page = pageProduct;
+      var response = await getProductList.call(event.params);
+
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        productList += r;
+        emit(ProductListLoadedState(productList: productList));
+      });
+    });
+  }
+
+  _searchProductList() {
+    on<SearchProductEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        productList.clear();
+        pageProduct = 1;
+      } else {
+        pageProduct += 1;
+      }
+      event.params.page = pageProduct;
+      var response = await getProductList.call(event.params);
+
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        productList = r;
+        emit(ProductListLoadedState(productList: productList));
+      });
+    });
+  }
+
+  _filterProductList() {
+    on<FilterProductEvent>((event, emit) async {
+      emit(LoadingState());
+      List<ProductListModel> productListFilter = productList;
+      if (searchProduct.isNotEmpty) {
+        productListFilter = productList.where((element) {
+          String name = element.description;
+          return name
+              .toLowerCase()
+              .trim()
+              .contains(searchProduct.toLowerCase().trim());
+        }).toList();
+      }
+      emit(ProductListLoadedState(productList: productListFilter));
+    });
+  }
+
+  _getFormProductList() {
+    on<GetFormProductListEvent>((event, emit) async {
+      emit(LoadingState());
+      emit(ProductListLoadedState(productList: productList));
+    });
+  }
+
+  _getItemToEdit() {
+    on<GetItemToEditEvent>((event, emit) async {
+      emit(LoadingState());
+
+      emit(GetItemToEditLoaded(itemEdit: event.item));
+    });
+  }
+
+  _deleteItem() {
+    on<DeleteItemEvent>((event, emit) async {
+      emit(LoadingState());
+
+      orderMain
+          .items[orderMain.items.indexWhere((element) => element == event.item)]
+          .updateStatus = "D";
+
+      emit(ItemsListLoadedSate(itemsList: orderMain.items));
+    });
+  }
+
+  _setitemsUpdate() {
+    on<SetItemUpdateEvent>((event, emit) {
+      if (event.item.id > 0) {
+        event.item.updateStatus = "E";
+        orderMain.items[orderMain.items
+            .indexWhere((element) => element.id == event.item.id)] = event.item;
+      } else {
+        orderMain.items.add(event.item);
+      }
+
+      emit(SetItemUpdateSuccessState());
+    });
+  }
+
+  _post() {
+    on<PostOrderEvent>((event, emit) async {
+      emit(LoadingState());
+
+      var response = await post.call(orderMain);
+
+      response.fold((l) {
+        emit(OrderPostPutErrorState(message: l.toString()));
+      }, (r) {
+        orderList.insert(0, r);
+        emit(OrderPostSuccessState(orderlist: orderList));
+      });
+    });
+  }
+
+  _put() {
+    on<PutOrderEvent>((event, emit) async {
+      emit(LoadingState());
+
+      var response = await put.call(orderMain);
+
+      response.fold((l) {
+        emit(OrderPostPutErrorState(message: l.toString()));
+      }, (r) {
+        orderList[orderList.indexWhere((element) => element.id == r.id)] = r;
+        emit(OrderPutSuccessState());
+      });
+    });
+  }
+
+  _delete() {
+    on<DeleteOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      final orderId = event.params.tbOrderId;
+      var response = await delete.call(event.params);
+
+      response.fold((l) {
+        emit(ErrorState(message: l.toString()));
+      }, (r) {
+        if (r.result) {
+          orderList.removeWhere((element) => element.id == orderId);
+        }
         emit(OrderDeleteSuccessState());
       });
     });
   }
 
-  closureOrder() {
-    on<OrderClosureEvent>((event, emit) async {
-      emit(OrderLoadingState());
-      modelStatus.tbInstitutionId = orderMain.order.tbInstitutionId;
-      modelStatus.id = orderMain.order.id;
-      modelStatus.dtRecord = CustomDate.newDate();
-      var response = await closureOrderStocktransfer
-          .call(ParamsOrderStockTransferClosure(model: modelStatus));
+  _closure() {
+    on<ClosureOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      final orderId = event.params.tbOrderId;
+      var response = await closure.call(event.params);
 
       response.fold((l) {
-        emit(OrderClosureErrorState());
+        emit(ErrorState(message: l.toString()));
       }, (r) {
-        orderStockTransfers[orderStockTransfers
-                .indexWhere((element) => element.id == modelStatus.id)]
-            .status = "F";
+        if (r.result) {
+          orderList[orderList.indexWhere((element) => element.id == orderId)]
+              .status = "F";
+        }
         emit(OrderClosureSuccessState());
       });
     });
   }
 
-  reopenOrder() {
-    on<OrderReopenEvent>((event, emit) async {
-      emit(OrderLoadingState());
-      modelStatus.tbInstitutionId = orderMain.order.tbInstitutionId;
-      modelStatus.id = orderMain.order.id;
-      modelStatus.dtRecord = CustomDate.newDate();
+  _reopen() {
+    on<ReopenOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      final orderId = event.params.tbOrderId;
+      var response = await reopen.call(event.params);
 
-      var response = await reopenOrderStocktransfer
-          .call(ParamsOrderStocktransferReopen(model: modelStatus));
-
-      response.fold((l) => emit(OrderClosureErrorState()), (r) {
-        orderStockTransfers[orderStockTransfers
-                .indexWhere((element) => element.id == modelStatus.id)]
-            .status = "A";
-
-        emit(OrderReopenSuccessState());
-      });
-    });
-  }
-
-  orderGet() {
-    on<OrderGetEvent>((event, emit) async {
-      emit(OrderLoadingState());
-
-      final response = await getOrderStockTransfer.call(
-          ParamsGetOrderStockTransferRegister(orderid: orderStockTransList.id));
-
-      response.fold((l) => emit(OrderGetErrorState()), (r) {
-        orderMain = r;
-        emit(OrderGetLoadedState());
-      });
-    });
-  }
-
-  orderReturnMaster() {
-    on<OrderReturnMainEvent>((event, emit) async {
-      emit(OrderReturnMasterState());
-    });
-  }
-
-  itemsNews() {
-    on<OrderItemNewEvent>((event, emit) async {
-      emit(OrderLoadingState());
-      orderItem = OrderStockTransferRegisterItemsModel.empty();
-      emit(OrderItemPageEditState());
-    });
-  }
-
-  itemsEdit() {
-    on<OrderItemEditEvent>((event, emit) async {
-      emit(OrderItemPageEditState());
-    });
-  }
-
-  itemDelete() {
-    on<OrderItemDeleteEvent>((event, emit) async {
-      if (orderItem.id > 0) {
-        orderItem.updateStatus = "D";
-        orderMain.items[orderMain.items
-            .indexWhere((element) => element.id == orderItem.id)] = orderItem;
-      } else {
-        orderMain.items.removeWhere((item) => item == orderItem);
-      }
-      tabIndex = 1;
-
-      emit(OrderItemUpdateSuccessState());
-    });
-  }
-
-  productChosen() {
-    on<ProductChosenEvent>((event, emit) {
-      emit(ProductChosenSucessState());
-    });
-  }
-
-  itemsUpdate() {
-    on<OrderItemUpdateEvent>((event, emit) {
-      if (orderItem.id > 0) {
-        orderItem.updateStatus = "E";
-        orderMain.items[orderMain.items
-            .indexWhere((element) => element.id == orderItem.id)] = orderItem;
-      } else {
-        orderMain.items.add(OrderStockTransferRegisterItemsModel(
-          id: 0,
-          tbProductId: orderItem.tbProductId,
-          nameProduct: orderItem.nameProduct,
-          quantity: orderItem.quantity,
-          updateStatus: "I",
-        ));
-      }
-      tabIndex = 1;
-      emit(OrderItemUpdateSuccessState());
-    });
-  }
-
-  getProducts() {
-    on<ProductsGetEvent>((event, emit) async {
-      emit(OrderLoadingState());
-      if (event.params.page == 0) {
-        products.clear();
-        productsTemp.clear;
-        pageProducts = 1;
-      } else {
-        pageProducts += 1;
-      }
-      event.params.page = pageProducts;
-      final response = await productGetlist.call(event.params);
-
-      response.fold((l) => emit(ProductGetErrorState()), (r) {
-        products += r;
-        emit(ProductGetSucessState());
-      });
-    });
-  }
-
-  getStocks() {
-    on<StocksGetEvent>((event, emit) async {
-      emit(OrderLoadingState());
-
-      final response = await stockListGetlist.call(ParamsGetListStock());
-
-      response.fold((l) => emit(StocksLoadErrorState()), (r) {
-        stocks = r;
-        emit(StocksLoadSuccessState(type: event.type));
-      });
-    });
-  }
-
-  getEntities() {
-    on<EntitiesGetEvent>((event, emit) async {
-      emit(OrderLoadingState());
-
-      final response = await entitiesListGetlist.call(ParamsGetListEntities());
-
-      response.fold((l) => emit(EntityLoadErrorState()), (r) {
-        entities = r;
-        emit(EntitiesLoadSuccessState());
-      });
-    });
-  }
-
-  searchProducts() {
-    on<ProductsSearchEvent>((event, emit) async {
-      if (productsTemp.length < products.length) {
-        productsTemp = products;
-      } else {
-        products = productsTemp;
-      }
-      if (search.isNotEmpty) {
-        products = products
-            .where(
-              (element) => element.description
-                  .toLowerCase()
-                  .trim()
-                  .contains(search.toLowerCase().trim()),
-            )
-            .toList();
-      }
-      emit(ProductSearchSucessState());
-    });
-  }
-
-  searchStocks() {
-    on<StockSearchEvent>((event, emit) async {
-      if (search.isNotEmpty) {
-        var stockSearched = stocks.where((element) {
-          String name = element.description;
-          int id = element.id;
-          return (name
-                  .toLowerCase()
-                  .trim()
-                  .contains(search.toLowerCase().trim()) ||
-              id.toString() == search);
-        }).toList();
-        if (stockSearched.isNotEmpty) {
-          emit(StockSearchSucessState());
-        } else {
-          emit(StockSearchErrorState());
+      response.fold((l) {
+        emit(ErrorState(message: l.toString()));
+      }, (r) {
+        if (r.result) {
+          orderList[orderList.indexWhere((element) => element.id == orderId)]
+              .status = "A";
         }
-      } else {
-        emit(StockSearchErrorState());
-      }
-    });
-  }
-
-  searchEntities() {
-    on<EntitySearchEvent>((event, emit) async {
-      if (search.isNotEmpty) {
-        var entitiesSearched = entities.where((element) {
-          String name = element.nickTrade;
-          int id = element.id;
-          return (name
-                  .toLowerCase()
-                  .trim()
-                  .contains(search.toLowerCase().trim()) ||
-              id.toString() == search);
-        }).toList();
-        if (entitiesSearched.isNotEmpty) {
-          emit(EntitySearchSucessState());
-        } else {
-          emit(EntitySearchErrorState());
-        }
-      } else {
-        emit(EntitySearchErrorState());
-      }
-    });
-  }
-
-  searchOrder() {
-    on<OrderSearchEvent>((event, emit) async {
-      if (search.isNotEmpty) {
-        var orderStockTransfersSearched = orderStockTransfers.where((element) {
-          String name = element.nameEntity;
-          int id = element.id;
-          String date = element.dtRecord;
-          return (name
-                  .toLowerCase()
-                  .trim()
-                  .contains(search.toLowerCase().trim()) ||
-              date.toLowerCase().trim().contains(search.toLowerCase().trim()) ||
-              id.toString() == search);
-        }).toList();
-        if (orderStockTransfersSearched.isNotEmpty) {
-          emit(OrderLoadedSucessState());
-        } else {
-          emit(OrderLoadedErrorState());
-        }
-      } else {
-        emit(OrderLoadedErrorState());
-      }
+        emit(OrderClosureSuccessState());
+      });
     });
   }
 }

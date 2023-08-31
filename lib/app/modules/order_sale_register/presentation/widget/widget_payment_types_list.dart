@@ -1,3 +1,4 @@
+import 'package:appweb/app/core/shared/widgets/custom_search_filter.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
@@ -56,19 +57,21 @@ class WidgetPaymentTypesListtState extends State<WidgetPaymentTypesList> {
     return BlocBuilder<OrderSaleRegisterBloc, OrderSaleRegisterState>(
       bloc: bloc,
       builder: (context, state) {
-        return _orderStockAdjustmentEntitiesList(state);
+        return _orderStockAdjustEntitiesList(state);
       },
     );
   }
 
-  _orderStockAdjustmentEntitiesList(OrderSaleRegisterState state) {
+  _orderStockAdjustEntitiesList(OrderSaleRegisterState state) {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: kBoxDecorationflexibleSpace,
         ),
-        title: Text(
-            'Lista de Forma de Pagamentos (${widget.paymentTypesList.length.toString()})'),
+        title: AutoSizeText(
+            'Lista de Forma de Pagamentos (${widget.paymentTypesList.length.toString()})',
+            maxLines: 1,
+            maxFontSize: 18),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
@@ -79,26 +82,20 @@ class WidgetPaymentTypesListtState extends State<WidgetPaymentTypesList> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            decoration: kBoxDecorationStyle,
-            child: TextFormField(
-              keyboardType: TextInputType.text,
-              autofocus: false,
-              onChanged: (value) {
-                bloc.searchPaymentType = value;
-                bloc.add(SearchCustomerEvent());
-              },
-              style: const TextStyle(
-                color: Colors.white,
-                fontFamily: 'OpenSans',
-              ),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(left: 4.0),
-                hintText: "Pesquise aqui",
-                hintStyle: kHintTextStyle,
-              ),
+          CustomSearchFilter(
+            title: "Pesquisa ou Filtre aqui",
+            readOnly: false,
+            initialValue: bloc.searchCustomer,
+            suffixIcon: const Icon(
+              Icons.search,
+              size: 20.0,
+              color: Colors.white,
             ),
+            onAction: null,
+            onChange: ((value) => {
+                  bloc.searchPaymentType = value,
+                  bloc.add(FilterPaymentTypeEvent()),
+                }),
           ),
           const SizedBox(height: 5.0),
           Expanded(

@@ -4,6 +4,7 @@ import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_
 import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/closure.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
@@ -14,6 +15,7 @@ import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_produc
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_prices.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/post.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/put.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/reopen.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
 import 'package:bloc/bloc.dart';
@@ -30,18 +32,17 @@ class OrderSaleRegisterBloc
   final Post post;
   final Put put;
   final Delete delete;
+  final Closure closure;
+  final Reopen reopen;
 
   List<OrderSaleListModel> orderList = [];
-  List<OrderSaleListModel> orderListSearch = [];
   OrderSaleMainModel orderMain = OrderSaleMainModel.empty();
 
   List<CustomerListModel> customerList = [];
-  List<CustomerListModel> customerListSearch = [];
 
   List<PaymentTypesListModel> paymentTypesList = [];
 
   List<ProductListModel> productList = [];
-  List<ProductListModel> productListSearch = [];
 
   int pageOrder = 1;
   int pageCustomer = 1;
@@ -68,16 +69,26 @@ class OrderSaleRegisterBloc
     required this.post,
     required this.put,
     required this.delete,
+    required this.closure,
+    required this.reopen,
   }) : super(LoadingState()) {
     _getOrderList();
+    _searchOrderList();
+    _filterOrderList();
     _returnOrderList();
+    _getNewFormOrder();
     _getFormOrder();
     _getFormItem();
     _getOrderMain();
     _getCustomerList();
+    _searchCustomerList();
+    _filterCustomerList();
     _getPaymentTypesList();
+    _filterPaymentTypesList();
     _getItemsList();
     _getProductList();
+    _searchProductList();
+    _filterProductList();
     _getFormProductList();
     _getProductPrices();
     _getItemToEdit();
@@ -86,6 +97,8 @@ class OrderSaleRegisterBloc
     _post();
     _put();
     _delete();
+    _closure();
+    _reopen();
   }
 
   _getOrderList() {
@@ -107,6 +120,42 @@ class OrderSaleRegisterBloc
     });
   }
 
+  _searchOrderList() {
+    on<SearchOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        orderList.clear();
+        pageOrder = 1;
+      } else {
+        pageOrder += 1;
+      }
+      event.params.page = pageOrder;
+      var response = await getOrderList.call(event.params);
+
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        orderList = r;
+        emit(OrderListLoadedState(orderList: orderList));
+      });
+    });
+  }
+
+  _filterOrderList() {
+    on<FilterOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      List<OrderSaleListModel> orderListFilter = orderList;
+      if (searchOrder.isNotEmpty) {
+        orderListFilter = orderList.where((element) {
+          String name = element.nameCustomer;
+          return name
+              .toLowerCase()
+              .trim()
+              .contains(searchOrder.toLowerCase().trim());
+        }).toList();
+      }
+      emit(OrderListLoadedState(orderList: orderListFilter));
+    });
+  }
+
   _returnOrderList() {
     on<ReturnToOrderMainEvent>((event, emit) async {
       emit(LoadingState());
@@ -114,9 +163,18 @@ class OrderSaleRegisterBloc
     });
   }
 
+  _getNewFormOrder() {
+    on<NewFormOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      orderMain = OrderSaleMainModel.empty();
+      emit(FormOrderLoadedState(tbOrderId: 0));
+    });
+  }
+
   _getFormOrder() {
     on<FormOrderEvent>((event, emit) async {
       emit(LoadingState());
+
       emit(FormOrderLoadedState(tbOrderId: event.tbOrderId));
     });
   }
@@ -132,6 +190,7 @@ class OrderSaleRegisterBloc
     on<GetOrderMainEvent>((event, emit) async {
       emit(LoadingState());
       if (event.tbOrderId == 0) {
+        orderMain = OrderSaleMainModel.empty();
       } else {
         var response = await getOrderMain.call(event.tbOrderId);
 
@@ -162,6 +221,42 @@ class OrderSaleRegisterBloc
     });
   }
 
+  _searchCustomerList() {
+    on<SearchCustomerEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        customerList.clear();
+        pageCustomer = 1;
+      } else {
+        pageCustomer += 1;
+      }
+      event.params.page = pageCustomer;
+      var response = await getCustomerList.call(event.params);
+
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        customerList = r;
+        emit(CustomerListLoadedState(customerList: customerList));
+      });
+    });
+  }
+
+  _filterCustomerList() {
+    on<FilterCustomerEvent>((event, emit) async {
+      emit(LoadingState());
+      List<CustomerListModel> customerListFilter = customerList;
+      if (searchCustomer.isNotEmpty) {
+        customerListFilter = customerList.where((element) {
+          String name = element.nickTrade;
+          return name
+              .toLowerCase()
+              .trim()
+              .contains(searchCustomer.toLowerCase().trim());
+        }).toList();
+      }
+      emit(CustomerListLoadedState(customerList: customerListFilter));
+    });
+  }
+
   _getPaymentTypesList() {
     on<GetPaymentTypesListEvent>((event, emit) async {
       emit(LoadingState());
@@ -174,19 +269,23 @@ class OrderSaleRegisterBloc
     });
   }
 
+  _filterPaymentTypesList() {
+    on<FilterPaymentTypeEvent>((event, emit) async {
+      emit(LoadingState());
+      var paymentTypeListFilter = paymentTypesList.where((element) {
+        String name = element.description;
+        return name
+            .toLowerCase()
+            .trim()
+            .contains(searchPaymentType.toLowerCase().trim());
+      }).toList();
+      emit(PaymentTypesListLoadedSate(paymentTypesList: paymentTypeListFilter));
+    });
+  }
+
   _getItemsList() {
     on<GetItemsListEvent>((event, emit) async {
       emit(LoadingState());
-      /*
-      if (event.params.tbOrderId > 0) {
-        var response = await getItemsList.call(event.params);
-
-        response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
-          orderMain.items = r;
-          emit(ItemsListLoadedSate(itemsList: orderMain.items));
-        });
-      } else {
-        */
       emit(ItemsListLoadedSate(itemsList: orderMain.items));
     });
   }
@@ -207,6 +306,42 @@ class OrderSaleRegisterBloc
         productList += r;
         emit(ProductListLoadedState(productList: productList));
       });
+    });
+  }
+
+  _searchProductList() {
+    on<SearchProductEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        productList.clear();
+        pageProduct = 1;
+      } else {
+        pageProduct += 1;
+      }
+      event.params.page = pageProduct;
+      var response = await getProductList.call(event.params);
+
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        productList = r;
+        emit(ProductListLoadedState(productList: productList));
+      });
+    });
+  }
+
+  _filterProductList() {
+    on<FilterProductEvent>((event, emit) async {
+      emit(LoadingState());
+      List<ProductListModel> productListFilter = productList;
+      if (searchProduct.isNotEmpty) {
+        productListFilter = productList.where((element) {
+          String name = element.description;
+          return name
+              .toLowerCase()
+              .trim()
+              .contains(searchProduct.toLowerCase().trim());
+        }).toList();
+      }
+      emit(ProductListLoadedState(productList: productListFilter));
     });
   }
 
@@ -298,16 +433,52 @@ class OrderSaleRegisterBloc
   _delete() {
     on<DeleteOrderEvent>((event, emit) async {
       emit(LoadingState());
-      final orderId = event.params.id;
+      final orderId = event.params.tbOrderId;
       var response = await delete.call(event.params);
 
       response.fold((l) {
-        emit(OrderDeleteErrorState(message: l.toString()));
+        emit(ErrorState(message: l.toString()));
       }, (r) {
-        if (r) {
+        if (r.result) {
           orderList.removeWhere((element) => element.id == orderId);
         }
         emit(OrderDeleteSuccessState());
+      });
+    });
+  }
+
+  _closure() {
+    on<ClosureOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      final orderId = event.params.tbOrderId;
+      var response = await closure.call(event.params);
+
+      response.fold((l) {
+        emit(ErrorState(message: l.toString()));
+      }, (r) {
+        if (r.result) {
+          orderList[orderList.indexWhere((element) => element.id == orderId)]
+              .status = "F";
+        }
+        emit(OrderClosureSuccessState());
+      });
+    });
+  }
+
+  _reopen() {
+    on<ReopenOrderEvent>((event, emit) async {
+      emit(LoadingState());
+      final orderId = event.params.tbOrderId;
+      var response = await reopen.call(event.params);
+
+      response.fold((l) {
+        emit(ErrorState(message: l.toString()));
+      }, (r) {
+        if (r.result) {
+          orderList[orderList.indexWhere((element) => element.id == orderId)]
+              .status = "A";
+        }
+        emit(OrderClosureSuccessState());
       });
     });
   }

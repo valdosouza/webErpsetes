@@ -1,16 +1,16 @@
 import 'package:appweb/app/modules/Core/core_module.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/data/datasource/order_stock_transfer_register_datasource.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/data/repository/order_stock_transfer_register_repository_impl.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/entities_list_getlist.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_closure.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_delete.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_main_get.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_get_list.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_post.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_put.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/order_stock_transfer_register_reopen.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/product_get_list.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/stock_list_getlist.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/data/datasource/datasource.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/data/repository/repository_impl.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/closure.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/delete.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_entity_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_items_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_order_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_order_main.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_product_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/post.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/put.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/reopen.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/page/page.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -23,68 +23,56 @@ class OrderStockTransferRegisterModule extends Module {
       ];
   @override
   List<Bind> get binds => [
-        Bind.factory<OrderStockTransferRegisterDataSource>(
-          (i) => OrderStockTransferRegisterDataSourceImpl(
-            httpClient: http.Client(),
+        Bind.factory<DataSource>(
+          (i) => DataSourceImpl(httpClient: http.Client()),
+        ),
+        Bind.factory(
+          (i) => RepositoryImpl(datasource: i.get<DataSource>()),
+        ),
+        Bind.factory(
+          (i) => GetOrderList(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.factory(
+          (i) => GetOrderMain(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.factory(
+          (i) => GetEntityList(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.factory(
+          (i) => GetItemsList(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.factory(
+          (i) => GetProductList(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.factory(
+          (i) => Post(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.factory(
+          (i) => Put(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.factory(
+          (i) => Delete(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.factory(
+          (i) => Closure(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.factory(
+          (i) => Reopen(repository: i.get<RepositoryImpl>()),
+        ),
+        Bind.singleton(
+          (i) => OrderStockTransferRegisterBloc(
+            getOrderList: i.get<GetOrderList>(),
+            getOrderMain: i.get<GetOrderMain>(),
+            getEntityList: i.get<GetEntityList>(),
+            getItemsList: i.get<GetItemsList>(),
+            getProductList: i.get<GetProductList>(),
+            post: i.get<Post>(),
+            put: i.get<Put>(),
+            delete: i.get<Delete>(),
+            closure: i.get<Closure>(),
+            reopen: i.get<Reopen>(),
           ),
         ),
-        Bind.factory(
-          (i) => OrderStockTransferRegisterRepositoryImpl(
-              datasource: i.get<OrderStockTransferRegisterDataSource>()),
-        ),
-        Bind.factory(
-          (i) => OrderStockTransferMainGet(
-              repository: i.get<OrderStockTransferRegisterRepositoryImpl>()),
-        ),
-        Bind.factory(
-          (i) => OrderStockTransferRegisterGetlist(
-              repository: i.get<OrderStockTransferRegisterRepositoryImpl>()),
-        ),
-        Bind.factory(
-          (i) => OrderStockTransferRegisterPost(
-              repository: i.get<OrderStockTransferRegisterRepositoryImpl>()),
-        ),
-        Bind.factory(
-          (i) => OrderStockTransferRegisterPut(
-              repository: i.get<OrderStockTransferRegisterRepositoryImpl>()),
-        ),
-        Bind.factory(
-          (i) => OrderStockTransferRegisterDelete(
-              repository: i.get<OrderStockTransferRegisterRepositoryImpl>()),
-        ),
-        Bind.factory(
-          (i) => OrderStockTransferRegisterClosure(
-              repository: i.get<OrderStockTransferRegisterRepositoryImpl>()),
-        ),
-        Bind.factory(
-          (i) => OrderStockTransferRegisterReopen(
-              repository: i.get<OrderStockTransferRegisterRepositoryImpl>()),
-        ),
-        Bind.factory(
-          (i) => ProductGetlist(
-              repository: i.get<OrderStockTransferRegisterRepositoryImpl>()),
-        ),
-        Bind.factory(
-          (i) => StockListGetlist(
-              repository: i.get<OrderStockTransferRegisterRepositoryImpl>()),
-        ),
-        Bind.factory(
-          (i) => EntitiesListGetlist(
-              repository: i.get<OrderStockTransferRegisterRepositoryImpl>()),
-        ),
-        Bind.singleton((i) => OrderStockTransferRegisterBloc(
-            getOrderStockTransfer: i.get<OrderStockTransferMainGet>(),
-            getlistOrderStockTransfer:
-                i.get<OrderStockTransferRegisterGetlist>(),
-            postOrderStockTransfer: i.get<OrderStockTransferRegisterPost>(),
-            putOrderStockTransfer: i.get<OrderStockTransferRegisterPut>(),
-            deleteOrderStockTransfer: i.get<OrderStockTransferRegisterDelete>(),
-            closureOrderStocktransfer:
-                i.get<OrderStockTransferRegisterClosure>(),
-            reopenOrderStocktransfer: i.get<OrderStockTransferRegisterReopen>(),
-            productGetlist: i.get<ProductGetlist>(),
-            stockListGetlist: i.get<StockListGetlist>(),
-            entitiesListGetlist: i.get<EntitiesListGetlist>())),
       ];
   @override
   final List<ModularRoute> routes = [

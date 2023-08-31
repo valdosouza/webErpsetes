@@ -1,69 +1,135 @@
-import 'package:appweb/app/modules/order_stock_transfer_register/data/model/params_get_list_product_model.dart';
+import 'package:appweb/app/modules/Core/data/model/order_stock_transfer_item_model.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/closure.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/delete.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_entity_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_items_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_order_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_product_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/reopen.dart';
 
 abstract class OrderStockTransferRegisterEvent {}
 
-//======================Master============================
-class OrderGetListEvent extends OrderStockTransferRegisterEvent {}
-
-class OrderNewEvent extends OrderStockTransferRegisterEvent {}
-
-class OrderGetEvent extends OrderStockTransferRegisterEvent {}
-
-class OrderPutEvent extends OrderStockTransferRegisterEvent {}
-
-class OrderPostEvent extends OrderStockTransferRegisterEvent {}
-
-class OrderDeleteEvent extends OrderStockTransferRegisterEvent {}
-
-class OrderClosureEvent extends OrderStockTransferRegisterEvent {
-  OrderClosureEvent();
+//======================content_order_sale============================
+class GetOrderListEvent extends OrderStockTransferRegisterEvent {
+  ParamsOrderList params;
+  GetOrderListEvent({required this.params});
 }
 
-class OrderReopenEvent extends OrderStockTransferRegisterEvent {
-  OrderReopenEvent();
+class SearchOrderEvent extends OrderStockTransferRegisterEvent {
+  final ParamsOrderList params;
+
+  SearchOrderEvent({required this.params});
 }
 
-class OrderSearchEvent extends OrderStockTransferRegisterEvent {}
+class FilterOrderEvent extends OrderStockTransferRegisterEvent {}
 
-class OrderReturnMainEvent extends OrderStockTransferRegisterEvent {}
+class NewFormOrderEvent extends OrderStockTransferRegisterEvent {}
 
-//======================Master - Auxiliar============================
-class StocksGetEvent extends OrderStockTransferRegisterEvent {
-  final String type;
-  StocksGetEvent({required this.type});
+class FormOrderEvent extends OrderStockTransferRegisterEvent {
+  final int tbOrderId;
+  FormOrderEvent({
+    required this.tbOrderId,
+  });
 }
 
-class StockSearchEvent extends OrderStockTransferRegisterEvent {
-  final String type;
-  StockSearchEvent({required this.type});
+class GetOrderMainEvent extends OrderStockTransferRegisterEvent {
+  final int tbOrderId;
+  GetOrderMainEvent({
+    required this.tbOrderId,
+  });
 }
 
-class StockChosenEvent extends OrderStockTransferRegisterEvent {}
+class ReturnToOrderMainEvent extends OrderStockTransferRegisterEvent {}
 
-class EntitiesGetEvent extends OrderStockTransferRegisterEvent {}
+class PostOrderEvent extends OrderStockTransferRegisterEvent {}
 
-class EntitySearchEvent extends OrderStockTransferRegisterEvent {}
+class PutOrderEvent extends OrderStockTransferRegisterEvent {}
 
-class EntityChosenEvent extends OrderStockTransferRegisterEvent {}
-
-//======================Detail============================
-class OrderItemFilterActiveEvent extends OrderStockTransferRegisterEvent {}
-
-class OrderItemNewEvent extends OrderStockTransferRegisterEvent {}
-
-class OrderItemEditEvent extends OrderStockTransferRegisterEvent {}
-
-class OrderItemUpdateEvent extends OrderStockTransferRegisterEvent {}
-
-class OrderItemDeleteEvent extends OrderStockTransferRegisterEvent {}
-
-//======================Detail - Auxiliar=========================
-class ProductsGetEvent extends OrderStockTransferRegisterEvent {
-  ParamsGetlistProductModel params;
-  ProductsGetEvent(this.params);
+class DeleteOrderEvent extends OrderStockTransferRegisterEvent {
+  final ParamsDeleteOrder params;
+  DeleteOrderEvent({
+    required this.params,
+  });
 }
 
-class ProductsSearchEvent extends OrderStockTransferRegisterEvent {}
+class ClosureOrderEvent extends OrderStockTransferRegisterEvent {
+  final ParamsClosureOrder params;
+  ClosureOrderEvent({
+    required this.params,
+  });
+}
 
-class ProductChosenEvent extends OrderStockTransferRegisterEvent {}
-//=========================================================
+class ReopenOrderEvent extends OrderStockTransferRegisterEvent {
+  final ParamsReopenOrder params;
+  ReopenOrderEvent({
+    required this.params,
+  });
+}
+
+//======================widget_entity_list============================
+class GetEntityListEvent extends OrderStockTransferRegisterEvent {
+  final ParamsEntityList params;
+  GetEntityListEvent({required this.params});
+}
+
+class SearchEntityEvent extends OrderStockTransferRegisterEvent {
+  final ParamsEntityList params;
+
+  SearchEntityEvent({required this.params});
+}
+
+class FilterEntityEvent extends OrderStockTransferRegisterEvent {}
+
+class FilterPaymentTypeEvent extends OrderStockTransferRegisterEvent {}
+//======================content_items============================
+
+class GetItemsListEvent extends OrderStockTransferRegisterEvent {
+  final ParamsItemsList params;
+  GetItemsListEvent({
+    required this.params,
+  });
+}
+
+class FormItemsEvent extends OrderStockTransferRegisterEvent {
+  final int tbOrderId;
+  FormItemsEvent({
+    required this.tbOrderId,
+  });
+}
+
+//======================widget_product_list============================
+
+class GetProductListEvent extends OrderStockTransferRegisterEvent {
+  final ParamsProductList params;
+  GetProductListEvent({
+    required this.params,
+  });
+}
+
+class GetFormProductListEvent extends OrderStockTransferRegisterEvent {}
+
+class SearchProductEvent extends OrderStockTransferRegisterEvent {
+  final ParamsProductList params;
+
+  SearchProductEvent({required this.params});
+}
+
+class FilterProductEvent extends OrderStockTransferRegisterEvent {}
+
+//======================content_item_edit============================
+class GetItemToEditEvent extends OrderStockTransferRegisterEvent {
+  final OrderStockTransferItemModel item;
+  GetItemToEditEvent({required this.item});
+}
+
+class SetItemUpdateEvent extends OrderStockTransferRegisterEvent {
+  final OrderStockTransferItemModel item;
+  SetItemUpdateEvent({required this.item});
+}
+
+class DeleteItemEvent extends OrderStockTransferRegisterEvent {
+  OrderStockTransferItemModel item;
+  DeleteItemEvent({
+    required this.item,
+  });
+}

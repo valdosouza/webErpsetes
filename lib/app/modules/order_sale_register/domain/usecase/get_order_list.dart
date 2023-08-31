@@ -15,7 +15,7 @@ class GetOrderList
   Future<Either<Failure, List<OrderSaleListModel>>> call(
       ParamsOrderList params) async {
     try {
-      final list = await repository.getOrderList();
+      final list = await repository.getOrderList(params: params);
       return list;
     } on ServerException {
       return Left(ServerFailure());
@@ -26,20 +26,23 @@ class GetOrderList
 class ParamsOrderList {
   int tbInstitutionId;
   int page;
-  int? id;
+  int number;
   int tbSalesmanId;
+  String nickTrade;
   ParamsOrderList({
     required this.tbInstitutionId,
     required this.page,
     required this.tbSalesmanId,
-    this.id,
+    required this.number,
+    required this.nickTrade,
   });
   Map<dynamic, dynamic> toJson() {
     final Map<dynamic, dynamic> data = <dynamic, dynamic>{};
     data['tb_institution_id'] = tbInstitutionId;
     data['page'] = page;
-    data['id'] = id;
+    data['number'] = number;
     data['tb_salesman_id'] = tbSalesmanId;
+    data['nick_trade'] = nickTrade;
     return data;
   }
 }

@@ -122,6 +122,9 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
 
   _productField() {
     return CustomInputButton(
+      enabled: true,
+      keyboardType: TextInputType.number,
+      inputAction: TextInputAction.go,
       readOnly: true,
       initialValue:
           '${widget.productPrices.id} - ${widget.productPrices.nameProduct}',

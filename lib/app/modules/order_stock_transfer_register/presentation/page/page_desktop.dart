@@ -1,15 +1,14 @@
-import 'package:appweb/app/core/shared/theme.dart';
 import 'package:appweb/app/core/shared/widgets/custom_circular_progress_indicator.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/data/model/order_stock_transfer_list_model.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/presentation/content/content_order_main.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/domain/usecase/get_order_list.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/order_stock_transfer_register_module.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/presentation/bloc/state.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/presentation/content/desktop/content_order_stock_transfer_desktop.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/presentation/content/desktop/content_order_stock_transfer_register.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/presentation/widget/desktop/order_stock_transfer_register_list_entities.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/presentation/widget/desktop/order_stock_transfer_register_list_products.dart';
-import 'package:appweb/app/modules/order_stock_transfer_register/presentation/widget/desktop/order_stock_transfer_register_list_stocks.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/presentation/content/content_item_edit.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/presentation/content/content_items_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/presentation/content/content_order_list.dart';
+import 'package:appweb/app/modules/order_stock_transfer_register/presentation/widget/widget_product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -18,11 +17,10 @@ class PageDesktop extends StatefulWidget {
   const PageDesktop({super.key});
 
   @override
-  State<PageDesktop> createState() =>
-      OrderStockTransferRegisterPageDesktopState();
+  State<PageDesktop> createState() => PageDesktopState();
 }
 
-class OrderStockTransferRegisterPageDesktopState extends State<PageDesktop> {
+class PageDesktopState extends State<PageDesktop> {
   late final OrderStockTransferRegisterBloc bloc;
 
   @override
@@ -32,8 +30,16 @@ class OrderStockTransferRegisterPageDesktopState extends State<PageDesktop> {
     Future.delayed(const Duration(milliseconds: 100)).then((_) async {
       await Modular.isModuleReady<OrderStockTransferRegisterModule>();
     });
-
-    bloc.add(OrderGetListEvent());
+    if (bloc.orderList.isEmpty) {
+      bloc.add(GetOrderListEvent(
+          params: ParamsOrderList(
+        tbInstitutionId: 0,
+        page: 0,
+        tbSalesmanId: 0,
+        nickTrade: "",
+        number: 0,
+      )));
+    }
   }
 
   @override
@@ -41,78 +47,47 @@ class OrderStockTransferRegisterPageDesktopState extends State<PageDesktop> {
     return BlocConsumer<OrderStockTransferRegisterBloc,
         OrderStockTransferRegisterState>(
       bloc: bloc,
-      listener: (context, state) {
-        statesOrderStockTransfer(state);
-      },
+      listener: (context, state) {},
       builder: (context, state) {
-        if (state is OrderLoadingState) {
+        if (state is LoadingState) {
           return const Center(
             child: CustomCircularProgressIndicator(),
           );
         }
-
-        if ((state is OrderGetLoadedState) ||
-            (state is OrderReturnMasterState) ||
-            (state is OrderNewLoadedState) ||
-            (state is OrderPostErrorState) ||
-            (state is OrderPutErrorState)) {
-          return ContentOrderStockTransferRegisterDesktop(
-            tabIndex: bloc.tabIndex,
+        if (state is OrderListLoadedState) {
+          return ContentOrderList(orderlist: state.orderList);
+        }
+        if (state is FormOrderLoadedState) {
+          return const ContentOrderMain();
+        }
+        if (state is ItemsListLoadedSate) {
+          return ContentItemsList(itemslist: state.itemsList);
+        }
+        if (state is ProductListLoadedState) {
+          return WidgetProductList(
+            productList: state.productList,
           );
         }
-        if ((state is ProductGetSucessState) ||
-            (state is ProductSearchSucessState)) {
-          return const OrderStockTransferRegisterListProducts();
-        }
-
-        if (state is StocksLoadSuccessState) {
-          return const OrderStockTransferRegisterStocksListWidget();
-        }
-
-        if (state is EntitiesLoadSuccessState) {
-          return const OrderStockTransferRegisterEntitiesListWidget();
-        }
-
-        if (state is OrderItemUpdateSuccessState) {
-          return ContentOrderStockTransferRegisterDesktop(
-            tabIndex: bloc.tabIndex,
+        if (state is SetItemUpdateSuccessState) {
+          return WidgetProductList(
+            productList: bloc.productList,
           );
         }
-
-        return _listaOrderStockTransfers(bloc.orderStockTransfers);
+        if (state is GetItemToEditLoaded) {
+          return ContentItemEdit(itemEdit: state.itemEdit);
+        }
+        if ((state is OrderPostSuccessState) ||
+            (state is OrderPutSuccessState) ||
+            (state is OrderDeleteSuccessState) ||
+            (state is OrderClosureSuccessState) ||
+            (state is OrderReopenSuccessState)) {
+          return ContentOrderList(orderlist: bloc.orderList);
+        }
+        if (state is OrderMainLoadedState) {
+          return const ContentOrderMain();
+        }
+        return Container();
       },
-    );
-  }
-
-  _listaOrderStockTransfers(List<OrderStockTransferListModel> list) {
-    return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: kBoxDecorationflexibleSpace,
-        ),
-        title: const Text('Lista de Ordens de Transferência de estoque'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              buildSearchInput(bloc),
-              const SizedBox(height: 30.0),
-              buildListView(bloc, list),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          bloc.add(OrderNewEvent());
-        },
-        backgroundColor: Colors.black,
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/core/gateway.dart';
+import 'package:appweb/app/modules/Core/data/model/order_result_action_model.dart';
 import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
@@ -8,19 +9,23 @@ import 'package:appweb/app/modules/order_sale_register/data/model/order_main_mod
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/product_prices_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/closure.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_order_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_prices.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/reopen.dart';
 
 import 'package:flutter/foundation.dart';
 
 abstract class DataSource extends Gateway {
   DataSource({required super.httpClient});
 
-  Future<List<OrderSaleListModel>> getOrderList();
+  Future<List<OrderSaleListModel>> getOrderList(
+      {required ParamsOrderList params});
 
   Future<OrderSaleMainModel> getOrderMain({required int tbOrderId});
 
@@ -43,7 +48,9 @@ abstract class DataSource extends Gateway {
 
   Future<OrderSaleListModel> put({required OrderSaleMainModel params});
 
-  Future<bool> delete({required ParamsDeleteOrder params});
+  Future<OrderResultActionModel> delete({required ParamsDeleteOrder params});
+  Future<OrderResultActionModel> closure({required ParamsClosureOrder params});
+  Future<OrderResultActionModel> reopen({required ParamsReopenOrder params});
 }
 
 class DataSourceImpl extends DataSource {
@@ -57,19 +64,20 @@ class DataSourceImpl extends DataSource {
   OrderSaleMainModel order = OrderSaleMainModel.empty();
 
   @override
-  Future<List<OrderSaleListModel>> getOrderList() async {
-    String tbInstitutionId = '1';
+  Future<List<OrderSaleListModel>> getOrderList(
+      {required ParamsOrderList params}) async {
     await getInstitutionId().then((value) {
-      tbInstitutionId = value.toString();
+      params.tbInstitutionId = int.parse(value);
     });
 
-    String tbSalesmanId = '1';
     await getUserId().then((value) {
-      tbSalesmanId = value.toString();
+      params.tbSalesmanId = int.parse(value);
     });
-
+    final body = jsonEncode(params.toJson());
     return await request(
-      'orderSale/getlist/$tbInstitutionId/$tbSalesmanId',
+      'orderSale/getlist',
+      method: HTTPMethod.post,
+      data: body,
       (payload) {
         final data = json.decode(payload);
 
@@ -92,8 +100,13 @@ class DataSourceImpl extends DataSource {
     await getInstitutionId().then((value) {
       tbInstitutionId = value.toString();
     });
+    String tbSalesmanId = '1';
+    await getUserId().then((value) {
+      tbSalesmanId = value.toString();
+    });
+
     return await request(
-      'orderSale/get/$tbInstitutionId/${tbOrderId.toString()}',
+      'orderSale/get/$tbInstitutionId/$tbSalesmanId/${tbOrderId.toString()}',
       (payload) {
         final data = json.decode(payload);
 
@@ -119,7 +132,7 @@ class DataSourceImpl extends DataSource {
     });
     final body = jsonEncode(params.toJson());
     return await request(
-      'customer/getlist/',
+      'customer/getlist',
       method: HTTPMethod.post,
       data: body,
       (payload) {
@@ -202,7 +215,7 @@ class DataSourceImpl extends DataSource {
 
     final body = jsonEncode(params.toJson());
     return await request(
-      'product/getlist/',
+      'product/getlist',
       method: HTTPMethod.post,
       data: body,
       (payload) {
@@ -302,21 +315,88 @@ class DataSourceImpl extends DataSource {
   }
 
   @override
-  Future<bool> delete({required ParamsDeleteOrder params}) async {
+  Future<OrderResultActionModel> delete(
+      {required ParamsDeleteOrder params}) async {
     int tbInstitutionId = 1;
     await getInstitutionId().then((value) {
       (kIsWeb) ? tbInstitutionId = value : tbInstitutionId = int.parse(value);
     });
     params.tbInstitutionId = tbInstitutionId;
+    int tbUserId = 1;
+    await getUserId().then((value) {
+      (kIsWeb) ? tbUserId = value : tbUserId = int.parse(value);
+    });
+    params.tbUserId = tbUserId;
+
     final body = jsonEncode(params.toJson());
     return request(
-      'ordersale',
+      'OrderSale',
       method: HTTPMethod.delete,
       data: body,
       (payload) {
         final data = json.decode(payload);
 
-        return (data['result'] == true);
+        return OrderResultActionModel.fromJson(data);
+      },
+      onError: (error) {
+        return ServerException;
+      },
+    );
+  }
+
+  @override
+  Future<OrderResultActionModel> closure(
+      {required ParamsClosureOrder params}) async {
+    int tbInstitutionId = 1;
+    await getInstitutionId().then((value) {
+      (kIsWeb) ? tbInstitutionId = value : tbInstitutionId = int.parse(value);
+    });
+    params.tbInstitutionId = tbInstitutionId;
+    int tbUserId = 1;
+    await getUserId().then((value) {
+      (kIsWeb) ? tbUserId = value : tbUserId = int.parse(value);
+    });
+    params.tbUserId = tbUserId;
+
+    final body = jsonEncode(params.toJson());
+    return request(
+      'OrderSale/closure',
+      method: HTTPMethod.post,
+      data: body,
+      (payload) {
+        final data = json.decode(payload);
+
+        return OrderResultActionModel.fromJson(data);
+      },
+      onError: (error) {
+        return ServerException;
+      },
+    );
+  }
+
+  @override
+  Future<OrderResultActionModel> reopen(
+      {required ParamsReopenOrder params}) async {
+    int tbInstitutionId = 1;
+    await getInstitutionId().then((value) {
+      (kIsWeb) ? tbInstitutionId = value : tbInstitutionId = int.parse(value);
+    });
+    params.tbInstitutionId = tbInstitutionId;
+    int tbUserId = 1;
+    await getUserId().then((value) {
+      (kIsWeb) ? tbUserId = value : tbUserId = int.parse(value);
+    });
+    params.tbUserId = tbUserId;
+
+    final body = jsonEncode(params.toJson());
+    return request(
+      'OrderSale/reopen',
+      method: HTTPMethod.post,
+      data: body,
+      (payload) {
+        final data = json.decode(payload);
+
+        return OrderResultActionModel.fromJson(data);
       },
       onError: (error) {
         return ServerException;

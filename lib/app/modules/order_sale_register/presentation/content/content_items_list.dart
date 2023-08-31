@@ -77,50 +77,28 @@ class _ContentItemsListState extends State<ContentItemsList> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (bloc.productList.isEmpty) {
-            bloc.add(
-              GetProductListEvent(
-                params: ParamsProductList(
-                  id: 0,
-                  nameProduct: "",
-                  page: 0,
-                  tbInstitutionId: 0,
-                ),
-              ),
-            );
-          } else {
-            bloc.add(GetFormProductListEvent());
-          }
-        },
-        backgroundColor: Colors.black,
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  buildSearchInput() {
-    return Container(
-      decoration: kBoxDecorationStyle,
-      child: TextFormField(
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        onChanged: (value) {
-          bloc.searchItem = value;
-          bloc.add(SearchOrderEvent());
-        },
-        style: const TextStyle(
-          color: Colors.white,
-          fontFamily: 'OpenSans',
-        ),
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.only(left: 10.0),
-          hintText: "Pesquise por número",
-          hintStyle: kHintTextStyle,
-        ),
-      ),
+      floatingActionButton: (bloc.orderMain.order.status != "F")
+          ? FloatingActionButton(
+              onPressed: () {
+                if (bloc.productList.isEmpty) {
+                  bloc.add(
+                    GetProductListEvent(
+                      params: ParamsProductList(
+                        id: 0,
+                        nameProduct: "",
+                        page: 0,
+                        tbInstitutionId: 0,
+                      ),
+                    ),
+                  );
+                } else {
+                  bloc.add(GetFormProductListEvent());
+                }
+              },
+              backgroundColor: Colors.black,
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 
@@ -162,13 +140,16 @@ class _ContentItemsListState extends State<ContentItemsList> {
                             ],
                           ),
                         ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.remove),
-                          onPressed: () {
-                            bloc.elementItemDelete = itemslistEnabled[index];
-                            showConfirmationDeleteItem();
-                          },
-                        ),
+                        trailing: (bloc.orderMain.order.status != "F")
+                            ? IconButton(
+                                icon: const Icon(Icons.remove),
+                                onPressed: () {
+                                  bloc.elementItemDelete =
+                                      itemslistEnabled[index];
+                                  showConfirmationDeleteItem();
+                                },
+                              )
+                            : null,
                       ),
                       Row(
                         children: [

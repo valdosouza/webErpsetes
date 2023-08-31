@@ -1,3 +1,4 @@
+import 'package:appweb/app/core/shared/widgets/custom_search_filter.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_list.dart';
@@ -59,12 +60,12 @@ class WidgetProductListtState extends State<WidgetProductList> {
     return BlocBuilder<OrderSaleRegisterBloc, OrderSaleRegisterState>(
       bloc: bloc,
       builder: (context, state) {
-        return _orderStockAdjustmentEntitiesList(state);
+        return _orderStockAdjustEntitiesList(state);
       },
     );
   }
 
-  _orderStockAdjustmentEntitiesList(OrderSaleRegisterState state) {
+  _orderStockAdjustEntitiesList(OrderSaleRegisterState state) {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
@@ -83,26 +84,31 @@ class WidgetProductListtState extends State<WidgetProductList> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            decoration: kBoxDecorationStyle,
-            child: TextFormField(
-              keyboardType: TextInputType.text,
-              autofocus: false,
-              onChanged: (value) {
-                bloc.searchProduct = value;
-                bloc.add(SearchCustomerEvent());
-              },
-              style: const TextStyle(
-                color: Colors.white,
-                fontFamily: 'OpenSans',
-              ),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(left: 4.0),
-                hintText: "Pesquise aqui",
-                hintStyle: kHintTextStyle,
-              ),
+          CustomSearchFilter(
+            title: "Pesquisa ou Filtre aqui",
+            readOnly: false,
+            initialValue: bloc.searchProduct,
+            suffixIcon: const Icon(
+              Icons.search,
+              size: 20.0,
+              color: Colors.white,
             ),
+            onAction: (() => {
+                  bloc.add(
+                    SearchProductEvent(
+                      params: ParamsProductList(
+                        tbInstitutionId: 0,
+                        page: 0,
+                        id: 0,
+                        nameProduct: bloc.searchProduct,
+                      ),
+                    ),
+                  ),
+                }),
+            onChange: ((value) => {
+                  bloc.searchProduct = value,
+                  bloc.add(FilterProductEvent()),
+                }),
           ),
           const SizedBox(height: 5.0),
           Expanded(

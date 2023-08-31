@@ -27,6 +27,10 @@ class OrderPutSuccessState extends OrderSaleRegisterState {}
 
 class OrderDeleteSuccessState extends OrderSaleRegisterState {}
 
+class OrderClosureSuccessState extends OrderSaleRegisterState {}
+
+class OrderReopenSuccessState extends OrderSaleRegisterState {}
+
 class OrderPostPutErrorState extends OrderSaleRegisterState {
   final String message;
   OrderPostPutErrorState({

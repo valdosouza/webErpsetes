@@ -7,7 +7,7 @@ import 'package:appweb/app/modules/drawer/drawer_module.dart';
 import 'package:appweb/app/modules/drawer/presentation/bloc/drawer_bloc.dart';
 import 'package:appweb/app/modules/home/home_module.dart';
 import 'package:appweb/app/modules/order_sale_register/order_sale_register_module.dart';
-import 'package:appweb/app/modules/order_stock_adjustment_register/order_stock_adjustment_register_module.dart';
+import 'package:appweb/app/modules/order_stock_adjust_register/order_stock_adjust_register_module.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/order_stock_transfer_register_module.dart';
 import 'package:appweb/app/modules/resource_human/resource_human_module.dart';
 import 'package:appweb/app/modules/splash/splash_module.dart';
@@ -44,8 +44,8 @@ class AppModule extends Module {
         ModuleRoute('/home', module: HomeModule()),
         ModuleRoute('/resourcehuman', module: ResourceHumanModule()),
         ModuleRoute('/stock', module: StockModule()),
-        ModuleRoute('/orderstockadjustment',
-            module: OrderStockAdjustmentRegisterModule()),
+        ModuleRoute('/orderstockadjust',
+            module: OrderStockAdjustRegisterModule()),
         ModuleRoute('/orderstocktransfer',
             module: OrderStockTransferRegisterModule()),
         ModuleRoute('/ordersale', module: OrderSaleRegisterModule()),
