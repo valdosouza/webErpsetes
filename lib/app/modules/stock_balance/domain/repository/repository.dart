@@ -8,6 +8,6 @@ import 'package:dartz/dartz.dart';
 abstract class Repository {
   Future<Either<Failure, List<StockListModel>>> getStockList(
       {required ParamsStockList params});
-  Future<Either<Failure, List<StockBalanceModel>>> getStockBalanceList(
+  Future<Either<Failure, List<StockBalanceItemsModel>>> getStockBalanceList(
       {required ParamsStockBalanceList params});
 }

@@ -3,6 +3,7 @@ import 'package:appweb/app/modules/stock_balance/domain/usecase/get_stock_list.d
 import 'package:appweb/app/modules/stock_balance/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/stock_balance/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/stock_balance/presentation/bloc/state.dart';
+import 'package:appweb/app/modules/stock_balance/presentation/widget/widget_stock_balance_list.dart';
 import 'package:appweb/app/modules/stock_balance/presentation/widget/widget_stock_list.dart';
 import 'package:appweb/app/modules/stock_balance/stock_balance_module.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,8 @@ class PageDesktopState extends State<PageDesktop> {
           return WidgetStockList(stockList: state.stockList);
         }
         if (state is StockBalanceListLoadedState) {
-          return Container();
+          return WidgetStockBalanceList(
+              stockBalanceList: state.stockBalanceList);
         }
         return Container();
       },

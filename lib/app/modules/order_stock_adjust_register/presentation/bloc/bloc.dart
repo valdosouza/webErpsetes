@@ -368,7 +368,7 @@ class OrderStockAdjustRegisterBloc
           return name
               .toLowerCase()
               .trim()
-              .contains(searchEntity.toLowerCase().trim());
+              .contains(searchStockList.toLowerCase().trim());
         }).toList();
       }
       emit(StockListLoadedState(stockList: stockListFilter));

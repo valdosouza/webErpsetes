@@ -13,18 +13,26 @@ class StockBalanceBloc extends Bloc<StockBalanceEvent, StockBalanceState> {
 
   List<StockListModel> stockList = [];
   int pageStockList = 0;
-  List<StockBalanceModel> stockBalanceList = [];
+  List<StockBalanceItemsModel> stockBalanceList = [];
   int pageStockBalanceList = 0;
 
   String searchStockList = "";
-  String searchStockBalanceLsit = "";
+  String searchMerchandise = "";
+
+  int tbStockListId = 0;
 
   StockBalanceBloc({
     required this.getStockList,
     required this.getStockBalanceList,
   }) : super(LoadingState()) {
     _getStockList();
+    _searchStockList();
+    _filterStockList();
+    _retunrStockList();
+
     _getStockBalanceList();
+    _searchStockBalanceList();
+    _filterStockBalanceList();
   }
 
   _getStockList() {
@@ -47,9 +55,53 @@ class StockBalanceBloc extends Bloc<StockBalanceEvent, StockBalanceState> {
     });
   }
 
+  _searchStockList() {
+    on<SearchStockEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        stockList.clear();
+        pageStockList = 1;
+      } else {
+        pageStockList += 1;
+      }
+      event.params.page = pageStockList;
+      var response = await getStockList.call(event.params);
+
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        stockList = r;
+        emit(StockListLoadedState(stockList: stockList));
+      });
+    });
+  }
+
+  _filterStockList() {
+    on<FilterStockEvent>((event, emit) async {
+      emit(LoadingState());
+      List<StockListModel> stockListFilter = stockList;
+      if (searchStockList.isNotEmpty) {
+        stockListFilter = stockList.where((element) {
+          String name = element.description;
+          return name
+              .toLowerCase()
+              .trim()
+              .contains(searchStockList.toLowerCase().trim());
+        }).toList();
+      }
+      emit(StockListLoadedState(stockList: stockListFilter));
+    });
+  }
+
+  _retunrStockList() {
+    on<GetStockListReturnEvent>((event, emit) async {
+      emit(LoadingState());
+      emit(StockListLoadedState(stockList: stockList));
+    });
+  }
+
   _getStockBalanceList() {
     on<GetStockBalanceListEvent>((event, emit) async {
       emit(LoadingState());
+      tbStockListId = event.params.tbStockListId!;
 
       if (event.params.page == 0) {
         stockBalanceList.clear();
@@ -64,6 +116,43 @@ class StockBalanceBloc extends Bloc<StockBalanceEvent, StockBalanceState> {
         stockBalanceList += r;
         emit(StockBalanceListLoadedState(stockBalanceList: stockBalanceList));
       });
+    });
+  }
+
+  _searchStockBalanceList() {
+    on<SearchStockBalanceEvent>((event, emit) async {
+      emit(LoadingState());
+      if (event.params.page == 0) {
+        stockBalanceList.clear();
+        pageStockList = 1;
+      } else {
+        pageStockList += 1;
+      }
+      event.params.page = pageStockBalanceList;
+      var response = await getStockBalanceList.call(event.params);
+
+      response.fold((l) => emit(ErrorState(message: l.toString())), (r) {
+        stockBalanceList = r;
+        emit(StockBalanceListLoadedState(stockBalanceList: stockBalanceList));
+      });
+    });
+  }
+
+  _filterStockBalanceList() {
+    on<FilterStockBalanceEvent>((event, emit) async {
+      emit(LoadingState());
+      List<StockBalanceItemsModel> stockBalanceListFilter = stockBalanceList;
+      if (searchStockList.isNotEmpty) {
+        stockBalanceListFilter = stockBalanceList.where((element) {
+          String name = element.nameMerchandise;
+          return name
+              .toLowerCase()
+              .trim()
+              .contains(searchStockList.toLowerCase().trim());
+        }).toList();
+      }
+      emit(StockBalanceListLoadedState(
+          stockBalanceList: stockBalanceListFilter));
     });
   }
 }

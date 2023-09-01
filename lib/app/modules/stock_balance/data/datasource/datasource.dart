@@ -11,13 +11,13 @@ abstract class DataSource extends Gateway {
   DataSource({required super.httpClient});
 
   Future<List<StockListModel>> getStockList({required ParamsStockList params});
-  Future<List<StockBalanceModel>> getStockBalancelist(
+  Future<List<StockBalanceItemsModel>> getStockBalancelist(
       {required ParamsStockBalanceList params});
 }
 
 class DataSourceImpl extends DataSource {
   List<StockListModel> stockList = [];
-  List<StockBalanceModel> stockBalanceList = [];
+  List<StockBalanceItemsModel> stockBalanceList = [];
 
   DataSourceImpl({required super.httpClient});
   @override
@@ -50,24 +50,29 @@ class DataSourceImpl extends DataSource {
   }
 
   @override
-  Future<List<StockBalanceModel>> getStockBalancelist(
+  Future<List<StockBalanceItemsModel>> getStockBalancelist(
       {required ParamsStockBalanceList params}) async {
     await getInstitutionId().then((value) {
       (kIsWeb)
           ? params.tbInstitutionId = value
           : params.tbInstitutionId = int.parse(value);
     });
+    await getUserId().then((value) {
+      (kIsWeb)
+          ? params.tbSalesmanId = 0
+          : params.tbSalesmanId = int.parse(value);
+    });
     final body = jsonEncode(params.toJson());
     return await request(
-      'stocklist/getlist',
+      'stockbalance/getlist',
       method: HTTPMethod.post,
       data: body,
       (payload) {
         final data = json.decode(payload);
 
         if (data.length > 0) {
-          stockBalanceList = (data as List).map((json) {
-            return StockBalanceModel.fromJson(json);
+          stockBalanceList = (data['items'] as List).map((json) {
+            return StockBalanceItemsModel.fromJson(json);
           }).toList();
         }
         return stockBalanceList;

@@ -13,7 +13,7 @@ class StockListLoadedState extends StockBalanceState {
 }
 
 class StockBalanceListLoadedState extends StockBalanceState {
-  final List<StockBalanceModel> stockBalanceList;
+  final List<StockBalanceItemsModel> stockBalanceList;
   StockBalanceListLoadedState({
     required this.stockBalanceList,
   });
@@ -22,6 +22,13 @@ class StockBalanceListLoadedState extends StockBalanceState {
 class StockErrorState extends StockBalanceState {
   final String message;
   StockErrorState({
+    required this.message,
+  });
+}
+
+class ErrorState extends StockBalanceState {
+  final String message;
+  ErrorState({
     required this.message,
   });
 }

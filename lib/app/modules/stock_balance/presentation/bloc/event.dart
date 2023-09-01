@@ -9,6 +9,8 @@ class GetStockListEvent extends StockBalanceEvent {
   GetStockListEvent({required this.params});
 }
 
+class GetStockListReturnEvent extends StockBalanceEvent {}
+
 class SearchStockEvent extends StockBalanceEvent {
   final ParamsStockList params;
 
@@ -22,3 +24,11 @@ class GetStockBalanceListEvent extends StockBalanceEvent {
   ParamsStockBalanceList params;
   GetStockBalanceListEvent({required this.params});
 }
+
+class SearchStockBalanceEvent extends StockBalanceEvent {
+  final ParamsStockBalanceList params;
+
+  SearchStockBalanceEvent({required this.params});
+}
+
+class FilterStockBalanceEvent extends StockBalanceEvent {}

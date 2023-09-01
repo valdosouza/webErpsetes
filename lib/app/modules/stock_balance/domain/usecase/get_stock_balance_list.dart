@@ -6,13 +6,13 @@ import 'package:appweb/app/modules/stock_balance/domain/repository/repository.da
 import 'package:dartz/dartz.dart';
 
 class GetStockBalanceList
-    implements UseCase<List<StockBalanceModel>, ParamsStockBalanceList> {
+    implements UseCase<List<StockBalanceItemsModel>, ParamsStockBalanceList> {
   final Repository repository;
 
   GetStockBalanceList({required this.repository});
 
   @override
-  Future<Either<Failure, List<StockBalanceModel>>> call(
+  Future<Either<Failure, List<StockBalanceItemsModel>>> call(
       ParamsStockBalanceList params) async {
     try {
       final list = await repository.getStockBalanceList(params: params);
@@ -27,20 +27,25 @@ class ParamsStockBalanceList {
   int tbInstitutionId;
   int page;
   int? id;
-  String? description;
+  int? tbSalesmanId;
+  int? tbStockListId;
+  String? nameMerchandise;
   ParamsStockBalanceList({
     required this.tbInstitutionId,
     required this.page,
     this.id,
-    this.description,
+    this.tbSalesmanId,
+    this.tbStockListId,
+    this.nameMerchandise,
   });
   Map<dynamic, dynamic> toJson() {
     final Map<dynamic, dynamic> data = <dynamic, dynamic>{};
     data['tb_institution_id'] = tbInstitutionId;
     data['page'] = page;
     data['id'] = id;
-    data['description'] = description;
-
+    data['tb_salemsan_id'] = tbSalesmanId;
+    data['tb_stock_list_id'] = tbStockListId;
+    data['name_merchandise'] = nameMerchandise;
     return data;
   }
 }

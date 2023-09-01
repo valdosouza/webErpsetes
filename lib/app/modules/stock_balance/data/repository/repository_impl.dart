@@ -24,7 +24,7 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<Either<Failure, List<StockBalanceModel>>> getStockBalanceList(
+  Future<Either<Failure, List<StockBalanceItemsModel>>> getStockBalanceList(
       {required ParamsStockBalanceList params}) async {
     try {
       final list = await datasource.getStockBalancelist(params: params);
