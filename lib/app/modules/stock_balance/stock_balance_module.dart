@@ -4,7 +4,7 @@ import 'package:appweb/app/modules/stock_balance/domain/repository/repository.da
 import 'package:appweb/app/modules/stock_balance/domain/usecase/get_stock_balance_list.dart';
 import 'package:appweb/app/modules/stock_balance/domain/usecase/get_stock_list.dart';
 import 'package:appweb/app/modules/stock_balance/presentation/bloc/bloc.dart';
-import 'package:appweb/app/modules/stock_balance/presentation/page/page.dart';
+import 'package:appweb/app/modules/stock_balance/presentation/page/page_stock_balance.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:http/http.dart' as http;
 
@@ -34,7 +34,7 @@ class StockBalanceModule extends Module {
   final List<ModularRoute> routes = [
     ChildRoute(
       '/',
-      child: (_, args) => const Page(),
+      child: (_, args) => const PageStockBalance(),
     ),
   ];
 }

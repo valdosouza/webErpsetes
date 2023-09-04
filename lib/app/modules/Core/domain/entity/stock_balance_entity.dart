@@ -14,7 +14,7 @@ class StockBalanceEntity {
 class StockBalanceItemsEntity {
   final int tbMerchandiseId;
   final String nameMerchandise;
-  final int quantity;
+  final double quantity;
 
   StockBalanceItemsEntity(
       {required this.tbMerchandiseId,

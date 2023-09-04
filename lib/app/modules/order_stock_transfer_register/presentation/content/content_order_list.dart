@@ -270,52 +270,56 @@ class _ContentOrderListState extends State<ContentOrderList> {
                       ],
                     ),
                   ),
-                  trailing: PopupMenuButton(
-                    itemBuilder: (context) => [
-                      (widget.orderlist[index].status == "F")
-                          ? PopupMenuItem(
+                  trailing: (kIsWeb)
+                      ? PopupMenuButton(
+                          itemBuilder: (context) => [
+                            (widget.orderlist[index].status == "F")
+                                ? PopupMenuItem(
+                                    onTap: (() => bloc.add(
+                                          ReopenOrderEvent(
+                                            params: ParamsReopenOrder(
+                                              tbInstitutionId: 0,
+                                              tbUserId: 0,
+                                              tbOrderId:
+                                                  widget.orderlist[index].id,
+                                              dtRecord: CustomDate.newDate(),
+                                            ),
+                                          ),
+                                        )),
+                                    value: 0,
+                                    child: const Text("Reabrir"),
+                                  )
+                                : PopupMenuItem(
+                                    onTap: (() => bloc.add(
+                                          ClosureOrderEvent(
+                                            params: ParamsClosureOrder(
+                                              tbInstitutionId: 0,
+                                              tbUserId: 0,
+                                              tbOrderId:
+                                                  widget.orderlist[index].id,
+                                              dtRecord: CustomDate.newDate(),
+                                            ),
+                                          ),
+                                        )),
+                                    value: 0,
+                                    child: const Text("Fechar"),
+                                  ),
+                            PopupMenuItem(
                               onTap: (() => bloc.add(
-                                    ReopenOrderEvent(
-                                      params: ParamsReopenOrder(
+                                    DeleteOrderEvent(
+                                      params: ParamsDeleteOrder(
                                         tbInstitutionId: 0,
                                         tbUserId: 0,
                                         tbOrderId: widget.orderlist[index].id,
-                                        dtRecord: CustomDate.newDate(),
                                       ),
                                     ),
                                   )),
                               value: 0,
-                              child: const Text("Reabrir"),
-                            )
-                          : PopupMenuItem(
-                              onTap: (() => bloc.add(
-                                    ClosureOrderEvent(
-                                      params: ParamsClosureOrder(
-                                        tbInstitutionId: 0,
-                                        tbUserId: 0,
-                                        tbOrderId: widget.orderlist[index].id,
-                                        dtRecord: CustomDate.newDate(),
-                                      ),
-                                    ),
-                                  )),
-                              value: 0,
-                              child: const Text("Fechar"),
+                              child: const Text("Excluir"),
                             ),
-                      PopupMenuItem(
-                        onTap: (() => bloc.add(
-                              DeleteOrderEvent(
-                                params: ParamsDeleteOrder(
-                                  tbInstitutionId: 0,
-                                  tbUserId: 0,
-                                  tbOrderId: widget.orderlist[index].id,
-                                ),
-                              ),
-                            )),
-                        value: 0,
-                        child: const Text("Excluir"),
-                      ),
-                    ],
-                  ),
+                          ],
+                        )
+                      : null,
                 ),
               ),
               separatorBuilder: (_, __) =>

@@ -37,7 +37,7 @@ class StockBalanceItemsModel extends StockBalanceItemsEntity {
   StockBalanceItemsModel({
     int? tbMerchandiseId,
     String? nameMerchandise,
-    int? quantity,
+    double? quantity,
   }) : super(
             tbMerchandiseId: tbMerchandiseId ?? 0,
             nameMerchandise: nameMerchandise ?? "",
@@ -47,8 +47,8 @@ class StockBalanceItemsModel extends StockBalanceItemsEntity {
     return StockBalanceItemsModel(
       tbMerchandiseId: json['tb_merchandise_id'] as int? ?? 0,
       nameMerchandise: json['name_merchandise'],
-      quantity: json['quantity'] is String
-          ? double.parse(json['quantity'])
+      quantity: json['quantity'] is int
+          ? json['quantity'].toDouble()
           : json['quantity'],
     );
   }

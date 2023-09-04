@@ -142,13 +142,13 @@ class StockBalanceBloc extends Bloc<StockBalanceEvent, StockBalanceState> {
     on<FilterStockBalanceEvent>((event, emit) async {
       emit(LoadingState());
       List<StockBalanceItemsModel> stockBalanceListFilter = stockBalanceList;
-      if (searchStockList.isNotEmpty) {
+      if (searchMerchandise.isNotEmpty) {
         stockBalanceListFilter = stockBalanceList.where((element) {
           String name = element.nameMerchandise;
           return name
               .toLowerCase()
               .trim()
-              .contains(searchStockList.toLowerCase().trim());
+              .contains(searchMerchandise.toLowerCase().trim());
         }).toList();
       }
       emit(StockBalanceListLoadedState(

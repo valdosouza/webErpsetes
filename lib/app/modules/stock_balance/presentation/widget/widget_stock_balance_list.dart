@@ -5,6 +5,7 @@ import 'package:appweb/app/modules/stock_balance/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/stock_balance/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/stock_balance/presentation/bloc/state.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -77,7 +78,11 @@ class WidgetStockBalanceListtState extends State<WidgetStockBalanceList> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            bloc.add(GetStockListReturnEvent());
+            if (kIsWeb) {
+              bloc.add(GetStockListReturnEvent());
+            } else {
+              Modular.to.navigate('/stock/mobile/');
+            }
           },
         ),
       ),
@@ -100,14 +105,16 @@ class WidgetStockBalanceListtState extends State<WidgetStockBalanceList> {
                         tbInstitutionId: 0,
                         page: 0,
                         id: 0,
+                        tbSalesmanId: 0,
+                        tbStockListId: bloc.tbStockListId,
                         nameMerchandise: bloc.searchMerchandise,
                       ),
                     ),
                   ),
                 }),
             onChange: ((value) => {
-                  bloc.searchStockList = value,
-                  bloc.add(FilterStockEvent()),
+                  bloc.searchMerchandise = value,
+                  bloc.add(FilterStockBalanceEvent()),
                 }),
           ),
           const SizedBox(height: 5.0),

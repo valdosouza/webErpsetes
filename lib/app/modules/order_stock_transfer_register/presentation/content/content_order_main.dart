@@ -27,7 +27,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
   late final OrderStockTransferRegisterBloc bloc;
   late MaskedTextController controllerDate;
   bool selectPaymentTime = false;
-
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -67,40 +67,45 @@ class _ContentOrderMainState extends State<ContentOrderMain>
             ),
           ),
           body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: _date(),
-                      ),
-                      const SizedBox(width: 5.0),
-                      Expanded(
-                        flex: 1,
-                        child: _number(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8.0),
-                  _itemsList(itemslistEnabled),
-                  const SizedBox(height: 8.0),
-                  _observation(),
-                  const SizedBox(height: 8.0),
-                ],
+            child: Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: _date(),
+                        ),
+                        const SizedBox(width: 5.0),
+                        Expanded(
+                          flex: 1,
+                          child: _number(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8.0),
+                    _itemsList(itemslistEnabled),
+                    const SizedBox(height: 8.0),
+                    _observation(),
+                    const SizedBox(height: 8.0),
+                  ],
+                ),
               ),
             ),
           ),
           floatingActionButton: (bloc.orderMain.order.status != "F")
               ? FloatingActionButton(
                   onPressed: () async {
-                    if (bloc.orderMain.order.id == 0) {
-                      bloc.add(PostOrderEvent());
-                    } else {
-                      bloc.add(PutOrderEvent());
+                    if (_formKey.currentState!.validate()) {
+                      if (bloc.orderMain.order.id == 0) {
+                        bloc.add(PostOrderEvent());
+                      } else {
+                        bloc.add(PutOrderEvent());
+                      }
                     }
                   },
                   backgroundColor: Colors.black,
@@ -148,6 +153,12 @@ class _ContentOrderMainState extends State<ContentOrderMain>
             bloc.add(GetItemsListEvent(
                 params: ParamsItemsList(tbOrderId: bloc.orderMain.order.id))),
           }),
+      validator: (value) {
+        if ((items.isEmpty)) {
+          return "Ordem sem items, Verifique!";
+        }
+        return null;
+      },
     );
   }
 

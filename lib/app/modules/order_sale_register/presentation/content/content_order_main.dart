@@ -29,7 +29,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
   late final OrderSaleRegisterBloc bloc;
   late MaskedTextController controllerDate;
   bool selectPaymentTime = false;
-
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -68,63 +68,68 @@ class _ContentOrderMainState extends State<ContentOrderMain>
             ),
           ),
           body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: _date(),
-                      ),
-                      const SizedBox(width: 5.0),
-                      Expanded(
-                        flex: 1,
-                        child: _number(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8.0),
-                  _customer(),
-                  const SizedBox(height: 8.0),
-                  _itemsList(itemslistEnabled),
-                  const SizedBox(height: 8.0),
-                  _paymentTypes(),
-                  const SizedBox(height: 8.0),
-                  //_timePayments(),
-                  const SizedBox(height: 8.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: _totalOrder(itemslistEnabled),
-                      ),
-                      const SizedBox(width: 5.0),
-                      Expanded(
-                        flex: 1,
-                        child: _plots(),
-                      ),
-                    ],
-                  ),
+            child: Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: _date(),
+                        ),
+                        const SizedBox(width: 5.0),
+                        Expanded(
+                          flex: 1,
+                          child: _number(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8.0),
+                    _customer(),
+                    const SizedBox(height: 8.0),
+                    _itemsList(itemslistEnabled),
+                    const SizedBox(height: 8.0),
+                    _paymentTypes(),
+                    const SizedBox(height: 8.0),
+                    //_timePayments(),
+                    const SizedBox(height: 8.0),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: _totalOrder(itemslistEnabled),
+                        ),
+                        const SizedBox(width: 5.0),
+                        Expanded(
+                          flex: 1,
+                          child: _plots(),
+                        ),
+                      ],
+                    ),
 
-                  const SizedBox(height: 8.0),
-                  _deadline(),
-                  const SizedBox(height: 8.0),
-                  _observation(),
-                  const SizedBox(height: 8.0),
-                ],
+                    const SizedBox(height: 8.0),
+                    _deadline(),
+                    const SizedBox(height: 8.0),
+                    _observation(),
+                    const SizedBox(height: 8.0),
+                  ],
+                ),
               ),
             ),
           ),
           floatingActionButton: (bloc.orderMain.order.status != "F")
               ? FloatingActionButton(
                   onPressed: () async {
-                    if (bloc.orderMain.order.id == 0) {
-                      bloc.add(PostOrderEvent());
-                    } else {
-                      bloc.add(PutOrderEvent());
+                    if (_formKey.currentState!.validate()) {
+                      if (bloc.orderMain.order.id == 0) {
+                        bloc.add(PostOrderEvent());
+                      } else {
+                        bloc.add(PutOrderEvent());
+                      }
                     }
                   },
                   backgroundColor: Colors.black,
@@ -184,6 +189,12 @@ class _ContentOrderMainState extends State<ContentOrderMain>
                   )))
                 : null
           }),
+      validator: (value) {
+        if ((value == null) || (value.isEmpty)) {
+          return "Campo cliente obrigatório";
+        }
+        return null;
+      },
     );
   }
 
@@ -200,6 +211,12 @@ class _ContentOrderMainState extends State<ContentOrderMain>
             bloc.add(GetItemsListEvent(
                 params: ParamsItemsList(tbOrderId: bloc.orderMain.order.id))),
           }),
+      validator: (value) {
+        if ((items.isEmpty)) {
+          return "Ordem sem items, Verifique!";
+        }
+        return null;
+      },
     );
   }
 
@@ -242,6 +259,12 @@ class _ContentOrderMainState extends State<ContentOrderMain>
                   )))
                 : null
           }),
+      validator: (value) {
+        if ((value == null) || (value.isEmpty)) {
+          return "Campo forma de pagamento obrigatório";
+        }
+        return null;
+      },
     );
   }
 
@@ -316,12 +339,21 @@ class _ContentOrderMainState extends State<ContentOrderMain>
 
   _deadline() {
     return CustomInput(
-        readOnly: false,
-        title: "Parcelamento em dias ex: 028/056",
-        initialValue: bloc.orderMain.orderBilling.deadline,
-        keyboardType: TextInputType.text,
-        inputAction: TextInputAction.go,
-        onChanged: (value) => {bloc.orderMain.orderBilling.deadline = value});
+      readOnly: false,
+      title: "Parcelamento em dias ex: 028/056",
+      initialValue: bloc.orderMain.orderBilling.deadline,
+      keyboardType: TextInputType.text,
+      inputAction: TextInputAction.go,
+      onChanged: (value) => {bloc.orderMain.orderBilling.deadline = value},
+      validator: (value) {
+        if (bloc.orderMain.orderBilling.plots > 0) {
+          if ((value == null) || (value.isEmpty)) {
+            return "Parcelas acima de 0(zero) campo obrigatório";
+          }
+        }
+        return null;
+      },
+    );
   }
 
   _observation() {

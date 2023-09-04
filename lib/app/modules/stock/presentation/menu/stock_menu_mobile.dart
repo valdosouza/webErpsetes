@@ -20,7 +20,7 @@ class StockMenuMobile extends StatelessWidget {
             Icons.home,
             'Saldo de Estoque',
             () async =>
-                Modular.to.navigate('/stock/mobile/balance/bysalesman/get/'),
+                Modular.to.navigate('/stock/mobile/balance/stockbalance/'),
           ),
         ],
       ),
