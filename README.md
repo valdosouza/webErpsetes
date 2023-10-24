@@ -4,9 +4,7 @@ Enterprise Resource Planning - ERP It will contain several modules of independen
 
 # Architecture
 
-    Clean Architecture is a software architecture proposed by Robert Cecil Martin (or Uncle Bob, as he is more commonly known) 
-    with the aim of standardizing and organizing the developed code, promoting its reusability,
-    as well as technology independence.
+Clean Architecture is a software architecture proposed by Robert Cecil Martin (or Uncle Bob, as he is more commonly known) with the aim of standardizing and organizing the developed code, promoting its reusability, as well as technology independence.
     
 # create modules
   flutter_modular: ^3.3.0-nullsafety.3  
