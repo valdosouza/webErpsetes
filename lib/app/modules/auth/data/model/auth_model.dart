@@ -8,6 +8,7 @@ class AuthModel extends AuthEntity {
     required String username,
     required String password,
     required String jwt,
+    required String message,
   }) : super(
           auth: auth,
           id: id,
@@ -15,6 +16,7 @@ class AuthModel extends AuthEntity {
           username: username,
           password: password,
           jwt: jwt,
+          message: message,
         );
 
   factory AuthModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,7 @@ class AuthModel extends AuthEntity {
       username: json['username'] as String,
       password: json['password'] as String,
       jwt: json['jwt'] as String,
+      message: "",
     );
   }
 }

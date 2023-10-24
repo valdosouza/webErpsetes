@@ -15,6 +15,7 @@ void main() {
     username: 'valdo@setes.com.br',
     password: '827CCB0EEA8A706C4C34A16891F84E7B',
     jwt: "StringJWT",
+    message: "",
   );
   test('Should be a subclass of AuthEntity', () async {
     // assert

@@ -88,7 +88,9 @@ class _DrawerPageMobileState extends State<DrawerPageMobile> {
           itemMenuDraw(Icons.home, 'Estoque',
               () => Modular.to.navigate('/stock/mobile/')),
           itemMenuDraw(
-              Icons.home, 'pedido', () => Modular.to.navigate('/ordersale/')),
+              Icons.home, 'Pedido', () => Modular.to.navigate('/ordersale/')),
+          itemMenuDraw(
+              Icons.home, 'Impressora', () => Modular.to.navigate('/printer/')),
           itemLogout(Icons.close, 'Sair'),
         ],
       ),

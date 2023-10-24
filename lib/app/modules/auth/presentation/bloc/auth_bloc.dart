@@ -91,7 +91,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             );
             return AuthSuccessState();
           } else {
-            return const AuthErrorState('Login ou senha inválido');
+            return AuthErrorState(authModel.message);
           }
         } else if (status == PermissionStatus.denied) {
           return const AuthErrorState('Permissão negada.');

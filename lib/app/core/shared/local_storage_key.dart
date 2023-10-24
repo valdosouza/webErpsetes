@@ -6,4 +6,5 @@ class LocalStorageKey {
   static const tbUserId = 'tb_user_id';
   static const dtCashier = 'dt_cashier';
   static const userName = 'user_name';
+  static const blthPrinter = '';
 }

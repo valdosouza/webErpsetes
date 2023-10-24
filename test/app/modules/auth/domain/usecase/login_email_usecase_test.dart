@@ -25,6 +25,7 @@ void main() {
     username: 'testEmail@Email',
     password: '123',
     jwt: 'StringJWT',
+    message: "",
   );
   tParams = Params(
     username: tAuthModel.username,

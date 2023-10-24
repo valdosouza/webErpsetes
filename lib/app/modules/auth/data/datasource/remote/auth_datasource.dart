@@ -37,7 +37,14 @@ class AuthDatasourceImpl extends AuthDatasource {
         return AuthModel.fromJson(jsonMap);
       },
       onError: (error) {
-        return ServerException;
+        return AuthModel(
+            auth: false,
+            id: 0,
+            jwt: "",
+            password: "",
+            tbInstitutionId: 0,
+            username: username,
+            message: error.toString());
       },
     );
   }
