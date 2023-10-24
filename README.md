@@ -1,7 +1,7 @@
 # Flutter Web - ERP - Setes
 
 Enterprise Resource Planning - ERP It will contain several modules of independent work that will be grouped by branches of activity and thus made available to the customer.
-  # Clean Architecture
+  Architecture
     Clean Architecture is a software architecture proposed by Robert Cecil Martin (or Uncle Bob, as he is more commonly known) 
     with the aim of standardizing and organizing the developed code, promoting its reusability,
     as well as technology independence.
