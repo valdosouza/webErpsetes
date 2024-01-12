@@ -72,6 +72,8 @@ class _DrawerPageMainState extends State<DrawerPageMain> {
               ],
             ),
           ),
+          itemMenuDraw(Icons.home, 'Dashboard',
+              () => Modular.to.navigate('/dashboard/')),
           itemMenuDraw(Icons.home, 'Estoque',
               () => Modular.to.navigate('/stock/desktop/')),
           itemMenuDraw(Icons.home, 'Pessoal',

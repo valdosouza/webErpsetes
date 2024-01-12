@@ -38,7 +38,7 @@ Widget salesChart(BuildContext context, List<HomeSalesPaymentTypeModel> list) {
 
   return SizedBox(
     height: 200,
-    child: Stack(
+    child: Row(
       children: [
         PieChart(
           PieChartData(

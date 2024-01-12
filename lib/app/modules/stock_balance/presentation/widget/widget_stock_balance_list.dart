@@ -134,9 +134,11 @@ class WidgetStockBalanceListtState extends State<WidgetStockBalanceList> {
                           backgroundColor: (Colors.black),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: AutoSizeText(widget
-                                .stockBalanceList[index].tbMerchandiseId
-                                .toString()),
+                            child: AutoSizeText(
+                              widget.stockBalanceList[index].tbMerchandiseId
+                                  .toString(),
+                              style: kCircleAvatarTextStyle,
+                            ),
                           ),
                         ),
                         title: Column(

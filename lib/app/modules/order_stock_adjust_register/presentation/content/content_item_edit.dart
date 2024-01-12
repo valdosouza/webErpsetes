@@ -53,7 +53,10 @@ class _ContentItemEditState extends State<ContentItemEdit> {
           bloc.add(SetItemUpdateEvent(item: widget.itemEdit));
         },
         backgroundColor: Colors.black,
-        child: const Icon(Icons.save),
+        child: const Icon(
+          Icons.save,
+          color: kSecondaryColor,
+        ),
       ),
     );
   }

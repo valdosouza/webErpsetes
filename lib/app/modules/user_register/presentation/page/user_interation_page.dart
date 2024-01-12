@@ -35,10 +35,13 @@ class _UserInteractionPageState extends State<UserInteractionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) {
+        if (didPop) {
+          return;
+        }
         bloc.add(UserRegisterGetListEvent());
-        return true;
       },
       child: Scaffold(
         appBar: AppBar(

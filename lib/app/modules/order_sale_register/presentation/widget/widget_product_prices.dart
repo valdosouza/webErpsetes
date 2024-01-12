@@ -34,11 +34,25 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: kBoxDecorationflexibleSpace,
-        ),
-        title: const Text('Preços Disponiveis'),
-      ),
+          flexibleSpace: Container(
+            decoration: kBoxDecorationflexibleSpace,
+          ),
+          title: const Text('Preços Disponiveis'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              bloc.add(
+                GetProductListEvent(
+                  params: ParamsProductList(
+                    id: 0,
+                    nameProduct: "",
+                    page: 0,
+                    tbInstitutionId: 0,
+                  ),
+                ),
+              );
+            },
+          )),
       body: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Column(
@@ -68,7 +82,10 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
           }
         },
         backgroundColor: Colors.black,
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: kSecondaryColor,
+        ),
       ),
     );
   }

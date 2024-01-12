@@ -1,5 +1,7 @@
 import 'package:appweb/app/core/shared/page_404.dart';
 import 'package:appweb/app/modules/auth/auth_module.dart';
+import 'package:appweb/app/modules/customer_register/customer_register_module.dart';
+import 'package:appweb/app/modules/dashboard/dashboard_module.dart';
 import 'package:appweb/app/modules/drawer/data/datasource/drawer_datasource.dart';
 import 'package:appweb/app/modules/drawer/data/repository/drawer_repository_impl.dart';
 import 'package:appweb/app/modules/drawer/domain/usecase/drawer_cashier_is_open.dart';
@@ -44,6 +46,7 @@ class AppModule extends Module {
         ModuleRoute('/auth', module: AuthModule()),
         ModuleRoute('/printer', module: PrinterModule()),
         ModuleRoute('/home', module: HomeModule()),
+        ModuleRoute('/customerregister', module: CustomerRegisterModule()),
         ModuleRoute('/resourcehuman', module: ResourceHumanModule()),
         ModuleRoute('/stock', module: StockModule()),
         ModuleRoute('/orderstockadjust',
@@ -51,6 +54,7 @@ class AppModule extends Module {
         ModuleRoute('/orderstocktransfer',
             module: OrderStockTransferRegisterModule()),
         ModuleRoute('/ordersale', module: OrderSaleRegisterModule()),
+        ModuleRoute('/dashboard', module: DashboardModule()),
         WildcardRoute(child: (_, __) => const Page404()),
       ];
 }

@@ -60,7 +60,7 @@ class _ContentItemsListState extends State<ContentItemsList> {
         flexibleSpace: Container(
           decoration: kBoxDecorationflexibleSpace,
         ),
-        title: const Text('Itens do Pedidos'),
+        title: const Text('Itens do Pedido'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
@@ -96,7 +96,10 @@ class _ContentItemsListState extends State<ContentItemsList> {
                 }
               },
               backgroundColor: Colors.black,
-              child: const Icon(Icons.add),
+              child: const Icon(
+                Icons.add,
+                color: kSecondaryColor,
+              ),
             )
           : null,
     );
@@ -113,7 +116,7 @@ class _ContentItemsListState extends State<ContentItemsList> {
               itemBuilder: (context, index) => InkWell(
                 onTap: () {},
                 child: SizedBox(
-                  height: 120,
+                  height: 141,
                   child: Column(
                     children: [
                       ListTile(
@@ -121,11 +124,14 @@ class _ContentItemsListState extends State<ContentItemsList> {
                           backgroundColor: (Colors.black),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: AutoSizeText((index + 1).toString()),
+                            child: AutoSizeText(
+                              (index + 1).toString(),
+                              style: kCircleAvatarTextStyle,
+                            ),
                           ),
                         ),
                         title: SizedBox(
-                          height: 60,
+                          height: 65,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -157,7 +163,7 @@ class _ContentItemsListState extends State<ContentItemsList> {
                           Expanded(
                             flex: 1,
                             child: SizedBox(
-                              height: 50,
+                              height: 60,
                               child: Column(
                                 children: [
                                   const Text(

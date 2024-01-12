@@ -134,7 +134,9 @@ class WidgetStockListtState extends State<WidgetStockList> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             child: AutoSizeText(
-                                widget.stockList[index].id.toString()),
+                              widget.stockList[index].id.toString(),
+                              style: kCircleAvatarTextStyle,
+                            ),
                           ),
                         ),
                         title: Column(

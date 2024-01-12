@@ -109,7 +109,10 @@ class _ContentOrderMainState extends State<ContentOrderMain>
                     }
                   },
                   backgroundColor: Colors.black,
-                  child: const Icon(Icons.save),
+                  child: const Icon(
+                    Icons.save,
+                    color: kSecondaryColor,
+                  ),
                 )
               : null,
         );

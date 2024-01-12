@@ -7,6 +7,7 @@ import 'package:appweb/app/modules/auth/domain/usecase/login_email.dart';
 import 'package:appweb/app/modules/auth/domain/usecase/recovery_password.dart';
 import 'package:appweb/app/modules/auth/presentation/bloc/auth_event.dart';
 import 'package:bloc/bloc.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -52,12 +53,57 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
+    return <String, dynamic>{
+      'versionSecurityPatch': build.version.securityPatch,
+      'versionSdkInt': build.version.sdkInt,
+      'versionRelease': build.version.release,
+      'versionPreviewSdkInt': build.version.previewSdkInt,
+      'versionIncremental': build.version.incremental,
+      'versionCodename': build.version.codename,
+      'versionBaseOS': build.version.baseOS,
+      'board': build.board,
+      'bootloader': build.bootloader,
+      'brand': build.brand,
+      'device': build.device,
+      'display': build.display,
+      'fingerprint': build.fingerprint,
+      'hardware': build.hardware,
+      'host': build.host,
+      'id': build.id,
+      'manufacturer': build.manufacturer,
+      'model': build.model,
+      'product': build.product,
+      'supported32BitAbis': build.supported32BitAbis,
+      'supported64BitAbis': build.supported64BitAbis,
+      'supportedAbis': build.supportedAbis,
+      'tags': build.tags,
+      'type': build.type,
+      'isPhysicalDevice': build.isPhysicalDevice,
+      'systemFeatures': build.systemFeatures,
+      'displaySizeInches':
+          ((build.displayMetrics.sizeInches * 10).roundToDouble() / 10),
+      'displayWidthPixels': build.displayMetrics.widthPx,
+      'displayWidthInches': build.displayMetrics.widthInches,
+      'displayHeightPixels': build.displayMetrics.heightPx,
+      'displayHeightInches': build.displayMetrics.heightInches,
+      'displayXDpi': build.displayMetrics.xDpi,
+      'displayYDpi': build.displayMetrics.yDpi,
+      'serialNumber': build.serialNumber,
+    };
+  }
+
   login() async {
     on<AuthLoginEvent>((event, emit) async {
       emit(AuthLoadingState());
       var status = PermissionStatus.granted;
+      Map<String, dynamic> deviceData = <String, dynamic>{};
       if (!kIsWeb) {
-        status = await Permission.storage.request();
+        final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+        deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
+        if (int.parse(deviceData['versionRelease']) <= 10) {
+          status = await Permission.storage.request();
+        }
       }
       LocalStorageService.instance.saveItem(
         key: LocalStorageKey.token,
@@ -69,7 +115,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       var response = result
           .fold((l) => const AuthErrorState('Erro ao realizar Login'),
               (AuthModel authResponse) {
-        if (status == PermissionStatus.granted) {
+        if ((status == PermissionStatus.granted) ||
+            (int.parse(deviceData['versionRelease']) > 10)) {
           final AuthModel authModel = authResponse;
           final bool auth = authModel.auth;
           if (auth) {

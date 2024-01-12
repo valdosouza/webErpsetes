@@ -152,7 +152,10 @@ class _ContentOrderListState extends State<ContentOrderList> {
           bloc.add(NewFormOrderEvent());
         },
         backgroundColor: Colors.black,
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: kSecondaryColor,
+        ),
       ),
     );
   }
@@ -202,7 +205,7 @@ class _ContentOrderListState extends State<ContentOrderList> {
                 },
                 child: ListTile(
                   title: SizedBox(
-                    height: 83,
+                    height: 124,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -214,12 +217,17 @@ class _ContentOrderListState extends State<ContentOrderList> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text("Número",
+                                  const AutoSizeText("Número",
+                                      maxFontSize: 14,
+                                      minFontSize: 8,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 5.0),
-                                  Text(widget.orderlist[index].number
-                                      .toString()),
+                                  AutoSizeText(
+                                    widget.orderlist[index].number.toString(),
+                                    maxFontSize: 14,
+                                    minFontSize: 8,
+                                  ),
                                 ],
                               ),
                             ),
@@ -228,11 +236,17 @@ class _ContentOrderListState extends State<ContentOrderList> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text("Data",
+                                  const AutoSizeText("Data",
+                                      maxFontSize: 14,
+                                      minFontSize: 8,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 5.0),
-                                  Text(widget.orderlist[index].dtRecord),
+                                  AutoSizeText(
+                                    widget.orderlist[index].dtRecord,
+                                    maxFontSize: 14,
+                                    minFontSize: 8,
+                                  ),
                                 ],
                               ),
                             ),
@@ -241,13 +255,19 @@ class _ContentOrderListState extends State<ContentOrderList> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text("Situação",
+                                  const AutoSizeText("Situação",
+                                      maxFontSize: 14,
+                                      minFontSize: 8,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 5.0),
-                                  Text((widget.orderlist[index].status != "F")
-                                      ? "Aberta"
-                                      : "Fechada"),
+                                  AutoSizeText(
+                                    (widget.orderlist[index].status != "F")
+                                        ? "Aberta"
+                                        : "Fechada",
+                                    maxFontSize: 14,
+                                    minFontSize: 8,
+                                  ),
                                 ],
                               ),
                             ),
@@ -256,15 +276,21 @@ class _ContentOrderListState extends State<ContentOrderList> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            const AutoSizeText(
                               "Nome da Entidade",
+                              maxFontSize: 14,
+                              minFontSize: 8,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 5.0),
-                            AutoSizeText(widget.orderlist[index].nameEntity,
-                                maxFontSize: 14),
+                            AutoSizeText(
+                              widget.orderlist[index].nameEntity,
+                              maxFontSize: 14,
+                              minFontSize: 8,
+                              maxLines: 2,
+                            ),
                           ],
                         ),
                       ],

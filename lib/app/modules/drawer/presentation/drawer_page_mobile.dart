@@ -77,7 +77,7 @@ class _DrawerPageMobileState extends State<DrawerPageMobile> {
                         //fit: BoxFit.fill,
                       )),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 3),
                 AutoSizeText(
                   bloc.userName,
                   style: const TextStyle(color: Colors.black, fontSize: 18),

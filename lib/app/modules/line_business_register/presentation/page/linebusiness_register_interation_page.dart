@@ -29,10 +29,13 @@ class _LinebusinessInterationPageState
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) {
+        if (didPop) {
+          return;
+        }
         bloc.add(LinebusinessGetListEvent());
-        return true;
       },
       child: Scaffold(
         appBar: AppBar(

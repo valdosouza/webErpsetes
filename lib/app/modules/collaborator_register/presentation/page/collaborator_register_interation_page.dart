@@ -51,10 +51,13 @@ class _CollaboratorRegisterInterationPageState
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) {
+        if (didPop) {
+          return;
+        }
         bloc.add(CollaboratorRegisterGetListEvent());
-        return true;
       },
       child: BlocConsumer<CollaboratorRegisterBloc, CollaboratorRegisterState>(
         bloc: bloc,

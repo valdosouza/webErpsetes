@@ -1,6 +1,7 @@
 import 'package:appweb/app/core/shared/theme.dart';
 import 'package:appweb/app/core/shared/utils/custom_date.dart';
 import 'package:appweb/app/core/shared/widgets/custom_search_filter.dart';
+import 'package:appweb/app/core/shared/widgets/item_drawer.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/closure.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/delete.dart';
@@ -64,7 +65,11 @@ class _ContentOrderListState extends State<ContentOrderList> {
         flexibleSpace: Container(
           decoration: kBoxDecorationflexibleSpace,
         ),
-        title: const Text('Lista de Pedidos de Venda'),
+        title: const AutoSizeText(
+          'Lista de Pedidos de Venda',
+          maxFontSize: 14,
+          minFontSize: 8,
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
@@ -77,6 +82,8 @@ class _ContentOrderListState extends State<ContentOrderList> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            buildNewCustomer(),
+            const SizedBox(height: 10.0),
             buildSearchInput(),
             const SizedBox(height: 10.0),
             buildListView(),
@@ -88,7 +95,10 @@ class _ContentOrderListState extends State<ContentOrderList> {
           bloc.add(NewFormOrderEvent());
         },
         backgroundColor: Colors.black,
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: kSecondaryColor,
+        ),
       ),
     );
   }
@@ -123,6 +133,16 @@ class _ContentOrderListState extends State<ContentOrderList> {
     );
   }
 
+  buildNewCustomer() {
+    return itemMenuDraw(
+      Icons.home,
+      'Cliente Novo',
+      () async => Modular.to.navigate(
+          '/ordersale/mobile/register/customer-register/',
+          arguments: [0, '/ordersale/']),
+    );
+  }
+
   buildListView() {
     return Expanded(
       child: widget.orderlist.isEmpty
@@ -138,7 +158,7 @@ class _ContentOrderListState extends State<ContentOrderList> {
                 },
                 child: ListTile(
                   title: SizedBox(
-                    height: 83,
+                    height: 124,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -150,12 +170,17 @@ class _ContentOrderListState extends State<ContentOrderList> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text("Número",
+                                  const AutoSizeText("Número",
+                                      maxFontSize: 14,
+                                      minFontSize: 8,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 5.0),
-                                  Text(widget.orderlist[index].number
-                                      .toString()),
+                                  AutoSizeText(
+                                    widget.orderlist[index].number.toString(),
+                                    maxFontSize: 14,
+                                    minFontSize: 8,
+                                  ),
                                 ],
                               ),
                             ),
@@ -164,11 +189,17 @@ class _ContentOrderListState extends State<ContentOrderList> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text("Data",
+                                  const AutoSizeText("Data",
+                                      maxFontSize: 14,
+                                      minFontSize: 8,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 5.0),
-                                  Text(widget.orderlist[index].dtRecord),
+                                  AutoSizeText(
+                                    widget.orderlist[index].dtRecord,
+                                    maxFontSize: 14,
+                                    minFontSize: 8,
+                                  )
                                 ],
                               ),
                             ),
@@ -177,13 +208,19 @@ class _ContentOrderListState extends State<ContentOrderList> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text("Situação",
+                                  const AutoSizeText("Situação",
+                                      maxFontSize: 14,
+                                      minFontSize: 8,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 5.0),
-                                  Text((widget.orderlist[index].status != "F")
-                                      ? "Aberta"
-                                      : "Fechada"),
+                                  AutoSizeText(
+                                    (widget.orderlist[index].status != "F")
+                                        ? "Aberta"
+                                        : "Fechada",
+                                    maxFontSize: 14,
+                                    minFontSize: 8,
+                                  ),
                                 ],
                               ),
                             ),
@@ -192,8 +229,10 @@ class _ContentOrderListState extends State<ContentOrderList> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            const AutoSizeText(
                               "Nome do Cliente",
+                              maxFontSize: 18,
+                              minFontSize: 10,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -201,8 +240,9 @@ class _ContentOrderListState extends State<ContentOrderList> {
                             const SizedBox(height: 5.0),
                             AutoSizeText(
                               widget.orderlist[index].nameCustomer,
-                              maxFontSize: 14,
-                              maxLines: 1,
+                              maxFontSize: 18,
+                              minFontSize: 10,
+                              maxLines: 2,
                             ),
                           ],
                         ),
@@ -224,7 +264,9 @@ class _ContentOrderListState extends State<ContentOrderList> {
                                     ),
                                   )),
                               value: 0,
-                              child: const Text("Reabrir"),
+                              child: const Text(
+                                "Reabrir",
+                              ),
                             )
                           : PopupMenuItem(
                               onTap: (() => bloc.add(
@@ -238,7 +280,9 @@ class _ContentOrderListState extends State<ContentOrderList> {
                                     ),
                                   )),
                               value: 0,
-                              child: const Text("Fechar"),
+                              child: const Text(
+                                "Fechar",
+                              ),
                             ),
                       PopupMenuItem(
                         onTap: (() => bloc.add(

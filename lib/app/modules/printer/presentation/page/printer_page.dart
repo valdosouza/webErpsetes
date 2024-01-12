@@ -229,11 +229,18 @@ class _PrinterPageState extends State<PrinterPage> {
             return FloatingActionButton(
               onPressed: () => bluetoothPrint.stopScan(),
               backgroundColor: Colors.red,
-              child: const Icon(Icons.stop),
+              child: const Icon(
+                Icons.stop,
+                color: kSecondaryColor,
+              ),
             );
           } else {
             return FloatingActionButton(
-                child: const Icon(Icons.search),
+                backgroundColor: Colors.black,
+                child: const Icon(
+                  Icons.search,
+                  color: kSecondaryColor,
+                ),
                 onPressed: () => bluetoothPrint.startScan(
                     timeout: const Duration(seconds: 4)));
           }

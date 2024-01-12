@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:appweb/app/core/shared/theme.dart';
-import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
+import 'package:appweb/app/modules/Core/data/model/customer_list_model.dart';
 
 class WidgetCustomerList extends StatefulWidget {
   final List<CustomerListModel> customerList;
@@ -135,7 +135,11 @@ class WidgetCustomerListtState extends State<WidgetCustomerList> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             child: AutoSizeText(
-                                widget.customerList[index].id.toString()),
+                              minFontSize: 8,
+                              maxLines: 1,
+                              widget.customerList[index].id.toString(),
+                              style: kCircleAvatarTextStyle,
+                            ),
                           ),
                         ),
                         title: Column(

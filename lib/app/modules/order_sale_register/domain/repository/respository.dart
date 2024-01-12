@@ -1,8 +1,8 @@
 import 'package:appweb/app/core/error/failures.dart';
+import 'package:appweb/app/modules/Core/data/model/customer_list_model.dart';
 import 'package:appweb/app/modules/Core/data/model/order_result_action_model.dart';
 import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
-import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';

@@ -136,7 +136,9 @@ class WidgetEntityListtState extends State<WidgetEntityList> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             child: AutoSizeText(
-                                widget.entityList[index].id.toString()),
+                              widget.entityList[index].id.toString(),
+                              style: kCircleAvatarTextStyle,
+                            ),
                           ),
                         ),
                         title: Column(

@@ -52,7 +52,7 @@ class Validators {
         var dv2 = calcDv2 < 2 ? 0 : 11 - calcDv2;
 
         if (digits[13] == dv2) {
-          return null;
+          return "";
         }
       }
     }
@@ -78,7 +78,7 @@ class Validators {
         .map((it) => int.parse(numbers.substring(it.start, it.end)))
         .toList();
     bool justOneDigit = digits.every((element) => element == digits.first);
-    if(justOneDigit) return "CPF inválido";
+    if (justOneDigit) return "CPF inválido";
 
     int sumResultFirstDigit = 0;
     int sumResultLastDigit = 0;
@@ -94,6 +94,6 @@ class Validators {
         ((sumResultLastDigit * 10) % 11) % 10 == digits[10])) {
       return "CPF Inválido";
     }
-    return null;
+    return "";
   }
 }

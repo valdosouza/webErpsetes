@@ -1,6 +1,6 @@
 import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/core/error/failures.dart';
-import 'package:appweb/app/modules/order_sale_register/data/model/customer_list_model.dart';
+import 'package:appweb/app/modules/Core/data/model/customer_list_model.dart';
 import 'package:appweb/app/modules/Core/domain/usecase/usecase.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/repository/respository.dart';
 import 'package:dartz/dartz.dart';

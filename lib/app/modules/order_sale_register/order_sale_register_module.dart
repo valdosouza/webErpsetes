@@ -1,4 +1,6 @@
 import 'package:appweb/app/modules/Core/core_module.dart';
+import 'package:appweb/app/modules/customer_register/customer_register_module.dart';
+import 'package:appweb/app/modules/customer_register/presentation/page/customer_register_page_mobile.dart';
 import 'package:appweb/app/modules/order_sale_register/data/datasource/datasource.dart';
 import 'package:appweb/app/modules/order_sale_register/data/repository/repository_impl.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/closure.dart';
@@ -89,6 +91,14 @@ class OrderSaleRegisterModule extends Module {
     ChildRoute(
       '/',
       child: (_, args) => const Page(),
+    ),
+    ChildRoute(
+      '/mobile/register/',
+      child: (_, args) => CustomerRegisterPageMobile(
+          tbCustomerId: args.data[0], routeCallBack: args.data[1]),
+      children: [
+        ModuleRoute('/customer-register/', module: CustomerRegisterModule()),
+      ],
     ),
   ];
 }

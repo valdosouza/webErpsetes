@@ -1,0 +1,150 @@
+import 'package:appweb/app/core/shared/theme.dart';
+import 'package:appweb/app/core/shared/utils/toast.dart';
+import 'package:appweb/app/modules/customer_register/data/model/customer_main_model.dart';
+import 'package:appweb/app/modules/customer_register/domain/usecase/get_list.dart';
+import 'package:appweb/app/modules/customer_register/presentation/bloc/bloc.dart';
+import 'package:appweb/app/modules/customer_register/presentation/bloc/event.dart';
+import 'package:appweb/app/modules/customer_register/presentation/bloc/state.dart';
+import 'package:appweb/app/modules/customer_register/presentation/widget/customer_register_address_widget.dart';
+import 'package:appweb/app/modules/customer_register/presentation/widget/customer_register_identification_widget.dart';
+import 'package:appweb/app/modules/customer_register/presentation/widget/desktop/customer_register_others_desktop_widget.dart';
+import 'package:appweb/app/modules/customer_register/presentation/widget/customer_register_phone_widget.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+
+class ContentCustomerRegisterDesktop extends StatefulWidget {
+  final CustomerMainModel customer;
+  final int tabIndex;
+  const ContentCustomerRegisterDesktop({
+    Key? key,
+    required this.customer,
+    required this.tabIndex,
+  }) : super(key: key);
+
+  @override
+  State<ContentCustomerRegisterDesktop> createState() =>
+      _ContentCustomerRegisterDesktopState();
+}
+
+class _ContentCustomerRegisterDesktopState
+    extends State<ContentCustomerRegisterDesktop>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  late CustomerMainModel customer;
+
+  late final CustomerRegisterBloc bloc;
+
+  final List<Tab> myTabs = <Tab>[
+    const Tab(text: 'Principal'),
+    const Tab(text: 'Endereço'),
+    const Tab(text: 'Fone'),
+    const Tab(text: 'Outros'),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = Modular.get();
+    customer = widget.customer;
+    _tabController = TabController(vsync: this, length: myTabs.length);
+    _tabController.animateTo(widget.tabIndex);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      onPopInvoked: (_) async {
+        bloc.add(
+          GetListEvent(
+            params: ParamsList(
+              page: 1,
+              tbInstitutionId: 0,
+              tbSalesmanId: 0,
+              id: 0,
+            ),
+          ),
+        );
+      },
+      child: BlocConsumer<CustomerRegisterBloc, CustomerRegisterState>(
+        bloc: bloc,
+        listener: (context, state) {
+          if (state is ErrorState) {
+            CustomToast.showToast(state.message);
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              flexibleSpace: Container(
+                decoration: kBoxDecorationflexibleSpace,
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_outlined,
+                    color: kSecondaryColor),
+                onPressed: () {
+                  bloc.add(
+                    GetListEvent(
+                      params: ParamsList(
+                        page: 1,
+                        tbInstitutionId: 0,
+                        tbSalesmanId: 0,
+                        id: 0,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              title: AutoSizeText(
+                customer.customer.id != 0
+                    ? "Editar Cliente"
+                    : "Adicionar Cliente",
+                style: kTitleAppBarStyle,
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.check,
+                    size: 30.0,
+                  ),
+                  onPressed: () {
+                    bloc.add(PostByDesktopEvent(model: bloc.customer));
+                  },
+                ),
+              ],
+              bottom: TabBar(
+                controller: _tabController,
+                indicatorWeight: 2.0,
+                indicatorColor: Colors.black,
+                tabs: myTabs,
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: <Widget>[
+                CustomerRegisterIdentificationWidget(
+                  bloc: bloc,
+                  customer: customer,
+                ),
+                CustomerRegisterAddressWidget(
+                  bloc: bloc,
+                  customer: customer,
+                ),
+                CustomerRegisterPhoneWidget(
+                  bloc: bloc,
+                  customer: customer,
+                ),
+                CustomerRegisterOthersDesktopWidget(
+                  bloc: bloc,
+                  customer: customer,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

@@ -122,7 +122,9 @@ class WidgetPaymentTypesListtState extends State<WidgetPaymentTypesList> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             child: AutoSizeText(
-                                widget.paymentTypesList[index].id.toString()),
+                              widget.paymentTypesList[index].id.toString(),
+                              style: kCircleAvatarTextStyle,
+                            ),
                           ),
                         ),
                         title: Column(
