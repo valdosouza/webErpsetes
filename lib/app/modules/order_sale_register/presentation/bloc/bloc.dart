@@ -19,6 +19,8 @@ import 'package:appweb/app/modules/order_sale_register/domain/usecase/reopen.dar
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
 import 'package:bloc/bloc.dart';
+import 'dart:developer' as developer;
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class OrderSaleRegisterBloc
     extends Bloc<OrderSaleRegisterEvent, OrderSaleRegisterState> {
@@ -57,6 +59,8 @@ class OrderSaleRegisterBloc
 
   int indexDeleteOrder = 0;
   OrderSaleItemModel elementItemDelete = OrderSaleItemModel.empty();
+
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   OrderSaleRegisterBloc({
     required this.getOrderList,
@@ -390,13 +394,16 @@ class OrderSaleRegisterBloc
     on<SetItemUpdateEvent>((event, emit) {
       if (event.item.id > 0) {
         event.item.updateStatus = "E";
-        orderMain.items[orderMain.items
-            .indexWhere((element) => element.id == event.item.id)] = event.item;
-      } else {
-        orderMain.items.add(event.item);
       }
-
-      emit(SetItemUpdateSuccessState());
+      int index = orderMain.items.indexWhere(
+          (element) => element.tbProductId == event.item.tbProductId);
+      if (index == -1) {
+        orderMain.items.add(event.item);
+        emit(SetItemInsertSuccessState());
+      } else {
+        orderMain.items[index] = event.item;
+        emit(SetItemUpdateSuccessState(itemsList: orderMain.items));
+      }
     });
   }
 
@@ -449,13 +456,43 @@ class OrderSaleRegisterBloc
 
   _closure() {
     on<ClosureOrderEvent>((event, emit) async {
+      await FirebaseAnalytics.instance.logEvent(
+        name: "order_sale",
+        parameters: {
+          "bloc": "_closure",
+          "log": "Antes do loading",
+        },
+      );
       emit(LoadingState());
+      await FirebaseAnalytics.instance.logEvent(
+        name: "order_sale",
+        parameters: {
+          "bloc": "_closure",
+          "log": "Atribui o codigo de ordem",
+        },
+      );
+
       final orderId = event.params.tbOrderId;
+      await FirebaseAnalytics.instance.logEvent(
+        name: "order_sale",
+        parameters: {
+          "bloc": "_closure",
+          "log": "Chama o closure.all",
+        },
+      );
       var response = await closure.call(event.params);
+      await FirebaseAnalytics.instance.logEvent(
+        name: "order_sale",
+        parameters: {
+          "bloc": "_closure",
+          "log": "Response.fold (l): ${response.fold.toString()}",
+        },
+      );
 
       response.fold((l) {
         emit(ErrorState(message: l.toString()));
       }, (r) {
+        developer.log('Resultado: ${r.result}');
         if (r.result) {
           orderList[orderList.indexWhere((element) => element.id == orderId)]
               .status = "F";

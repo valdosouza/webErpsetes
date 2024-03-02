@@ -82,10 +82,13 @@ class PageMobileState extends State<PageMobile> {
             productList: state.productList,
           );
         }
-        if (state is SetItemUpdateSuccessState) {
+        if (state is SetItemInsertSuccessState) {
           return WidgetProductList(
             productList: bloc.productList,
           );
+        }
+        if (state is SetItemUpdateSuccessState) {
+          return ContentItemsList(itemslist: state.itemsList);
         }
         if (state is ProductPricesLoadedState) {
           return WidgetProductPrices(productPrices: state.productPrices);

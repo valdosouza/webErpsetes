@@ -10,6 +10,7 @@ class CustomerListModel extends CustomerListEntity {
     String? error,
     String? street,
     String? nmbr,
+    String? neighborhood,
     String? complement,
     bool expanded = false,
   }) : super(
@@ -21,6 +22,7 @@ class CustomerListModel extends CustomerListEntity {
           error: error ?? "",
           street: street ?? "",
           nmbr: nmbr ?? "",
+          neighborhood: neighborhood ?? "",
           complement: complement ?? "",
           expanded: false,
         );
@@ -34,6 +36,7 @@ class CustomerListModel extends CustomerListEntity {
         docNumber: json['doc_number'] as String? ?? "",
         street: json['street'] as String? ?? "",
         nmbr: json['nmbr'] as String? ?? "",
+        neighborhood: json['neighborhood'] as String? ?? "",
         complement: json['complement'] as String? ?? "",
         expanded: false,
         error: json['error'] as String? ?? "");

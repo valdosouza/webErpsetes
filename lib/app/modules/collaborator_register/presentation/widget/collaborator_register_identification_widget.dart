@@ -82,7 +82,7 @@ class _CollaboratorRegisterIdentificationWidgetState
           const SizedBox(height: 30.0),
           CustomInput(
             title: 'e-mail* (não poderá ser alterado neste canal)',
-            readOnly: (bloc.model.entity.id > 0),
+            readOnly: (bloc.model.fiscal.objEntity.entity.id > 0),
             initialValue: bloc.model.userEmail.email,
             keyboardType: TextInputType.emailAddress,
             inputAction: TextInputAction.next,
@@ -96,19 +96,21 @@ class _CollaboratorRegisterIdentificationWidgetState
   }
 
   Column _buildCompany() {
+    bloc.model.fiscal.person?.id = 0;
+    bloc.model.fiscal.person?.cpf = "";
     return Column(
       children: [
         CustomInput(
           title: 'CNPJ',
-          initialValue: bloc.model.company?.cnpj,
+          initialValue: bloc.model.fiscal.company?.cnpj,
           keyboardType: TextInputType.number,
           inputAction: TextInputAction.next,
           sufixIcon: IconButton(
             hoverColor: Colors.transparent,
             onPressed: () {
-              if (bloc.model.company?.cnpj.length == 14) {
-                bloc.add(
-                    CollaboratorRegisterCnpjEvent(bloc.model.company!.cnpj));
+              if (bloc.model.fiscal.company?.cnpj.length == 14) {
+                bloc.add(CollaboratorRegisterCnpjEvent(
+                    bloc.model.fiscal.company!.cnpj));
               } else {
                 CustomToast.showToast("CNPJ inválido.");
               }
@@ -121,39 +123,39 @@ class _CollaboratorRegisterIdentificationWidgetState
           ),
           validator: (value) => Validators.validateCNPJ(value),
           onChanged: (value) {
-            bloc.model.company?.cnpj = value;
+            bloc.model.fiscal.company?.cnpj = value;
           },
         ),
         const SizedBox(height: 30.0),
         CustomInput(
           title: 'Nome/Razão Social',
-          initialValue: bloc.model.entity.nameCompany,
+          initialValue: bloc.model.fiscal.objEntity.entity.nameCompany,
           keyboardType: TextInputType.text,
           inputAction: TextInputAction.next,
           validator: (value) => Validators.validateRequired(value),
           onChanged: (value) {
-            bloc.model.entity.nameCompany = value;
+            bloc.model.fiscal.objEntity.entity.nameCompany = value;
           },
         ),
         const SizedBox(height: 30.0),
         CustomInput(
           title: 'Nome Fantasia',
-          initialValue: bloc.model.entity.nickTrade,
+          initialValue: bloc.model.fiscal.objEntity.entity.nickTrade,
           keyboardType: TextInputType.text,
           inputAction: TextInputAction.next,
           validator: (value) => Validators.validateRequired(value),
           onChanged: (value) {
-            bloc.model.entity.nickTrade = value;
+            bloc.model.fiscal.objEntity.entity.nickTrade = value;
           },
         ),
         const SizedBox(height: 30.0),
         CustomInput(
           title: 'Inscrição Estadual',
-          initialValue: bloc.model.company?.ie,
+          initialValue: bloc.model.fiscal.company?.ie,
           keyboardType: TextInputType.text,
           inputAction: TextInputAction.done,
           onChanged: (value) {
-            bloc.model.company?.ie = value;
+            bloc.model.fiscal.company?.ie = value;
           },
         ),
       ],
@@ -161,45 +163,47 @@ class _CollaboratorRegisterIdentificationWidgetState
   }
 
   Column _buildPerson() {
+    bloc.model.fiscal.company?.id = 0;
+    bloc.model.fiscal.company?.cnpj = "";
     return Column(
       children: [
         CustomInput(
           title: 'CPF',
-          initialValue: bloc.model.person?.cpf,
+          initialValue: bloc.model.fiscal.person?.cpf,
           keyboardType: TextInputType.number,
           inputAction: TextInputAction.next,
           onChanged: (value) {
-            bloc.model.person?.cpf = value;
+            bloc.model.fiscal.person?.cpf = value;
           },
         ),
         const SizedBox(height: 30.0),
         CustomInput(
           title: 'Nome',
-          initialValue: bloc.model.entity.nameCompany,
+          initialValue: bloc.model.fiscal.objEntity.entity.nameCompany,
           keyboardType: TextInputType.text,
           inputAction: TextInputAction.next,
           onChanged: (value) {
-            bloc.model.entity.nameCompany = value;
+            bloc.model.fiscal.objEntity.entity.nameCompany = value;
           },
         ),
         const SizedBox(height: 30.0),
         CustomInput(
           title: 'Apelido',
-          initialValue: bloc.model.entity.nickTrade,
+          initialValue: bloc.model.fiscal.objEntity.entity.nickTrade,
           keyboardType: TextInputType.text,
           inputAction: TextInputAction.next,
           onChanged: (value) {
-            bloc.model.entity.nickTrade = value;
+            bloc.model.fiscal.objEntity.entity.nickTrade = value;
           },
         ),
         const SizedBox(height: 30.0),
         CustomInput(
           title: 'R.G',
-          initialValue: bloc.model.person?.rg,
+          initialValue: bloc.model.fiscal.person?.rg,
           keyboardType: TextInputType.number,
           inputAction: TextInputAction.next,
           onChanged: (value) {
-            bloc.model.person?.rg = value;
+            bloc.model.fiscal.person?.rg = value;
           },
         ),
       ],

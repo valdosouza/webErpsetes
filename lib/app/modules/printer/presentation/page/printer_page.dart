@@ -11,8 +11,8 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 class PrinterPage extends StatefulWidget {
   const PrinterPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<PrinterPage> createState() => _PrinterPageState();

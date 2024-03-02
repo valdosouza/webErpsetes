@@ -15,8 +15,8 @@ import 'package:appweb/app/core/shared/theme.dart';
 
 class ContentOrderMain extends StatefulWidget {
   const ContentOrderMain({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<ContentOrderMain> createState() => _ContentOrderMainState();

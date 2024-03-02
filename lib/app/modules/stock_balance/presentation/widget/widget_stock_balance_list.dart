@@ -14,9 +14,9 @@ import 'package:appweb/app/core/shared/theme.dart';
 class WidgetStockBalanceList extends StatefulWidget {
   final List<StockBalanceItemsModel> stockBalanceList;
   const WidgetStockBalanceList({
-    Key? key,
+    super.key,
     required this.stockBalanceList,
-  }) : super(key: key);
+  });
 
   @override
   State<WidgetStockBalanceList> createState() => WidgetStockBalanceListtState();

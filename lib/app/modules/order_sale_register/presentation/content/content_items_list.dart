@@ -81,6 +81,7 @@ class _ContentItemsListState extends State<ContentItemsList> {
           ? FloatingActionButton(
               onPressed: () {
                 if (bloc.productList.isEmpty) {
+                  //Faz a busca pela primeira vez
                   bloc.add(
                     GetProductListEvent(
                       params: ParamsProductList(
@@ -92,6 +93,7 @@ class _ContentItemsListState extends State<ContentItemsList> {
                     ),
                   );
                 } else {
+                  //Retorna a lista que já foi carregada anteriormente
                   bloc.add(GetFormProductListEvent());
                 }
               },
@@ -122,12 +124,15 @@ class _ContentItemsListState extends State<ContentItemsList> {
                       ListTile(
                         leading: CircleAvatar(
                           backgroundColor: (Colors.black),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: AutoSizeText(
-                              (index + 1).toString(),
-                              style: kCircleAvatarTextStyle,
-                            ),
+                          child: IconButton(
+                            icon:
+                                const Icon(Icons.edit, color: kSecondaryColor),
+                            onPressed: () {
+                              (bloc.orderMain.order.status != "F")
+                                  ? bloc.add(GetItemToEditEvent(
+                                      item: itemslistEnabled[index]))
+                                  : null;
+                            },
                           ),
                         ),
                         title: SizedBox(
@@ -142,6 +147,8 @@ class _ContentItemsListState extends State<ContentItemsList> {
                               AutoSizeText(
                                 itemslistEnabled[index].nameProduct,
                                 maxFontSize: 12,
+                                minFontSize: 10,
+                                maxLines: 2,
                               ),
                             ],
                           ),
@@ -220,9 +227,9 @@ class _ContentItemsListState extends State<ContentItemsList> {
                                   ),
                                   const SizedBox(height: 5.0),
                                   Text(
-                                    ((itemslistEnabled[index].quantity *
-                                            itemslistEnabled[index].unitValue)
-                                        .toStringAsFixed(2)),
+                                    itemslistEnabled[index]
+                                        .subtotal
+                                        .toStringAsFixed(2),
                                     textAlign: TextAlign.right,
                                   ),
                                 ],

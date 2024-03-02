@@ -12,9 +12,9 @@ class ContentItemEdit extends StatefulWidget {
   final OrderStockTransferItemModel itemEdit;
 
   const ContentItemEdit({
-    Key? key,
+    super.key,
     required this.itemEdit,
-  }) : super(key: key);
+  });
 
   @override
   State<ContentItemEdit> createState() => _ContentItemEditState();

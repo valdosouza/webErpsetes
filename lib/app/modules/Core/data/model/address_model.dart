@@ -124,4 +124,29 @@ class AddressModel extends AddressEntity {
       tbStateId: 41,
     );
   }
+
+  emptyList(id) {
+    List<AddressModel> list = [
+      AddressModel(
+        id: id,
+        kind: "Comercial",
+        zipCode: "",
+        cityName: "",
+        complement: "",
+        countryName: "",
+        latitude: "",
+        longitude: "",
+        main: "S",
+        neighborhood: "",
+        nmbr: "",
+        region: "",
+        stateName: "",
+        street: "",
+        tbCityId: 4004,
+        tbCountryId: 1058,
+        tbStateId: 41,
+      )
+    ];
+    return list;
+  }
 }

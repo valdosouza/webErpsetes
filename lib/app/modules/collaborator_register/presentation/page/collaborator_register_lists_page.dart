@@ -87,10 +87,10 @@ class _CollaboratorRegisterListsPageState
                               itemCount: state.states.length,
                               itemBuilder: (context, index) => InkWell(
                                 onTap: () {
-                                  bloc.model.address.tbStateId =
-                                      state.states[index].id;
-                                  bloc.model.address.stateName =
-                                      state.states[index].name;
+                                  bloc.model.fiscal.objEntity.addressList[0]
+                                      .tbStateId = state.states[index].id;
+                                  bloc.model.fiscal.objEntity.addressList[0]
+                                      .stateName = state.states[index].name;
                                   bloc.add(CollaboratorRegisterReturnEvent(
                                       index: 1));
                                 },
@@ -159,10 +159,10 @@ class _CollaboratorRegisterListsPageState
                               itemCount: state.cities.length,
                               itemBuilder: (context, index) => InkWell(
                                 onTap: () {
-                                  bloc.model.address.tbCityId =
-                                      state.cities[index].id;
-                                  bloc.model.address.cityName =
-                                      state.cities[index].name;
+                                  bloc.model.fiscal.objEntity.addressList[0]
+                                      .tbCityId = state.cities[index].id;
+                                  bloc.model.fiscal.objEntity.addressList[0]
+                                      .cityName = state.cities[index].name;
                                   bloc.add(CollaboratorRegisterReturnEvent(
                                       index: 1));
                                 },
@@ -230,9 +230,11 @@ class _CollaboratorRegisterListsPageState
                               itemCount: state.linebusiness.length,
                               itemBuilder: (context, index) => InkWell(
                                 onTap: () {
-                                  bloc.model.entity.tbLineBusinessId =
+                                  bloc.model.fiscal.objEntity.entity
+                                          .tbLineBusinessId =
                                       state.linebusiness[index].id;
-                                  bloc.model.entity.nameLinebusiness =
+                                  bloc.model.fiscal.objEntity.entity
+                                          .nameLinebusiness =
                                       state.linebusiness[index].description;
                                   bloc.add(CollaboratorRegisterReturnEvent(
                                       index: 3));

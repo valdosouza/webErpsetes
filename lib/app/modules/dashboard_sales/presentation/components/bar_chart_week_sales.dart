@@ -3,7 +3,7 @@ import 'package:appweb/app/modules/dashboard_sales/presentation/components/bar_c
 import 'package:flutter/material.dart';
 
 class BarChartWeekSales extends StatelessWidget {
-  const BarChartWeekSales({Key? key}) : super(key: key);
+  const BarChartWeekSales({super.key});
 
   @override
   Widget build(BuildContext context) {

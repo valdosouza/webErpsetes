@@ -1,21 +1,22 @@
-import 'package:appweb/app/core/shared/widgets/custom_search_filter.dart';
-import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
-import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
-import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
-import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import 'package:appweb/app/core/shared/theme.dart';
+import 'package:appweb/app/core/shared/widgets/custom_search_filter.dart';
 import 'package:appweb/app/modules/Core/data/model/customer_list_model.dart';
+import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
+import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
+import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
+import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
 
 class WidgetCustomerList extends StatefulWidget {
   final List<CustomerListModel> customerList;
   const WidgetCustomerList({
-    Key? key,
+    super.key,
     required this.customerList,
-  }) : super(key: key);
+  });
 
   @override
   State<WidgetCustomerList> createState() => WidgetCustomerListtState();
@@ -129,25 +130,48 @@ class WidgetCustomerListtState extends State<WidgetCustomerList> {
                         bloc.add(
                             FormOrderEvent(tbOrderId: bloc.orderMain.order.id));
                       },
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: (Colors.black),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: AutoSizeText(
-                              minFontSize: 8,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: (Colors.black),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: AutoSizeText(
+                                  minFontSize: 8,
+                                  maxLines: 1,
+                                  widget.customerList[index].id.toString(),
+                                  style: kCircleAvatarTextStyle,
+                                ),
+                              ),
+                            ),
+                            title: AutoSizeText(
+                              widget.customerList[index].nickTrade,
+                              minFontSize: 10,
+                              maxFontSize: 16,
                               maxLines: 1,
-                              widget.customerList[index].id.toString(),
-                              style: kCircleAvatarTextStyle,
                             ),
                           ),
-                        ),
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(widget.customerList[index].nickTrade),
-                          ],
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: AutoSizeText(
+                              widget.customerList[index].nameCompany,
+                              minFontSize: 12,
+                              maxFontSize: 18,
+                              maxLines: 1,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: AutoSizeText(
+                              '${widget.customerList[index].street} ,${widget.customerList[index].nmbr} - ${widget.customerList[index].neighborhood}',
+                              minFontSize: 12,
+                              maxFontSize: 18,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     separatorBuilder: (_, __) => const Divider(),

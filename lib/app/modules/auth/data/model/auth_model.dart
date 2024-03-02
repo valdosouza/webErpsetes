@@ -2,22 +2,14 @@ import 'package:appweb/app/modules/auth/domain/entity/auth_entity.dart';
 
 class AuthModel extends AuthEntity {
   const AuthModel({
-    required bool auth,
-    required int id,
-    required int tbInstitutionId,
-    required String username,
-    required String password,
-    required String jwt,
-    required String message,
-  }) : super(
-          auth: auth,
-          id: id,
-          tbInstitutionId: tbInstitutionId,
-          username: username,
-          password: password,
-          jwt: jwt,
-          message: message,
-        );
+    required super.auth,
+    required super.id,
+    required super.tbInstitutionId,
+    required super.username,
+    required super.password,
+    required super.jwt,
+    required super.message,
+  });
 
   factory AuthModel.fromJson(Map<String, dynamic> json) {
     return AuthModel(

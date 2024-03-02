@@ -8,6 +8,7 @@ class CustomerListEntity {
   String street;
   String nmbr;
   String complement;
+  String neighborhood;
   bool expanded = false;
 
   CustomerListEntity({
@@ -19,6 +20,7 @@ class CustomerListEntity {
     this.error = "",
     this.street = "",
     this.nmbr = "",
+    this.neighborhood = "",
     this.complement = "",
     this.expanded = false,
   });

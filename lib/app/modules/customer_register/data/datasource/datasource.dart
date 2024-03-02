@@ -88,7 +88,7 @@ class DataSourceImpl extends DataSource {
     customer.fiscal.objEntity.tbInstitutionId = tbInstitutionId;
 
     var bodyCustomer = jsonEncode(customer.toJson());
-    debugPrint(bodyCustomer);
+
     return await request(
       'customer',
       data: bodyCustomer,

@@ -5,9 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class FileInfoCard extends StatelessWidget {
   const FileInfoCard({
-    Key? key,
+    super.key,
     required this.info,
-  }) : super(key: key);
+  });
 
   final CloudStorageInfo info;
 
@@ -36,7 +36,6 @@ class FileInfoCard extends StatelessWidget {
                 ),
                 child: SvgPicture.asset(
                   info.svgSrc!,
-                  color: info.color,
                 ),
               ),
               const Icon(Icons.more_vert, color: Colors.white54)
@@ -78,10 +77,10 @@ class FileInfoCard extends StatelessWidget {
 
 class ProgressLine extends StatelessWidget {
   const ProgressLine({
-    Key? key,
+    super.key,
     this.color = kPrimaryColor,
     required this.percentage,
-  }) : super(key: key);
+  });
 
   final Color? color;
   final int? percentage;

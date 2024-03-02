@@ -13,9 +13,9 @@ import 'package:appweb/app/modules/Core/data/model/customer_list_model.dart';
 class WidgetCustomerList extends StatefulWidget {
   final List<CustomerListModel> customerList;
   const WidgetCustomerList({
-    Key? key,
+    super.key,
     required this.customerList,
-  }) : super(key: key);
+  });
 
   @override
   State<WidgetCustomerList> createState() => WidgetCustomerListtState();

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AnalyticInfoCard extends StatelessWidget {
-  const AnalyticInfoCard({Key? key, required this.info}) : super(key: key);
+  const AnalyticInfoCard({super.key, required this.info});
 
   final AnalyticInfo info;
 
@@ -45,7 +45,6 @@ class AnalyticInfoCard extends StatelessWidget {
                       shape: BoxShape.circle),
                   child: SvgPicture.asset(
                     info.svgSrc!,
-                    color: info.color,
                   ),
                 )
               ],

@@ -13,9 +13,9 @@ class WidgetProductPrices extends StatefulWidget {
   final ProductPricesModel productPrices;
 
   const WidgetProductPrices({
-    Key? key,
+    super.key,
     required this.productPrices,
-  }) : super(key: key);
+  });
 
   @override
   State<WidgetProductPrices> createState() => _WidgetProductPricesState();
@@ -34,13 +34,14 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          flexibleSpace: Container(
-            decoration: kBoxDecorationflexibleSpace,
-          ),
-          title: const Text('Preços Disponiveis'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {
+        flexibleSpace: Container(
+          decoration: kBoxDecorationflexibleSpace,
+        ),
+        title: const Text('Preços Disponiveis'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            if (bloc.productList.isEmpty) {
               bloc.add(
                 GetProductListEvent(
                   params: ParamsProductList(
@@ -51,8 +52,12 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
                   ),
                 ),
               );
-            },
-          )),
+            } else {
+              bloc.add(GetFormProductListEvent());
+            }
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Column(
@@ -64,35 +69,13 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (bloc.productList.isEmpty) {
-            bloc.add(
-              GetProductListEvent(
-                params: ParamsProductList(
-                  id: 0,
-                  nameProduct: "",
-                  page: 0,
-                  tbInstitutionId: 0,
-                ),
-              ),
-            );
-          } else {
-            bloc.add(GetFormProductListEvent());
-          }
-        },
-        backgroundColor: Colors.black,
-        child: const Icon(
-          Icons.add,
-          color: kSecondaryColor,
-        ),
-      ),
     );
   }
 
   gradeListView() {
+    final Size size = MediaQuery.of(context).size;
     return SizedBox(
-      height: 200,
+      height: size.height - 180,
       child: GridView.count(
         crossAxisCount: 3,
         // Gera 100 Widgets que exibem o seu índice
@@ -102,32 +85,63 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
             return Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(100, 60),
+                  minimumSize: const Size(110, 80),
+                  elevation: 30,
+                  maximumSize: const Size(110, 80),
                   backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
                   ),
                 ),
                 onPressed: () {
-                  bloc.add(GetItemToEditEvent(
+                  bloc.add(
+                    GetItemToEditEvent(
                       item: OrderSaleItemModel(
-                    id: 0,
-                    tbProductId: widget.productPrices.id,
-                    nameProduct: widget.productPrices.nameProduct,
-                    quantity: 1,
-                    unitValue: widget.productPrices.items[index].priceTag,
-                    updateStatus: 'I',
-                  )));
+                        id: 0,
+                        tbProductId: widget.productPrices.id,
+                        nameProduct: widget.productPrices.nameProduct,
+                        quantity: 1,
+                        unitValue: widget.productPrices.items[index].priceTag,
+                        updateStatus: 'I',
+                      ),
+                    ),
+                  );
                 },
-                child: AutoSizeText(
-                  widget.productPrices.items[index].priceTag.toStringAsFixed(2),
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    letterSpacing: 1.5,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'OpenSans',
-                  ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: SizedBox(
+                        height: 30,
+                        child: AutoSizeText(
+                          widget.productPrices.items[index].namePriceList,
+                          minFontSize: 8,
+                          maxFontSize: 12,
+                          maxLines: 2,
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 255, 255, 255),
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'OpenSans',
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    AutoSizeText(
+                      widget.productPrices.items[index].priceTag
+                          .toStringAsFixed(2),
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 255),
+                        letterSpacing: 1.5,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'OpenSans',
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );

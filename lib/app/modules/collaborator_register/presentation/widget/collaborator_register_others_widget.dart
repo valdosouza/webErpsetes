@@ -93,7 +93,7 @@ class _CollaboratorRegisterOthersWidgetState
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            bloc.model.entity.nameLinebusiness,
+                            bloc.model.fiscal.objEntity.entity.nameLinebusiness,
                             style: const TextStyle(
                               color: Colors.white,
                               fontFamily: 'OpenSans',

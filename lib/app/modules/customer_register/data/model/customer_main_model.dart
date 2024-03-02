@@ -4,12 +4,9 @@ import 'package:appweb/app/modules/customer_register/domain/entity/customer_main
 
 class CustomerMainModel extends CustomerMainEntity {
   CustomerMainModel({
-    required CustomerModel customer,
-    required FiscalModel fiscal,
-  }) : super(
-          customer: customer,
-          fiscal: fiscal,
-        );
+    required super.customer,
+    required super.fiscal,
+  });
 
   factory CustomerMainModel.fromJson(Map<String, dynamic> json) {
     return CustomerMainModel(

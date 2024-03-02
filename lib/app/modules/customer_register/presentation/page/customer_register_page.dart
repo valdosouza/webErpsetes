@@ -9,10 +9,10 @@ class CustomerRegisterPage extends StatefulWidget {
   final int tbCustomerId;
   final String routeCallBack;
   const CustomerRegisterPage({
-    Key? key,
+    super.key,
     required this.tbCustomerId,
     required this.routeCallBack,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomerRegisterPage> createState() => _CustomerRegisterPageState();

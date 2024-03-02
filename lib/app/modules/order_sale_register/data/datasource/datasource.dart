@@ -18,8 +18,8 @@ import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_produc
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_prices.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/reopen.dart';
-
 import 'package:flutter/foundation.dart';
+import 'dart:developer' as developer;
 
 abstract class DataSource extends Gateway {
   DataSource({required super.httpClient});
@@ -347,25 +347,28 @@ class DataSourceImpl extends DataSource {
   @override
   Future<OrderResultActionModel> closure(
       {required ParamsClosureOrder params}) async {
-    int tbInstitutionId = 1;
+    developer.log('Pega o TbInstitutionId');
     await getInstitutionId().then((value) {
-      (kIsWeb) ? tbInstitutionId = value : tbInstitutionId = int.parse(value);
+      params.tbInstitutionId = int.parse(value);
     });
-    params.tbInstitutionId = tbInstitutionId;
-    int tbUserId = 1;
+    developer.log('Pega o tbUserId');
     await getUserId().then((value) {
-      (kIsWeb) ? tbUserId = value : tbUserId = int.parse(value);
+      params.tbUserId = int.parse(value);
     });
-    params.tbUserId = tbUserId;
-
+    developer.log('Monta o bodyjon');
     final body = jsonEncode(params.toJson());
+    const String orderSaleClosureEndpoint = 'orderSale/closure';
+    developer.log('faz o request');
     return request(
-      'OrderSale/closure',
+      orderSaleClosureEndpoint,
       method: HTTPMethod.post,
+      timeout: const Duration(milliseconds: 15000),
       data: body,
       (payload) {
+        developer.log('Retorna o payload');
+        developer.log(payload);
         final data = json.decode(payload);
-
+        developer.log(data.toString());
         return OrderResultActionModel.fromJson(data);
       },
       onError: (error) {
@@ -377,21 +380,19 @@ class DataSourceImpl extends DataSource {
   @override
   Future<OrderResultActionModel> reopen(
       {required ParamsReopenOrder params}) async {
-    int tbInstitutionId = 1;
     await getInstitutionId().then((value) {
-      (kIsWeb) ? tbInstitutionId = value : tbInstitutionId = int.parse(value);
+      params.tbInstitutionId = int.parse(value);
     });
-    params.tbInstitutionId = tbInstitutionId;
-    int tbUserId = 1;
+
     await getUserId().then((value) {
-      (kIsWeb) ? tbUserId = value : tbUserId = int.parse(value);
+      params.tbUserId = int.parse(value);
     });
-    params.tbUserId = tbUserId;
 
     final body = jsonEncode(params.toJson());
     return request(
-      'OrderSale/reopen',
+      'orderSale/reopen',
       method: HTTPMethod.post,
+      timeout: const Duration(milliseconds: 15000),
       data: body,
       (payload) {
         final data = json.decode(payload);

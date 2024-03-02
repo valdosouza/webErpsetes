@@ -59,22 +59,20 @@ class LinebusinessRegisterDataSourceImpl
 
       model.tbInstitutionId = tbInstitutionId;
 
-      final uri = Uri.parse('${baseApiUrl}linebusiness');
-      final response = await httpClient.post(
-        uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+      final body = jsonEncode(model.toJson());
+      return request(
+        'linebusiness',
+        method: HTTPMethod.post,
+        data: body,
+        (payload) {
+          final data = json.decode(payload);
+          var model = LinebusinessModel.fromJson(data);
+          return model;
         },
-        body: jsonEncode(model.toJson()),
+        onError: (error) {
+          return ServerException;
+        },
       );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        var model = LinebusinessModel.fromJson(data);
-        return model;
-      } else {
-        throw ServerException();
-      }
     } catch (e) {
       throw ServerException();
     }

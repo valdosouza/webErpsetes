@@ -47,4 +47,17 @@ class PhoneModel extends PhoneEntity {
       number: "",
     );
   }
+
+  emptyList(id) {
+    List<PhoneModel> list = [
+      PhoneModel(
+        id: id,
+        kind: "Comercial",
+        addressKind: "Comercial",
+        contact: "",
+        number: "",
+      )
+    ];
+    return list;
+  }
 }

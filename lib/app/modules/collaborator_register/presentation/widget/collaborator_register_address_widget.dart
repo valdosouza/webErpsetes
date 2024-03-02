@@ -42,9 +42,11 @@ class _CollaboratorRegisterAddressWidgetState
               sufixIcon: IconButton(
                 hoverColor: Colors.transparent,
                 onPressed: () {
-                  if (bloc.model.address.zipCode.length == 8) {
+                  if (bloc.model.fiscal.objEntity.addressList[0].zipCode
+                          .length ==
+                      8) {
                     bloc.add(CollaboratorRegisterCepEvent(
-                        bloc.model.address.zipCode));
+                        bloc.model.fiscal.objEntity.addressList[0].zipCode));
                   } else {
                     CustomToast.showToast("CEP inválido.");
                   }
@@ -55,12 +57,12 @@ class _CollaboratorRegisterAddressWidgetState
                   color: Colors.white,
                 ),
               ),
-              initialValue: bloc.model.address.zipCode,
+              initialValue: bloc.model.fiscal.objEntity.addressList[0].zipCode,
               keyboardType: TextInputType.number,
               inputAction: TextInputAction.next,
               validator: (value) => Validators.validateExactLength(value, 8),
               onChanged: (value) {
-                bloc.model.address.zipCode = value;
+                bloc.model.fiscal.objEntity.addressList[0].zipCode = value;
               },
             ),
             const SizedBox(height: 30.0),
@@ -82,7 +84,8 @@ class _CollaboratorRegisterAddressWidgetState
                           child: Padding(
                             padding: const EdgeInsets.only(left: 10.0),
                             child: Text(
-                              bloc.model.address.stateName,
+                              bloc.model.fiscal.objEntity.addressList[0]
+                                  .stateName,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'OpenSans',
@@ -127,7 +130,8 @@ class _CollaboratorRegisterAddressWidgetState
                           child: Padding(
                             padding: const EdgeInsets.only(left: 10.0),
                             child: Text(
-                              bloc.model.address.cityName,
+                              bloc.model.fiscal.objEntity.addressList[0]
+                                  .cityName,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'OpenSans',
@@ -140,8 +144,12 @@ class _CollaboratorRegisterAddressWidgetState
                           child: IconButton(
                             hoverColor: Colors.transparent,
                             onPressed: () {
-                              bloc.add(CollaboratorRegisterGetCitysEvent(
-                                  bloc.model.address.tbStateId));
+                              bloc.add(CollaboratorRegisterGetCitysEvent(bloc
+                                  .model
+                                  .fiscal
+                                  .objEntity
+                                  .addressList[0]
+                                  .tbStateId));
                             },
                             icon: const Icon(
                               Icons.search,
@@ -157,41 +165,43 @@ class _CollaboratorRegisterAddressWidgetState
             const SizedBox(height: 30.0),
             CustomInput(
               title: 'Logradouro',
-              initialValue: bloc.model.address.street,
+              initialValue: bloc.model.fiscal.objEntity.addressList[0].street,
               keyboardType: TextInputType.text,
               inputAction: TextInputAction.next,
               onChanged: (value) {
-                bloc.model.address.street = value;
+                bloc.model.fiscal.objEntity.addressList[0].street = value;
               },
             ),
             const SizedBox(height: 30.0),
             CustomInput(
               title: 'Número',
-              initialValue: bloc.model.address.nmbr,
+              initialValue: bloc.model.fiscal.objEntity.addressList[0].nmbr,
               keyboardType: TextInputType.number,
               inputAction: TextInputAction.next,
               onChanged: (value) {
-                bloc.model.address.nmbr = value;
+                bloc.model.fiscal.objEntity.addressList[0].nmbr = value;
               },
             ),
             const SizedBox(height: 30.0),
             CustomInput(
               title: 'Complemento',
-              initialValue: bloc.model.address.complement,
+              initialValue:
+                  bloc.model.fiscal.objEntity.addressList[0].complement,
               keyboardType: TextInputType.text,
               inputAction: TextInputAction.next,
               onChanged: (value) {
-                bloc.model.address.complement = value;
+                bloc.model.fiscal.objEntity.addressList[0].complement = value;
               },
             ),
             const SizedBox(height: 30.0),
             CustomInput(
               title: 'Bairro',
-              initialValue: bloc.model.address.neighborhood,
+              initialValue:
+                  bloc.model.fiscal.objEntity.addressList[0].neighborhood,
               keyboardType: TextInputType.text,
               inputAction: TextInputAction.done,
               onChanged: (value) {
-                bloc.model.address.neighborhood = value;
+                bloc.model.fiscal.objEntity.addressList[0].neighborhood = value;
               },
             ),
           ],

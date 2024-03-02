@@ -15,9 +15,9 @@ import 'package:appweb/app/core/shared/theme.dart';
 class WidgetProductList extends StatefulWidget {
   final List<ProductListModel> productList;
   const WidgetProductList({
-    Key? key,
+    super.key,
     required this.productList,
-  }) : super(key: key);
+  });
 
   @override
   State<WidgetProductList> createState() => WidgetProductListtState();

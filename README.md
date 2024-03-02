@@ -1,17 +1,16 @@
-# Flutter Web - ERP - Setes
+# appweb
 
-Enterprise Resource Planning - ERP It will contain several modules of independent work that will be grouped by branches of activity and thus made available to the customer.
+A new Flutter project.
 
-# Architecture
+## Getting Started
 
-Clean Architecture is a software architecture proposed by Robert Cecil Martin (or Uncle Bob, as he is more commonly known) with the aim of standardizing and organizing the developed code, promoting its reusability, as well as technology independence.
-    
-# Create modules
-  flutter_modular: ^3.3.0-nullsafety.3  
-# Bloc for state management
-  bloc: 7.0.0-nullsafety.3
-  flutter_bloc: 7.0.0-nullsafety.3
-# Functional programming thingies
-  dartz: ^0.10.0-nullsafety.1
-# Remote API
- https://github.com/valdosouza/apiErpSetes
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

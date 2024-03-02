@@ -126,7 +126,12 @@ class _ContentOrderListState extends State<ContentOrderList> {
         flexibleSpace: Container(
           decoration: kBoxDecorationflexibleSpace,
         ),
-        title: const Text('Lista de Pedidos'),
+        title: const AutoSizeText(
+          'Ajuste de Estoque',
+          maxFontSize: 14,
+          minFontSize: 8,
+          maxLines: 1,
+        ),
         leading: (!kIsWeb)
             ? IconButton(
                 icon: const Icon(Icons.arrow_back_ios),

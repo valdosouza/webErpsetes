@@ -1,5 +1,6 @@
 import 'package:appweb/app/core/shared/theme.dart';
 import 'package:appweb/app/core/shared/utils/toast.dart';
+
 import 'package:appweb/app/core/shared/widgets/custom_circular_progress_indicator.dart';
 import 'package:appweb/app/core/shared/widgets/item_drawer.dart';
 import 'package:appweb/app/modules/drawer/drawer_module.dart';
@@ -10,6 +11,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:url_launcher/link.dart';
 
 class DrawerPageMobile extends StatefulWidget {
   const DrawerPageMobile({super.key});
@@ -29,6 +31,34 @@ class _DrawerPageMobileState extends State<DrawerPageMobile> {
     });
     bloc = Modular.get<DrawerBloc>();
     bloc.add(UserLoggedEvent());
+  }
+
+  Future<void> _showAboutApp() async {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Sobre o Aplicativo.'),
+          content: const AutoSizeText(
+            "Esta é Versão 1.0.1+35.",
+            minFontSize: 12,
+            maxFontSize: 18,
+            maxLines: 2,
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -88,9 +118,13 @@ class _DrawerPageMobileState extends State<DrawerPageMobile> {
           itemMenuDraw(Icons.home, 'Estoque',
               () => Modular.to.navigate('/stock/mobile/')),
           itemMenuDraw(
-              Icons.home, 'Pedido', () => Modular.to.navigate('/ordersale/')),
+              Icons.home, 'Venda', () => Modular.to.navigate('/ordersale/')),
+          itemMenuDraw(Icons.home, 'Bonificação',
+              () => Modular.to.navigate('/orderbonifica/')),
           itemMenuDraw(
               Icons.home, 'Impressora', () => Modular.to.navigate('/printer/')),
+          itemMenuPolicy(Icons.home, 'Política de Privacidade'),
+          itemMenuDraw(Icons.home, 'Sobre', () => _showAboutApp()),
           itemLogout(Icons.close, 'Sair'),
         ],
       ),
@@ -122,6 +156,41 @@ class _DrawerPageMobileState extends State<DrawerPageMobile> {
                 ],
               ),
             )),
+      ),
+    );
+  }
+
+  Widget itemMenuPolicy(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: Colors.grey.shade400))),
+        child: Link(
+            uri: Uri.parse(
+                'https://www.setesgestao.com.br/politica-de-privacidade.html'),
+            target: LinkTarget.blank,
+            builder: (context, followLink) {
+              return InkWell(
+                  onTap: () async {
+                    followLink!();
+                  },
+                  splashColor: Colors.orangeAccent,
+                  child: SizedBox(
+                    height: 50,
+                    child: Row(
+                      children: <Widget>[
+                        Icon(icon),
+                        Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              text,
+                              style: const TextStyle(fontSize: 16.0),
+                            ))
+                      ],
+                    ),
+                  ));
+            }),
       ),
     );
   }

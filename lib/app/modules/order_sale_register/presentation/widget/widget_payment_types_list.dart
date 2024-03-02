@@ -13,9 +13,9 @@ import 'package:appweb/app/core/shared/theme.dart';
 class WidgetPaymentTypesList extends StatefulWidget {
   final List<PaymentTypesListModel> paymentTypesList;
   const WidgetPaymentTypesList({
-    Key? key,
+    super.key,
     required this.paymentTypesList,
-  }) : super(key: key);
+  });
 
   @override
   State<WidgetPaymentTypesList> createState() => WidgetPaymentTypesListtState();

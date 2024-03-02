@@ -112,4 +112,10 @@ class GetItemToEditLoaded extends OrderSaleRegisterState {
   GetItemToEditLoaded({required this.itemEdit});
 }
 
-class SetItemUpdateSuccessState extends OrderSaleRegisterState {}
+class SetItemInsertSuccessState extends OrderSaleRegisterState {}
+
+class SetItemUpdateSuccessState extends OrderSaleRegisterState {
+  final List<OrderSaleItemModel> itemsList;
+
+  SetItemUpdateSuccessState({required this.itemsList});
+}

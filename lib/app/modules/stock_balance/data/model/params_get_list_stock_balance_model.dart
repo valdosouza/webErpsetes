@@ -2,17 +2,13 @@ import 'package:appweb/app/modules/stock_balance/domain/entity/params_get_list_s
 
 class ParamsGetlistStockBalanceModel extends ParamsGetlistStockBalanceEntity {
   ParamsGetlistStockBalanceModel({
-    required int tbInstitutionId,
-    required int tbSalesmanId,
-    required int tbStockListId,
-    required int page,
+    required super.tbInstitutionId,
+    required super.tbSalesmanId,
+    required super.tbStockListId,
+    required super.page,
     int? id,
     String? nameProduct,
   }) : super(
-          tbInstitutionId: tbInstitutionId,
-          tbSalesmanId: tbSalesmanId,
-          tbStockListId: tbStockListId,
-          page: page,
           id: id ?? 0,
           nameProduct: nameProduct ?? "",
         );

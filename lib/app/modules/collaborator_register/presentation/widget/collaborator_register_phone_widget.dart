@@ -30,11 +30,11 @@ class _CollaboratorRegisterPhoneWidgetState
         children: [
           CustomInput(
             title: 'Telefone',
-            initialValue: bloc.model.phone?.number,
+            initialValue: bloc.model.fiscal.objEntity.phoneList[0]?.number,
             keyboardType: TextInputType.number,
             inputAction: TextInputAction.next,
             onChanged: (value) {
-              bloc.model.phone?.number = value;
+              bloc.model.fiscal.objEntity.phoneList[0]?.number = value;
             },
           ),
         ],

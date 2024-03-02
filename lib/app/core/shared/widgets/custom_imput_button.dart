@@ -25,7 +25,7 @@ class CustomInputButton extends StatelessWidget {
   final Alignment alignment;
   final TextAlign textAlign;
   const CustomInputButton({
-    Key? key,
+    super.key,
     required this.title,
     required this.enabled,
     this.width = 0,
@@ -46,7 +46,7 @@ class CustomInputButton extends StatelessWidget {
     this.minLines,
     this.alignment = Alignment.centerRight,
     this.textAlign = TextAlign.left,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

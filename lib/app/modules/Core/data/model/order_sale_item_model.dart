@@ -11,6 +11,7 @@ class OrderSaleItemModel extends OrderSaleItemEntity {
     double? unitValue,
     double? discountAliquot,
     double? discountValue,
+    double? subtotal,
     int? tbPriceListId,
     String? updateStatus,
   }) : super(
@@ -23,29 +24,35 @@ class OrderSaleItemModel extends OrderSaleItemEntity {
           unitValue: unitValue ?? 0.0,
           discountAliquot: discountAliquot ?? 0.0,
           discountValue: discountValue ?? 0.0,
+          subtotal: subtotal ?? 0.00,
           tbPriceListId: tbPriceListId ?? 0,
           updateStatus: updateStatus ?? "",
         );
 
   factory OrderSaleItemModel.fromJson(Map<String, dynamic> json) {
+    double lcQuantity = json['quantity'] is int
+        ? json['quantity'].toDouble()
+        : json['quantity'];
+    double lcUnitValue = json['unit_value'] is int
+        ? json['unit_value'].toDouble()
+        : json['unit_value'];
+    double lcDiscountAliquot = json['discount_aliquot'] is int
+        ? json['discount_aliquot'].toDouble()
+        : json['discount_aliquot'];
+    double lcDiscountValue = json['discount_value'] is int
+        ? json['discount_value'].toDouble()
+        : json['discount_value'];
     return OrderSaleItemModel(
       id: json['id'],
       tbOrderId: json['tb_order_id'],
       tbProductId: json['tb_product_id'],
       nameProduct: json['name_product'],
       tbStockListId: json['tb_stock_list_id'],
-      quantity: json['quantity'] is int
-          ? json['quantity'].toDouble()
-          : json['quantity'],
-      unitValue: json['unit_value'] is int
-          ? json['unit_value'].toDouble()
-          : json['unit_value'],
-      discountAliquot: json['discount_aliquot'] is int
-          ? json['discount_aliquot'].toDouble()
-          : json['discount_aliquot'],
-      discountValue: json['discount_value'] is int
-          ? json['discount_value'].toDouble()
-          : json['discount_value'],
+      quantity: lcQuantity,
+      unitValue: lcUnitValue,
+      discountAliquot: lcDiscountAliquot,
+      discountValue: lcDiscountValue,
+      subtotal: (lcQuantity * lcUnitValue) - lcDiscountValue,
       updateStatus: json['update_status'],
     );
   }

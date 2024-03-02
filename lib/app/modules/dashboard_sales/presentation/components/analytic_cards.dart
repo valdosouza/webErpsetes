@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'analytic_info_card.dart';
 
 class AnalyticCards extends StatelessWidget {
-  const AnalyticCards({Key? key}) : super(key: key);
+  const AnalyticCards({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +19,10 @@ class AnalyticCards extends StatelessWidget {
 
 class AnalyticInfoCardGridView extends StatelessWidget {
   const AnalyticInfoCardGridView({
-    Key? key,
+    super.key,
     this.crossAxisCount = 4,
     this.childAspectRatio = 1.8,
-  }) : super(key: key);
+  });
 
   final int crossAxisCount;
   final double childAspectRatio;

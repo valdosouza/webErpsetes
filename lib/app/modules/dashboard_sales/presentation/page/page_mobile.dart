@@ -34,7 +34,7 @@ class PageMobileState extends State<PageMobile> {
             page: 0,
             id: 0,
             tbSalesmanId: 0,
-            tbStockListId: 3,
+            tbStockListId: 0,
             nameMerchandise: "",
           ),
         ),

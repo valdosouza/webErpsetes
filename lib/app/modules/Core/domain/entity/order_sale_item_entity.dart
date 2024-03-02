@@ -8,6 +8,7 @@ class OrderSaleItemEntity {
   double unitValue;
   double discountAliquot;
   double discountValue;
+  double subtotal;
   int tbPriceListId;
   String updateStatus;
 
@@ -21,6 +22,7 @@ class OrderSaleItemEntity {
     required this.unitValue,
     required this.discountAliquot,
     required this.discountValue,
+    required this.subtotal,
     required this.tbPriceListId,
     required this.updateStatus,
   });

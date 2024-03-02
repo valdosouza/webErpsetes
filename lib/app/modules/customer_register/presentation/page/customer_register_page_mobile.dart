@@ -17,10 +17,10 @@ class CustomerRegisterPageMobile extends StatefulWidget {
   final int tbCustomerId;
   final String routeCallBack;
   const CustomerRegisterPageMobile({
-    Key? key,
+    super.key,
     required this.tbCustomerId,
     required this.routeCallBack,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomerRegisterPageMobile> createState() =>

@@ -25,13 +25,21 @@ class PersonModel extends PersonEntity {
     return PersonModel(
       id: json['id'] as int? ?? 0,
       cpf: json['cpf'] as String? ?? "",
-      rg: json['rg'] as String? ?? "",
-      rgDtEmission:
-          CustomDate.formatDateIn(json['rg_dt_emission'] as String) ?? "",
-      rgOrganIssuer: json['rg_organ_issuer'] as String? ?? "",
-      rgStateIssuer: json['rg_state_issuer'] as int? ?? 0,
-      birthday: json['birthday'] as String? ?? "",
-      tbProfessionId: json['tb_profession_id'] as int? ?? 0,
+      rg: json['rg'] != null ? json['rg'] as String? ?? "" : "",
+      rgDtEmission: json['rg_dt_emission'] != null
+          ? CustomDate.formatDateIn(json['rg_dt_emission'] as String) ?? ""
+          : "",
+      rgOrganIssuer: json['rg_organ_issuer'] != null
+          ? json['rg_organ_issuer'] as String? ?? ""
+          : "",
+      rgStateIssuer: json['rg_state_issuer'] != null
+          ? json['rg_state_issuer'] as int? ?? 0
+          : 0,
+      birthday:
+          json['birthday'] != null ? json['birthday'] as String? ?? "" : "",
+      tbProfessionId: json['tb_profession_id'] != null
+          ? json['tb_profession_id'] as int? ?? 0
+          : 0,
     );
   }
   Map<String, dynamic> toJson() {

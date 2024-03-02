@@ -13,9 +13,9 @@ import 'package:appweb/app/core/shared/theme.dart';
 class WidgetEntityList extends StatefulWidget {
   final List<EntityListModel> entityList;
   const WidgetEntityList({
-    Key? key,
+    super.key,
     required this.entityList,
-  }) : super(key: key);
+  });
 
   @override
   State<WidgetEntityList> createState() => WidgetEntityListtState();

@@ -195,19 +195,19 @@ class CollaboratorRegisterBloc
                 error: l.toString(),
                 tabIndex: 0,
               )), (r) {
-        model.address.zipCode =
+        model.fiscal.objEntity.addressList[0].zipCode =
             r.zipCode.replaceAll("-", "").replaceAll(".", "");
-        model.entity.nickTrade = r.nickTtrade;
-        model.company?.cnpj = r.cnpj;
-        model.entity.nameCompany = r.nameCompany;
-        model.address.nmbr = r.nmbr;
-        model.address.street = r.street;
-        model.address.complement = r.complement;
-        model.address.neighborhood = r.neighborhood;
-        model.address.cityName = r.cityName;
-        model.address.tbCityId = r.tbCityId;
-        model.address.stateName = r.stateName;
-        model.address.tbStateId = r.tbStateId;
+        model.fiscal.objEntity.entity.nickTrade = r.nickTtrade;
+        model.fiscal.company?.cnpj = r.cnpj;
+        model.fiscal.objEntity.entity.nameCompany = r.nameCompany;
+        model.fiscal.objEntity.addressList[0].nmbr = r.nmbr;
+        model.fiscal.objEntity.addressList[0].street = r.street;
+        model.fiscal.objEntity.addressList[0].complement = r.complement;
+        model.fiscal.objEntity.addressList[0].neighborhood = r.neighborhood;
+        model.fiscal.objEntity.addressList[0].cityName = r.cityName;
+        model.fiscal.objEntity.addressList[0].tbCityId = r.tbCityId;
+        model.fiscal.objEntity.addressList[0].stateName = r.stateName;
+        model.fiscal.objEntity.addressList[0].tbStateId = r.tbStateId;
         emit(CollaboratorRegisterInfoPageState(
             modelList: modelList, tabIndex: 0));
       });
@@ -226,14 +226,15 @@ class CollaboratorRegisterBloc
                 error: l.toString(),
                 tabIndex: 1,
               )), (r) {
-        model.address.zipCode = r.zipCode.replaceAll("-", "");
-        model.address.street = r.street;
-        model.address.complement = r.complement;
-        model.address.neighborhood = r.neighborhood;
-        model.address.stateName = r.stateName;
-        model.address.tbStateId = r.tbStateId;
-        model.address.cityName = r.cityName;
-        model.address.tbCityId = r.tbCityId;
+        model.fiscal.objEntity.addressList[0].zipCode =
+            r.zipCode.replaceAll("-", "");
+        model.fiscal.objEntity.addressList[0].street = r.street;
+        model.fiscal.objEntity.addressList[0].complement = r.complement;
+        model.fiscal.objEntity.addressList[0].neighborhood = r.neighborhood;
+        model.fiscal.objEntity.addressList[0].stateName = r.stateName;
+        model.fiscal.objEntity.addressList[0].tbStateId = r.tbStateId;
+        model.fiscal.objEntity.addressList[0].cityName = r.cityName;
+        model.fiscal.objEntity.addressList[0].tbCityId = r.tbCityId;
         emit(CollaboratorRegisterInfoPageState(
             modelList: modelList, tabIndex: 1));
       });

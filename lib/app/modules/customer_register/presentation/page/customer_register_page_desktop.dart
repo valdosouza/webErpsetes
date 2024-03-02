@@ -19,9 +19,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 class CustomerRegisterPageDesktop extends StatefulWidget {
   final int tbCustomerId;
   const CustomerRegisterPageDesktop({
-    Key? key,
+    super.key,
     required this.tbCustomerId,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomerRegisterPageDesktop> createState() =>

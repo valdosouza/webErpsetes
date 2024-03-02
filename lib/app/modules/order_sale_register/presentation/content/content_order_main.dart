@@ -24,8 +24,8 @@ import 'package:appweb/app/core/shared/local_storage_key.dart';
 
 class ContentOrderMain extends StatefulWidget {
   const ContentOrderMain({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<ContentOrderMain> createState() => _ContentOrderMainState();
@@ -119,7 +119,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     list.add(LineText(
         type: LineText.TYPE_TEXT,
         content:
-            'CLIENTE   : ${bloc.orderMain.orderSale.nameCustomer.substring(1, nrColums)}',
+            'CLIENTE   : ${bloc.orderMain.orderSale.nameCustomer.substring(0, nrColums)}',
         weight: 1,
         align: LineText.ALIGN_LEFT,
         linefeed: 1));
@@ -140,7 +140,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     list.add(LineText(
         type: LineText.TYPE_TEXT,
         content:
-            'VENDEDOR  : ${bloc.orderMain.orderSale.nameSalesman.substring(1, nrColums)}',
+            'VENDEDOR  : ${bloc.orderMain.orderSale.nameSalesman.substring(0, nrColums)}',
         weight: 1,
         align: LineText.ALIGN_LEFT,
         linefeed: 1));
@@ -185,7 +185,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
 
       list.add(LineText(
           type: LineText.TYPE_TEXT,
-          content: bloc.orderMain.items[i].nameProduct.substring(1, nrColums),
+          content: bloc.orderMain.items[i].nameProduct.substring(0, nrColums),
           weight: 1,
           align: LineText.ALIGN_LEFT,
           linefeed: 1));

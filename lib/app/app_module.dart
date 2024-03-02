@@ -8,6 +8,7 @@ import 'package:appweb/app/modules/drawer/domain/usecase/drawer_cashier_is_open.
 import 'package:appweb/app/modules/drawer/drawer_module.dart';
 import 'package:appweb/app/modules/drawer/presentation/bloc/drawer_bloc.dart';
 import 'package:appweb/app/modules/home/home_module.dart';
+import 'package:appweb/app/modules/order_bonus_register/order_bonus_register_module.dart';
 import 'package:appweb/app/modules/order_sale_register/order_sale_register_module.dart';
 import 'package:appweb/app/modules/order_stock_adjust_register/order_stock_adjust_register_module.dart';
 import 'package:appweb/app/modules/order_stock_transfer_register/order_stock_transfer_register_module.dart';
@@ -51,6 +52,7 @@ class AppModule extends Module {
         ModuleRoute('/stock', module: StockModule()),
         ModuleRoute('/orderstockadjust',
             module: OrderStockAdjustRegisterModule()),
+        ModuleRoute('/orderbonifica', module: OrderBonusRegisterModule()),
         ModuleRoute('/orderstocktransfer',
             module: OrderStockTransferRegisterModule()),
         ModuleRoute('/ordersale', module: OrderSaleRegisterModule()),

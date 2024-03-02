@@ -43,7 +43,7 @@ class ParamsStockBalanceList {
     data['tb_institution_id'] = tbInstitutionId;
     data['page'] = page;
     data['id'] = id;
-    data['tb_salemsan_id'] = tbSalesmanId;
+    data['tb_salesman_id'] = tbSalesmanId;
     data['tb_stock_list_id'] = tbStockListId;
     data['name_merchandise'] = nameMerchandise;
     return data;

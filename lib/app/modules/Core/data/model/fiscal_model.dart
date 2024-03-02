@@ -5,14 +5,10 @@ import 'package:appweb/app/modules/Core/domain/entity/fiscal_entity.dart';
 
 class FiscalModel extends FiscalEntity {
   FiscalModel({
-    required ObjEntityModel objEntity,
-    CompanyModel? company,
-    PersonModel? person,
-  }) : super(
-          objEntity: objEntity,
-          company: company,
-          person: person,
-        );
+    required super.objEntity,
+    super.company,
+    super.person,
+  });
 
   factory FiscalModel.fromJson(Map<String, dynamic> json) {
     return FiscalModel(
@@ -21,14 +17,14 @@ class FiscalModel extends FiscalEntity {
           ? CompanyModel.fromJson(json['company'])
           : CompanyModel(
               cnpj: "",
-              id: json['entity']['id'],
+              id: json['obj_entity']['entity']['id'],
               ie: "",
             ),
       person: json['person'] != null
           ? PersonModel.fromJson(json['person'])
           : PersonModel(
               cpf: "",
-              id: json['entity']['id'],
+              id: json['obj_entity']['entity']['id'],
               rg: "",
             ),
     );
