@@ -20,7 +20,6 @@ import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.d
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
 import 'package:bloc/bloc.dart';
 import 'dart:developer' as developer;
-import 'package:firebase_analytics/firebase_analytics.dart';
 
 class OrderSaleRegisterBloc
     extends Bloc<OrderSaleRegisterEvent, OrderSaleRegisterState> {
@@ -59,8 +58,6 @@ class OrderSaleRegisterBloc
 
   int indexDeleteOrder = 0;
   OrderSaleItemModel elementItemDelete = OrderSaleItemModel.empty();
-
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   OrderSaleRegisterBloc({
     required this.getOrderList,
@@ -456,39 +453,9 @@ class OrderSaleRegisterBloc
 
   _closure() {
     on<ClosureOrderEvent>((event, emit) async {
-      await FirebaseAnalytics.instance.logEvent(
-        name: "order_sale",
-        parameters: {
-          "bloc": "_closure",
-          "log": "Antes do loading",
-        },
-      );
       emit(LoadingState());
-      await FirebaseAnalytics.instance.logEvent(
-        name: "order_sale",
-        parameters: {
-          "bloc": "_closure",
-          "log": "Atribui o codigo de ordem",
-        },
-      );
-
       final orderId = event.params.tbOrderId;
-      await FirebaseAnalytics.instance.logEvent(
-        name: "order_sale",
-        parameters: {
-          "bloc": "_closure",
-          "log": "Chama o closure.all",
-        },
-      );
       var response = await closure.call(event.params);
-      await FirebaseAnalytics.instance.logEvent(
-        name: "order_sale",
-        parameters: {
-          "bloc": "_closure",
-          "log": "Response.fold (l): ${response.fold.toString()}",
-        },
-      );
-
       response.fold((l) {
         emit(ErrorState(message: l.toString()));
       }, (r) {

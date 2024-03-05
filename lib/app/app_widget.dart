@@ -11,6 +11,7 @@ class AppWidget extends StatelessWidget {
     Intl.defaultLocale = 'pt_BR';
     GlobalKey<NavigatorState>? navigatorKey;
     Modular.setNavigatorKey(navigatorKey);
+
     return FutureBuilder(
         future: Modular.isModuleReady<AppModule>(),
         builder: (_, snapshot) {

@@ -3,19 +3,16 @@ allprojects {
         google()
         mavenCentral()
     }
+}
 
-    // Set the build directory
-    rootProject.buildDir = '../build'
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
 
-    // Configure subprojects
-    subprojects {
-        project.buildDir = "${rootProject.buildDir}/${project.name}"
-    }
-
-    // Ensure evaluation depends on the app module
-    subprojects {
-        project.evaluationDependsOn(':app')
-    }
-
-
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
 }
