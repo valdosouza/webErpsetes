@@ -72,7 +72,7 @@ dependencies:
   firebase_core_dart: ^1.0.1
   firebase_core: ^2.25.5  
   logger: ^2.1.0
-  #firebase_analytics: ^10.8.7
+  firebase_analytics: ^10.8.7
   bluetooth_print: ^4.3.0
 
   # The following adds the Cupertino Icons font to your application.
