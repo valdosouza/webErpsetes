@@ -72,7 +72,7 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
     );
   }
 
-  gradeListView() {
+  SizedBox gradeListView() {
     final Size size = MediaQuery.of(context).size;
     return SizedBox(
       height: size.height - 180,
@@ -151,7 +151,7 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
     );
   }
 
-  _productField() {
+  CustomInputButton _productField() {
     return CustomInputButton(
       enabled: true,
       keyboardType: TextInputType.number,

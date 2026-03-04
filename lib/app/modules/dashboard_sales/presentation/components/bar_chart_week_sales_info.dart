@@ -43,7 +43,6 @@ class BarChartWeekSalesInfoState extends State<BarChartWeekSalesInfo> {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: BarChart(
                 isPlaying ? randomData() : mainBarData(),
-                swapAnimationDuration: animDuration,
               ),
             ),
           ),
@@ -110,7 +109,6 @@ class BarChartWeekSalesInfoState extends State<BarChartWeekSalesInfo> {
     return BarChartData(
       barTouchData: BarTouchData(
         touchTooltipData: BarTouchTooltipData(
-          tooltipBgColor: Colors.blueGrey,
           tooltipHorizontalAlignment: FLHorizontalAlignment.right,
           tooltipMargin: -10,
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
@@ -241,7 +239,7 @@ class BarChartWeekSalesInfoState extends State<BarChartWeekSalesInfo> {
         break;
     }
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       space: 16,
       child: text,
     );
@@ -297,7 +295,7 @@ class BarChartWeekSalesInfoState extends State<BarChartWeekSalesInfo> {
         break;
     }
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       space: 16,
       child: text,
     );

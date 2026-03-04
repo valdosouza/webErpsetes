@@ -131,7 +131,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _date() {
+  CustomInput _date() {
     return CustomInput(
       title: "Data",
       controller: MaskedTextController(
@@ -143,7 +143,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _number() {
+  CustomInput _number() {
     return CustomInput(
       readOnly: (bloc.orderMain.order.status == "F"),
       title: "Número",
@@ -155,7 +155,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _entity() {
+  CustomInputButton _entity() {
     return CustomInputButton(
       readOnly: (bloc.orderMain.order.status != "F"),
       enabled: true,
@@ -189,7 +189,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _itemsList(List<OrderStockAdjustItemModel> items) {
+  CustomInputButton _itemsList(List<OrderStockAdjustItemModel> items) {
     return CustomInputButton(
       enabled: true,
       keyboardType: TextInputType.number,
@@ -211,7 +211,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _direction() {
+  Column _direction() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -220,58 +220,50 @@ class _ContentOrderMainState extends State<ContentOrderMain>
           style: kLabelStyle,
         ),
         const SizedBox(height: 10.0),
-        Row(
-          children: [
-            Row(
-              children: [
-                Radio(
-                  value: true,
-                  groupValue: selectRadio,
-                  activeColor: Colors.red,
-                  onChanged: (bloc.orderMain.order.status != "F")
-                      ? selectRadio
-                          ? (value) {}
-                          : (value) {
-                              setState(() {
-                                selectRadio = true;
-                                bloc.orderMain.orderStockAdjust.direction = "E";
-                              });
-                            }
-                      : null,
-                ),
-                const SizedBox(width: 5.0),
-                const Text("Entrada", style: kLabelStyle),
-              ],
-            ),
-            const SizedBox(width: 10.0),
-            Row(
-              children: [
-                Radio(
-                    value: false,
-                    groupValue: selectRadio,
+        RadioGroup<bool>(
+          groupValue: selectRadio,
+          onChanged: (bloc.orderMain.order.status != "F")
+              ? (value) {
+                  if (value != null) {
+                    setState(() => selectRadio = value);
+                    bloc.orderMain.orderStockAdjust.direction =
+                        value ? "E" : "S";
+                  }
+                }
+              : (_) {},
+          child: Row(
+            children: [
+              Row(
+                children: [
+                  Radio<bool>(
+                    value: true,
                     activeColor: Colors.red,
-                    onChanged: (bloc.orderMain.order.status != "F")
-                        ? selectRadio
-                            ? (value) {
-                                setState(() {
-                                  selectRadio = false;
-                                  bloc.orderMain.orderStockAdjust.direction =
-                                      "S";
-                                });
-                              }
-                            : (value) {}
-                        : null),
-                const SizedBox(width: 5.0),
-                const Text("Saída", style: kLabelStyle),
-              ],
-            ),
-          ],
+                    enabled: bloc.orderMain.order.status != "F",
+                  ),
+                  const SizedBox(width: 5.0),
+                  const Text("Entrada", style: kLabelStyle),
+                ],
+              ),
+              const SizedBox(width: 10.0),
+              Row(
+                children: [
+                  Radio<bool>(
+                    value: false,
+                    activeColor: Colors.red,
+                    enabled: bloc.orderMain.order.status != "F",
+                  ),
+                  const SizedBox(width: 5.0),
+                  const Text("Saída", style: kLabelStyle),
+                ],
+              ),
+            ],
+          ),
         ),
       ],
     );
   }
 
-  _stockList() {
+  CustomInputButton _stockList() {
     return CustomInputButton(
       readOnly: (bloc.orderMain.order.status != "F"),
       enabled: true,
@@ -304,7 +296,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _observation() {
+  CustomInput _observation() {
     return CustomInput(
         readOnly: (bloc.orderMain.order.status == "F"),
         title: "Observações",

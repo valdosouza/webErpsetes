@@ -125,7 +125,8 @@ class AddressModel extends AddressEntity {
     );
   }
 
-  emptyList(id) {
+  // ignore: strict_top_level_inference
+  List<AddressModel> emptyList(id) {
     List<AddressModel> list = [
       AddressModel(
         id: id,

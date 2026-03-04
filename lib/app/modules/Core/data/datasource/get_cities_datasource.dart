@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:appweb/app/modules/Core/data/model/city_model.dart';
 import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/core/shared/constants.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:http/http.dart' as http;
 
 abstract class GetCitiesDatasource {
@@ -18,7 +19,7 @@ class GetCitiesDatasourceImpl implements GetCitiesDatasource {
       final uri = Uri.parse('${baseApiUrl}city/getlist/$tbSateId');
       final response = await client.get(uri);
       if (response.statusCode == 200) {
-        var obj = jsonDecode(response.body);
+        var obj = json.decode(response.body);
         citys = (obj as List).map((json) {
           return CityModel.fromJson(json);
         }).toList();
@@ -26,7 +27,8 @@ class GetCitiesDatasourceImpl implements GetCitiesDatasource {
       } else {
         throw ServerException();
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }

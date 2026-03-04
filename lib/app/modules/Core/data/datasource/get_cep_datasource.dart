@@ -3,6 +3,7 @@ import 'package:appweb/app/modules/Core/data/model/address_model.dart';
 
 import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/core/shared/constants.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -30,7 +31,8 @@ class GetCepDatasourceImpl implements GetCepDatasource {
       } else {
         throw ServerException();
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }
@@ -45,7 +47,8 @@ class GetCepDatasourceImpl implements GetCepDatasource {
       } else {
         return 4004;
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }
@@ -60,7 +63,8 @@ class GetCepDatasourceImpl implements GetCepDatasource {
       } else {
         return 41;
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }

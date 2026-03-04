@@ -102,7 +102,7 @@ class OrderBonusRegisterBloc
     _reopen();
   }
 
-  _getOrderList() {
+  void _getOrderList() {
     on<GetOrderListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -121,7 +121,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _searchOrderList() {
+  void _searchOrderList() {
     on<SearchOrderEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -140,7 +140,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _filterOrderList() {
+  void _filterOrderList() {
     on<FilterOrderEvent>((event, emit) async {
       emit(LoadingState());
       List<OrderBonusListModel> orderListFilter = orderList;
@@ -157,14 +157,14 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _returnOrderList() {
+  void _returnOrderList() {
     on<ReturnToOrderMainEvent>((event, emit) async {
       emit(LoadingState());
       emit(OrderListLoadedState(orderList: orderList));
     });
   }
 
-  _getNewFormOrder() {
+  void _getNewFormOrder() {
     on<NewFormOrderEvent>((event, emit) async {
       emit(LoadingState());
       orderMain = OrderBonusMainModel.empty();
@@ -172,21 +172,21 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _getFormOrder() {
+  void _getFormOrder() {
     on<FormOrderEvent>((event, emit) async {
       emit(LoadingState());
       emit(FormOrderLoadedState(tbOrderId: event.tbOrderId));
     });
   }
 
-  _getFormItem() {
+  void _getFormItem() {
     on<FormItemsEvent>((event, emit) async {
       emit(LoadingState());
       emit(FormItemsLoadedState(tbOrderId: event.tbOrderId));
     });
   }
 
-  _getOrderMain() {
+  void _getOrderMain() {
     on<GetOrderMainEvent>((event, emit) async {
       emit(LoadingState());
       if (event.tbOrderId == 0) {
@@ -202,7 +202,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _getCustomerList() {
+  void _getCustomerList() {
     on<GetCustomerListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -221,7 +221,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _searchCustomerList() {
+  void _searchCustomerList() {
     on<SearchCustomerEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -240,7 +240,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _filterCustomerList() {
+  void _filterCustomerList() {
     on<FilterCustomerEvent>((event, emit) async {
       emit(LoadingState());
       List<CustomerListModel> customerListFilter = customerList;
@@ -257,14 +257,14 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _getItemsList() {
+  void _getItemsList() {
     on<GetItemsListEvent>((event, emit) async {
       emit(LoadingState());
       emit(ItemsListLoadedSate(itemsList: orderMain.items));
     });
   }
 
-  _getProductList() {
+  void _getProductList() {
     on<GetProductListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -283,7 +283,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _searchProductList() {
+  void _searchProductList() {
     on<SearchProductEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -302,7 +302,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _filterProductList() {
+  void _filterProductList() {
     on<FilterProductEvent>((event, emit) async {
       emit(LoadingState());
       List<ProductListModel> productListFilter = productList;
@@ -319,7 +319,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _getStockList() {
+  void _getStockList() {
     on<GetStockListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -338,7 +338,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _searchStockList() {
+  void _searchStockList() {
     on<SearchStockEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -357,7 +357,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _filterStockList() {
+  void _filterStockList() {
     on<FilterStockEvent>((event, emit) async {
       emit(LoadingState());
       List<StockListModel> stockListFilter = stockList;
@@ -374,14 +374,14 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _getFormProductList() {
+  void _getFormProductList() {
     on<GetFormProductListEvent>((event, emit) async {
       emit(LoadingState());
       emit(ProductListLoadedState(productList: productList));
     });
   }
 
-  _getItemToEdit() {
+  void _getItemToEdit() {
     on<GetItemToEditEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -389,7 +389,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _deleteItem() {
+  void _deleteItem() {
     on<DeleteItemEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -401,7 +401,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _setitemsUpdate() {
+  void _setitemsUpdate() {
     on<SetItemUpdateEvent>((event, emit) {
       if (event.item.id > 0) {
         event.item.updateStatus = "E";
@@ -432,7 +432,7 @@ class OrderBonusRegisterBloc
     return "";
   }
   */
-  _post() {
+  void _post() {
     on<PostOrderEvent>((event, emit) async {
       emit(LoadingState());
       var response = await post.call(orderMain);
@@ -446,7 +446,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _put() {
+  void _put() {
     on<PutOrderEvent>((event, emit) async {
       emit(LoadingState());
       var response = await put.call(orderMain);
@@ -460,7 +460,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _delete() {
+  void _delete() {
     on<DeleteOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;
@@ -477,7 +477,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _closure() {
+  void _closure() {
     on<ClosureOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;
@@ -495,7 +495,7 @@ class OrderBonusRegisterBloc
     });
   }
 
-  _reopen() {
+  void _reopen() {
     on<ReopenOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;

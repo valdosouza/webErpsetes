@@ -8,6 +8,7 @@ import 'package:appweb/app/modules/drawer/domain/usecase/drawer_cashier_is_open.
 import 'package:appweb/app/modules/drawer/drawer_module.dart';
 import 'package:appweb/app/modules/drawer/presentation/bloc/drawer_bloc.dart';
 import 'package:appweb/app/modules/home/home_module.dart';
+import 'package:appweb/app/modules/log/log_module.dart';
 import 'package:appweb/app/modules/order_bonus_register/order_bonus_register_module.dart';
 import 'package:appweb/app/modules/order_sale_register/order_sale_register_module.dart';
 import 'package:appweb/app/modules/order_stock_adjust_register/order_stock_adjust_register_module.dart';
@@ -17,8 +18,8 @@ import 'package:appweb/app/modules/resource_human/resource_human_module.dart';
 import 'package:appweb/app/modules/splash/splash_module.dart';
 import 'package:appweb/app/modules/stock/stock_module.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppModule extends Module {
   // Provide a list of dependencies to inject into your project
@@ -57,6 +58,7 @@ class AppModule extends Module {
             module: OrderStockTransferRegisterModule()),
         ModuleRoute('/ordersale', module: OrderSaleRegisterModule()),
         ModuleRoute('/dashboard', module: DashboardModule()),
+        ModuleRoute('/log', module: LogModule()),
         WildcardRoute(child: (_, __) => const Page404()),
       ];
 }

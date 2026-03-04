@@ -33,7 +33,7 @@ class WidgetStockBalanceListtState extends State<WidgetStockBalanceList> {
     bloc = Modular.get<StockBalanceBloc>();
   }
 
-  infiniteScrolling() {
+  void infiniteScrolling() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       bloc.add(
@@ -67,7 +67,7 @@ class WidgetStockBalanceListtState extends State<WidgetStockBalanceList> {
     );
   }
 
-  _stockList(StockBalanceState state) {
+  Scaffold _stockList(StockBalanceState state) {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(

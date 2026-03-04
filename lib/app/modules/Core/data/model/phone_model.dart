@@ -48,7 +48,8 @@ class PhoneModel extends PhoneEntity {
     );
   }
 
-  emptyList(id) {
+  // ignore: strict_top_level_inference
+  List<PhoneModel> emptyList(id) {
     List<PhoneModel> list = [
       PhoneModel(
         id: id,

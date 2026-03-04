@@ -27,7 +27,7 @@ class PersonModel extends PersonEntity {
       cpf: json['cpf'] as String? ?? "",
       rg: json['rg'] != null ? json['rg'] as String? ?? "" : "",
       rgDtEmission: json['rg_dt_emission'] != null
-          ? CustomDate.formatDateIn(json['rg_dt_emission'] as String) ?? ""
+          ? CustomDate.formatDateIn(json['rg_dt_emission'] as String)
           : "",
       rgOrganIssuer: json['rg_organ_issuer'] != null
           ? json['rg_organ_issuer'] as String? ?? ""

@@ -90,7 +90,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     _reopen();
   }
 
-  _getOrderList() {
+  void _getOrderList() {
     on<GetOrderListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -109,7 +109,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _searchOrderList() {
+  void _searchOrderList() {
     on<SearchOrderEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -128,7 +128,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _filterOrderList() {
+  void _filterOrderList() {
     on<FilterOrderEvent>((event, emit) async {
       emit(LoadingState());
       List<OrderStockTransferListModel> orderListFilter = orderList;
@@ -145,14 +145,14 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _returnOrderList() {
+  void _returnOrderList() {
     on<ReturnToOrderMainEvent>((event, emit) async {
       emit(LoadingState());
       emit(OrderListLoadedState(orderList: orderList));
     });
   }
 
-  _getNewFormOrder() {
+  void _getNewFormOrder() {
     on<NewFormOrderEvent>((event, emit) async {
       emit(LoadingState());
       orderMain = OrderStockTransferMainModel.empty();
@@ -160,7 +160,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _getFormOrder() {
+  void _getFormOrder() {
     on<FormOrderEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -168,14 +168,14 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _getFormItem() {
+  void _getFormItem() {
     on<FormItemsEvent>((event, emit) async {
       emit(LoadingState());
       emit(FormItemsLoadedState(tbOrderId: event.tbOrderId));
     });
   }
 
-  _getOrderMain() {
+  void _getOrderMain() {
     on<GetOrderMainEvent>((event, emit) async {
       emit(LoadingState());
       if (event.tbOrderId == 0) {
@@ -191,7 +191,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _getEntityList() {
+  void _getEntityList() {
     on<GetEntityListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -210,7 +210,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _searchEntityList() {
+  void _searchEntityList() {
     on<SearchEntityEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -229,7 +229,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _filterEntityList() {
+  void _filterEntityList() {
     on<FilterEntityEvent>((event, emit) async {
       emit(LoadingState());
       List<EntityListModel> entityListFilter = entityList;
@@ -246,14 +246,14 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _getItemsList() {
+  void _getItemsList() {
     on<GetItemsListEvent>((event, emit) async {
       emit(LoadingState());
       emit(ItemsListLoadedSate(itemsList: orderMain.items));
     });
   }
 
-  _getProductList() {
+  void _getProductList() {
     on<GetProductListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -272,7 +272,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _searchProductList() {
+  void _searchProductList() {
     on<SearchProductEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -291,7 +291,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _filterProductList() {
+  void _filterProductList() {
     on<FilterProductEvent>((event, emit) async {
       emit(LoadingState());
       List<ProductListModel> productListFilter = productList;
@@ -308,14 +308,14 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _getFormProductList() {
+  void _getFormProductList() {
     on<GetFormProductListEvent>((event, emit) async {
       emit(LoadingState());
       emit(ProductListLoadedState(productList: productList));
     });
   }
 
-  _getItemToEdit() {
+  void _getItemToEdit() {
     on<GetItemToEditEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -323,7 +323,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _deleteItem() {
+  void _deleteItem() {
     on<DeleteItemEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -335,7 +335,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _setitemsUpdate() {
+  void _setitemsUpdate() {
     on<SetItemUpdateEvent>((event, emit) {
       if (event.item.id > 0) {
         event.item.updateStatus = "E";
@@ -349,7 +349,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _post() {
+  void _post() {
     on<PostOrderEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -364,7 +364,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _put() {
+  void _put() {
     on<PutOrderEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -379,7 +379,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _delete() {
+  void _delete() {
     on<DeleteOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;
@@ -396,7 +396,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _closure() {
+  void _closure() {
     on<ClosureOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;
@@ -414,7 +414,7 @@ class OrderStockTransferRegisterBloc extends Bloc<
     });
   }
 
-  _reopen() {
+  void _reopen() {
     on<ReopenOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;

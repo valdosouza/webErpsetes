@@ -7,7 +7,7 @@ import 'package:appweb/app/modules/customer_register/presentation/bloc/event.dar
 import 'package:appweb/app/modules/customer_register/presentation/bloc/state.dart';
 import 'package:flutter/material.dart';
 
-statesCustomer(CustomerRegisterState state) {
+void statesCustomer(CustomerRegisterState state) {
   if (state is ErrorState) {
     CustomToast.showToast(state.message);
   } else if (state is ErrorState) {
@@ -22,7 +22,7 @@ statesCustomer(CustomerRegisterState state) {
   }
 }
 
-buildSearchInput(CustomerRegisterBloc bloc) {
+Container buildSearchInput(CustomerRegisterBloc bloc) {
   return Container(
     decoration: kBoxDecorationStyle,
     child: TextFormField(
@@ -53,7 +53,8 @@ buildSearchInput(CustomerRegisterBloc bloc) {
   );
 }
 
-buildListView(CustomerRegisterBloc bloc, List<CustomerListModel> customers) {
+Expanded buildListView(
+    CustomerRegisterBloc bloc, List<CustomerListModel> customers) {
   return Expanded(
     child: customers.isEmpty
         ? const Center(

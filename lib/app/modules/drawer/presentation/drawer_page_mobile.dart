@@ -40,7 +40,7 @@ class _DrawerPageMobileState extends State<DrawerPageMobile> {
         return AlertDialog(
           title: const Text('Sobre o Aplicativo.'),
           content: const AutoSizeText(
-            "Esta é Versão 1.0.1+35.",
+            "Esta é Versão 1.0.1+52.",
             minFontSize: 12,
             maxFontSize: 18,
             maxLines: 2,
@@ -125,6 +125,8 @@ class _DrawerPageMobileState extends State<DrawerPageMobile> {
               Icons.home, 'Impressora', () => Modular.to.navigate('/printer/')),
           itemMenuPolicy(Icons.home, 'Política de Privacidade'),
           itemMenuDraw(Icons.home, 'Sobre', () => _showAboutApp()),
+          itemMenuDraw(
+              Icons.home, 'Log Operações', () => Modular.to.navigate('/log/')),
           itemLogout(Icons.close, 'Sair'),
         ],
       ),

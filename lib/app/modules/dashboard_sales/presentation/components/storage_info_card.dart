@@ -20,7 +20,8 @@ class StorageInfoCard extends StatelessWidget {
       margin: const EdgeInsets.only(top: kDefaultPadding),
       padding: const EdgeInsets.all(kDefaultPadding),
       decoration: BoxDecoration(
-        border: Border.all(width: 2, color: kPrimaryColor.withOpacity(0.15)),
+        border:
+            Border.all(width: 2, color: kPrimaryColor.withValues(alpha: 0.15)),
         borderRadius: const BorderRadius.all(
           Radius.circular(kDefaultPadding),
         ),

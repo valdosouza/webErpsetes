@@ -124,7 +124,7 @@ class _AuthRecoveryPasswordPageState extends State<AuthRecoveryPasswordPage> {
     );
   }
 
-  _buildSendBtn(AuthState state) {
+  SizedBox _buildSendBtn(AuthState state) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(
@@ -157,7 +157,7 @@ class _AuthRecoveryPasswordPageState extends State<AuthRecoveryPasswordPage> {
     );
   }
 
-  _buildBackBtn() {
+  SizedBox _buildBackBtn() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(

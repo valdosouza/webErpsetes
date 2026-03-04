@@ -4,6 +4,7 @@ import 'package:appweb/app/modules/line_business_register/data/datasource/linebu
 import 'package:appweb/app/modules/line_business_register/data/model/linebusiness_model.dart';
 import 'package:appweb/app/modules/line_business_register/domain/repository/linebusiness_register_repository.dart';
 import 'package:dartz/dartz.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 class LinebusinessRegisterRepositoryImpl
     implements LinebusinessRegisterRepository {
@@ -39,7 +40,8 @@ class LinebusinessRegisterRepositoryImpl
     try {
       final result = await datasource.delete(id: id);
       return Right(result);
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return Left(ServerFailure());
     }
   }

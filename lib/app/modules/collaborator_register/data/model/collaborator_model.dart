@@ -48,6 +48,7 @@ class CollaboratorModel extends CollaboratorEntity {
     return data;
   }
 
+  // ignore: strict_top_level_inference
   factory CollaboratorModel.fromJson(map) {
     return CollaboratorModel(
       id: map['id'],

@@ -103,7 +103,7 @@ class OrderStockAdjustRegisterBloc
     _reopen();
   }
 
-  _getOrderList() {
+  void _getOrderList() {
     on<GetOrderListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -122,7 +122,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _searchOrderList() {
+  void _searchOrderList() {
     on<SearchOrderEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -141,7 +141,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _filterOrderList() {
+  void _filterOrderList() {
     on<FilterOrderEvent>((event, emit) async {
       emit(LoadingState());
       List<OrderStockAdjustListModel> orderListFilter = orderList;
@@ -158,14 +158,14 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _returnOrderList() {
+  void _returnOrderList() {
     on<ReturnToOrderMainEvent>((event, emit) async {
       emit(LoadingState());
       emit(OrderListLoadedState(orderList: orderList));
     });
   }
 
-  _getNewFormOrder() {
+  void _getNewFormOrder() {
     on<NewFormOrderEvent>((event, emit) async {
       emit(LoadingState());
       orderMain = OrderStockAdjustMainModel.empty();
@@ -173,21 +173,21 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _getFormOrder() {
+  void _getFormOrder() {
     on<FormOrderEvent>((event, emit) async {
       emit(LoadingState());
       emit(FormOrderLoadedState(tbOrderId: event.tbOrderId));
     });
   }
 
-  _getFormItem() {
+  void _getFormItem() {
     on<FormItemsEvent>((event, emit) async {
       emit(LoadingState());
       emit(FormItemsLoadedState(tbOrderId: event.tbOrderId));
     });
   }
 
-  _getOrderMain() {
+  void _getOrderMain() {
     on<GetOrderMainEvent>((event, emit) async {
       emit(LoadingState());
       if (event.tbOrderId == 0) {
@@ -203,7 +203,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _getEntityList() {
+  void _getEntityList() {
     on<GetEntityListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -222,7 +222,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _searchEntityList() {
+  void _searchEntityList() {
     on<SearchEntityEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -241,7 +241,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _filterEntityList() {
+  void _filterEntityList() {
     on<FilterEntityEvent>((event, emit) async {
       emit(LoadingState());
       List<EntityListModel> entityListFilter = entityList;
@@ -258,14 +258,14 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _getItemsList() {
+  void _getItemsList() {
     on<GetItemsListEvent>((event, emit) async {
       emit(LoadingState());
       emit(ItemsListLoadedSate(itemsList: orderMain.items));
     });
   }
 
-  _getProductList() {
+  void _getProductList() {
     on<GetProductListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -284,7 +284,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _searchProductList() {
+  void _searchProductList() {
     on<SearchProductEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -303,7 +303,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _filterProductList() {
+  void _filterProductList() {
     on<FilterProductEvent>((event, emit) async {
       emit(LoadingState());
       List<ProductListModel> productListFilter = productList;
@@ -320,7 +320,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _getStockList() {
+  void _getStockList() {
     on<GetStockListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -339,7 +339,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _searchStockList() {
+  void _searchStockList() {
     on<SearchStockEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -358,7 +358,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _filterStockList() {
+  void _filterStockList() {
     on<FilterStockEvent>((event, emit) async {
       emit(LoadingState());
       List<StockListModel> stockListFilter = stockList;
@@ -375,14 +375,14 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _getFormProductList() {
+  void _getFormProductList() {
     on<GetFormProductListEvent>((event, emit) async {
       emit(LoadingState());
       emit(ProductListLoadedState(productList: productList));
     });
   }
 
-  _getItemToEdit() {
+  void _getItemToEdit() {
     on<GetItemToEditEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -390,7 +390,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _deleteItem() {
+  void _deleteItem() {
     on<DeleteItemEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -402,7 +402,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _setitemsUpdate() {
+  void _setitemsUpdate() {
     on<SetItemUpdateEvent>((event, emit) {
       if (event.item.id > 0) {
         event.item.updateStatus = "E";
@@ -430,7 +430,7 @@ class OrderStockAdjustRegisterBloc
     return "";
   }
   */
-  _post() {
+  void _post() {
     on<PostOrderEvent>((event, emit) async {
       emit(LoadingState());
       var response = await post.call(orderMain);
@@ -444,7 +444,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _put() {
+  void _put() {
     on<PutOrderEvent>((event, emit) async {
       emit(LoadingState());
       var response = await put.call(orderMain);
@@ -458,7 +458,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _delete() {
+  void _delete() {
     on<DeleteOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;
@@ -475,7 +475,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _closure() {
+  void _closure() {
     on<ClosureOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;
@@ -493,7 +493,7 @@ class OrderStockAdjustRegisterBloc
     });
   }
 
-  _reopen() {
+  void _reopen() {
     on<ReopenOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;

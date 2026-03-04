@@ -122,7 +122,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _date() {
+  CustomInput _date() {
     return CustomInput(
       title: "Data",
       controller: MaskedTextController(
@@ -134,7 +134,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _number() {
+  CustomInput _number() {
     return CustomInput(
       readOnly: (bloc.orderMain.order.status == "F"),
       title: "Número",
@@ -146,7 +146,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _customer() {
+  CustomInputButton _customer() {
     return CustomInputButton(
       readOnly: (bloc.orderMain.order.status != "F"),
       enabled: true,
@@ -180,7 +180,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _itemsList(List<OrderBonusItemModel> items) {
+  CustomInputButton _itemsList(List<OrderBonusItemModel> items) {
     return CustomInputButton(
       enabled: true,
       keyboardType: TextInputType.number,
@@ -202,7 +202,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _observation() {
+  CustomInput _observation() {
     return CustomInput(
         readOnly: (bloc.orderMain.order.status == "F"),
         title: "Observações",

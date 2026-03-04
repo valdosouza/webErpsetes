@@ -61,7 +61,7 @@ class _ContentItemEditState extends State<ContentItemEdit> {
     );
   }
 
-  _productNameField() {
+  CustomInputButton _productNameField() {
     return CustomInputButton(
       enabled: true,
       keyboardType: TextInputType.number,
@@ -73,7 +73,7 @@ class _ContentItemEditState extends State<ContentItemEdit> {
     );
   }
 
-  _productQuantityField() {
+  CustomInput _productQuantityField() {
     return CustomInput(
       title: 'Quantidade',
       initialValue: widget.itemEdit.quantity.toStringAsFixed(2),

@@ -27,15 +27,17 @@ class ContentOrderList extends StatefulWidget {
 class _ContentOrderListState extends State<ContentOrderList> {
   late final OrderSaleRegisterBloc bloc;
   late final ScrollController _scrollController;
+  //String selectStatusOrder = "A";
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(infiniteScrolling);
     bloc = Modular.get<OrderSaleRegisterBloc>();
+    //selectStatusOrder = bloc.searchStatusOrder;
   }
 
-  infiniteScrolling() {
+  void infiniteScrolling() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       bloc.add(
@@ -46,6 +48,7 @@ class _ContentOrderListState extends State<ContentOrderList> {
             page: bloc.pageOrder,
             number: 0,
             nickTrade: bloc.searchOrder,
+            status: bloc.searchStatusOrder,
           ),
         ),
       );
@@ -103,7 +106,27 @@ class _ContentOrderListState extends State<ContentOrderList> {
     );
   }
 
-  buildSearchInput() {
+  Widget buildNewCustomer() {
+    return itemMenuDraw(
+      Icons.home,
+      'Cliente Novo',
+      () async => Modular.to.navigate(
+          '/ordersale/mobile/register/customer-register/',
+          arguments: [0, '/ordersale/']),
+    );
+  }
+
+  Column buildSearchInput() {
+    return Column(
+      children: [
+        orderNumberSearch(),
+        orderStatusSearch(),
+        const Divider(color: kPrimaryColor, thickness: 5),
+      ],
+    );
+  }
+
+  CustomSearchFilter orderNumberSearch() {
     return CustomSearchFilter(
       title: "Pesquisa ou Filtre aqui",
       readOnly: false,
@@ -122,6 +145,7 @@ class _ContentOrderListState extends State<ContentOrderList> {
                   page: 0,
                   number: 0,
                   nickTrade: bloc.searchOrder,
+                  status: bloc.searchStatusOrder,
                 ),
               ),
             ),
@@ -133,17 +157,44 @@ class _ContentOrderListState extends State<ContentOrderList> {
     );
   }
 
-  buildNewCustomer() {
-    return itemMenuDraw(
-      Icons.home,
-      'Cliente Novo',
-      () async => Modular.to.navigate(
-          '/ordersale/mobile/register/customer-register/',
-          arguments: [0, '/ordersale/']),
+  Widget orderStatusSearch() {
+    return RadioGroup<String>(
+      groupValue: bloc.searchStatusOrder,
+      onChanged: (value) {
+        if (value != null) {
+          setState(() => bloc.searchStatusOrder = value);
+        }
+      },
+      child: Row(
+        children: [
+          Row(
+            children: [
+              Radio<String>(value: "A", activeColor: Colors.red),
+              const SizedBox(width: 5.0),
+              const Text("Aberto", style: kLabelStyle),
+            ],
+          ),
+          const SizedBox(width: 5.0),
+          Row(
+            children: [
+              Radio<String>(value: "F", activeColor: Colors.red),
+              const SizedBox(width: 5.0),
+              const Text("Fechado", style: kLabelStyle),
+            ],
+          ),
+          Row(
+            children: [
+              Radio<String>(value: "T", activeColor: Colors.red),
+              const SizedBox(width: 5.0),
+              const Text("Todos", style: kLabelStyle),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
-  buildListView() {
+  Expanded buildListView() {
     return Expanded(
       child: widget.orderlist.isEmpty
           ? const Center(

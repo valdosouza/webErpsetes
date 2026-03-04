@@ -45,7 +45,7 @@ class ObjEntityModel extends ObjEntityEntity {
   Map<dynamic, dynamic> toJson() {
     final Map<dynamic, dynamic> data = <dynamic, dynamic>{};
     data['description'] = description;
-    data['tbInstitutionIid'] = tbInstitutionId;
+    data['tbInstitutionId'] = tbInstitutionId;
     data['webId'] = webId;
     data['terminal'] = terminal;
     data['page'] = page;

@@ -9,7 +9,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     loggedSate();
   }
 
-  loggedSate() {
+  void loggedSate() {
     on<SplashInitEvent>((event, emit) async {
       final token = await LocalStorageService.instance
           .get(key: LocalStorageKey.token, defaultValue: '');

@@ -37,7 +37,7 @@ class _UserInteractionPageState extends State<UserInteractionPage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (bool didPop) {
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         if (didPop) {
           return;
         }
@@ -118,47 +118,33 @@ class _UserInteractionPageState extends State<UserInteractionPage> {
                 const SizedBox(height: 30.0),
                 const Text("Ativo", style: kLabelStyle),
                 const SizedBox(height: 10.0),
-                Row(
-                  children: [
-                    Row(
-                      children: [
-                        Radio(
-                          value: true,
-                          groupValue: selectRadio,
-                          activeColor: Colors.red,
-                          onChanged: selectRadio
-                              ? (value) {}
-                              : (value) {
-                                  setState(() {
-                                    selectRadio = true;
-                                  });
-                                  bloc.user.active = "S";
-                                },
-                        ),
-                        const SizedBox(width: 5.0),
-                        const Text("Sim", style: kLabelStyle),
-                      ],
-                    ),
-                    const SizedBox(width: 10.0),
-                    Row(
-                      children: [
-                        Radio(
-                            value: false,
-                            groupValue: selectRadio,
-                            activeColor: Colors.red,
-                            onChanged: selectRadio
-                                ? (value) {
-                                    setState(() {
-                                      selectRadio = false;
-                                    });
-                                    bloc.user.active = "N";
-                                  }
-                                : (value) {}),
-                        const SizedBox(width: 5.0),
-                        const Text("Não", style: kLabelStyle),
-                      ],
-                    ),
-                  ],
+                RadioGroup<bool>(
+                  groupValue: selectRadio,
+                  onChanged: (value) {
+                    final newValue = value ?? false;
+                    setState(() => selectRadio = newValue);
+                    bloc.user.active = newValue ? "S" : "N";
+                  },
+                  child: Row(
+                    children: [
+                      Row(
+                        children: [
+                          Radio<bool>(value: true, activeColor: Colors.red),
+                          const SizedBox(width: 5.0),
+                          const Text("Sim", style: kLabelStyle),
+                        ],
+                      ),
+                      const SizedBox(width: 10.0),
+                      Row(
+                        children: [
+                          Radio<bool>(
+                              value: false, activeColor: Colors.red),
+                          const SizedBox(width: 5.0),
+                          const Text("Não", style: kLabelStyle),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

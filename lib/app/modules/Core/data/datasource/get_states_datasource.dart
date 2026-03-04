@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/core/shared/constants.dart';
 import 'package:appweb/app/modules/Core/data/model/state_model.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:http/http.dart' as http;
 
 abstract class GetStatesDatasource {
@@ -18,7 +19,7 @@ class GetStatesDatasourceImpl implements GetStatesDatasource {
       final uri = Uri.parse('${baseApiUrl}state/getlist/');
       final response = await client.get(uri);
       if (response.statusCode == 200) {
-        var obj = jsonDecode(response.body);
+        var obj = json.decode(response.body);
         states = (obj as List).map((json) {
           return StateModel.fromJson(json);
         }).toList();
@@ -26,7 +27,8 @@ class GetStatesDatasourceImpl implements GetStatesDatasource {
       } else {
         throw ServerException();
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }

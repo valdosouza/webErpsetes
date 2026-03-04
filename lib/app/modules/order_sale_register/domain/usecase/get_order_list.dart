@@ -29,12 +29,14 @@ class ParamsOrderList {
   int number;
   int tbSalesmanId;
   String nickTrade;
+  String status;
   ParamsOrderList({
     required this.tbInstitutionId,
     required this.page,
     required this.tbSalesmanId,
     required this.number,
     required this.nickTrade,
+    required this.status,
   });
   Map<dynamic, dynamic> toJson() {
     final Map<dynamic, dynamic> data = <dynamic, dynamic>{};
@@ -43,6 +45,7 @@ class ParamsOrderList {
     data['number'] = number;
     data['tb_salesman_id'] = tbSalesmanId;
     data['nick_trade'] = nickTrade;
+    data['status'] = status;
     return data;
   }
 }

@@ -16,7 +16,7 @@ class CollaboratorRegisterRepositoryImpl
 
   @override
   Future<Either<Failure, String>> delete({required int id}) {
-    throw UnimplementedError();
+    throw Left(ServerFailure());
   }
 
   @override
