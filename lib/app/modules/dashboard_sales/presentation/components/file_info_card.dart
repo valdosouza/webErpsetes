@@ -31,7 +31,7 @@ class FileInfoCard extends StatelessWidget {
                 height: 40,
                 width: 40,
                 decoration: BoxDecoration(
-                  color: info.color!.withOpacity(0.1),
+                  color: info.color!.withValues(alpha: 0.15),
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
                 ),
                 child: SvgPicture.asset(
@@ -93,7 +93,7 @@ class ProgressLine extends StatelessWidget {
           width: double.infinity,
           height: 5,
           decoration: BoxDecoration(
-            color: color!.withOpacity(0.1),
+            color: color!.withValues(alpha: 0.15),
             borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
         ),

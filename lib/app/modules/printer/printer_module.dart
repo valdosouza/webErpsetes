@@ -1,4 +1,4 @@
-import 'package:appweb/app/modules/printer/presentation/page/printer_page.dart';
+import 'package:appweb/app/modules/home/presentation/page/home_page.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class PrinterModule extends Module {
@@ -8,7 +8,7 @@ class PrinterModule extends Module {
   final List<ModularRoute> routes = [
     ChildRoute(
       '/',
-      child: (_, args) => const PrinterPage(),
+      child: (_, args) => const HomePage(),
     ),
   ];
 }

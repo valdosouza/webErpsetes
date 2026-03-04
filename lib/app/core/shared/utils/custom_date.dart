@@ -1,8 +1,9 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class CustomDate {
-  static formatDateOut(String date) {
+  static String formatDateOut(String date) {
     if (date != "") {
       try {
         //12/01/2023 - 2023-01-27
@@ -12,14 +13,15 @@ class CustomDate {
           return result;
         }
         return date;
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseCrashlytics.instance.recordError(e, s);
         return "";
       }
     }
     return "";
   }
 
-  static formatDateIn(String date) {
+  static String formatDateIn(String date) {
     if (date != "") {
       try {
         //2023-01-12
@@ -27,24 +29,26 @@ class CustomDate {
             "${date.substring(8, 10)}/${date.substring(5, 7)}/${date.substring(0, 4)}";
 
         return result;
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseCrashlytics.instance.recordError(e, s);
         return "";
       }
     }
     return "";
   }
 
-  static newDate() {
+  static String newDate() {
     try {
       initializeDateFormatting('pt_BR,', null);
       DateTime time = DateTime.now();
       return (DateFormat("dd/MM/yyyy").format(time));
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return "";
     }
   }
 
-  static yesterday(String date) {
+  static String yesterday(String date) {
     try {
       initializeDateFormatting('pt_BR,', null);
 
@@ -56,7 +60,8 @@ class CustomDate {
             DateTime.parse(formatDateOut(date))
                 .subtract(const Duration(days: 1))));
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return "";
     }
   }
@@ -68,13 +73,14 @@ class CustomDate {
     return DateFormat('MMMM').format(dateMonth);
   }
 
-  static tomorrow() {
+  static String tomorrow() {
     try {
       initializeDateFormatting('pt_BR,', null);
 
       DateTime time = DateTime.now().add(const Duration(days: 1));
       return (DateFormat("dd/MM/yyyy").format(time));
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return "";
     }
   }

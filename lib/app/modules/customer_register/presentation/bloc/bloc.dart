@@ -72,7 +72,7 @@ class CustomerRegisterBloc
         InfoPageState(model: customer, list: list, tabIndex: event.index)));
   }
 
-  _getList() {
+  void _getList() {
     on<GetListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -93,7 +93,7 @@ class CustomerRegisterBloc
     });
   }
 
-  _searchList() {
+  void _searchList() {
     on<SearchEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -156,7 +156,7 @@ class CustomerRegisterBloc
     return "";
   }
 
-  _postByMobile() async {
+  Future<void> _postByMobile() async {
     on<PostByMobileEvent>((event, emit) async {
       emit(LoadingState());
       String? errorValidate = await _validadePostCustomer();
@@ -175,20 +175,19 @@ class CustomerRegisterBloc
               if (index != -1) {
                 list[index] = r;
               }
-              emit(PutByMobileSuccessState(customerList: list));
             } else {
               list.add(r);
-              emit(PostByMobileSuccessState(customerList: list));
             }
+            emit(PostByMobileSuccessState(customerList: list));
           } else {
-            emit(ErrorState(message: r.toString(), customerList: list));
+            emit(ErrorState(message: r.error, customerList: list));
           }
         });
       }
     });
   }
 
-  _postByDesktop() {
+  void _postByDesktop() {
     on<PostByDesktopEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -211,7 +210,7 @@ class CustomerRegisterBloc
     });
   }
 
-  _goToDesktopPage() {
+  void _goToDesktopPage() {
     on<DesktopEvent>((event, emit) async {
       if (event.id != null) {
         emit(LoadingState());
@@ -230,7 +229,7 @@ class CustomerRegisterBloc
     });
   }
 
-  _getMobilePage() {
+  void _getMobilePage() {
     on<MobileEditEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -246,7 +245,7 @@ class CustomerRegisterBloc
     });
   }
 
-  _newMobilePage() {
+  void _newMobilePage() {
     on<MobileNewEvent>((event, emit) async {
       emit(LoadingState());
       customer = CustomerMainModel.empty();
@@ -254,7 +253,7 @@ class CustomerRegisterBloc
     });
   }
 
-  searchCNPJ() {
+  void searchCNPJ() {
     on<CnpjEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -288,7 +287,7 @@ class CustomerRegisterBloc
     });
   }
 
-  searchCEP() {
+  void searchCEP() {
     on<CepEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -314,7 +313,7 @@ class CustomerRegisterBloc
     });
   }
 
-  getState() {
+  void getState() {
     on<GetStatesEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -329,7 +328,7 @@ class CustomerRegisterBloc
     });
   }
 
-  getCitys() {
+  void getCitys() {
     on<GetCitysEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -345,7 +344,7 @@ class CustomerRegisterBloc
     });
   }
 
-  searchEventStates() {
+  void searchEventStates() {
     on<SearchStateEvent>((event, emit) async {
       if (event.search.isNotEmpty) {
         var statestSearched = states.where((element) {
@@ -363,7 +362,7 @@ class CustomerRegisterBloc
     });
   }
 
-  searchEventCitys() {
+  void searchEventCitys() {
     on<SearchCityEvent>((event, emit) async {
       if (event.search.isNotEmpty) {
         var citiestSearched = cities.where((element) {

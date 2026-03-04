@@ -170,7 +170,7 @@ class _ContentItemEditState extends State<ContentItemEdit> {
     );
   }
 
-  _productNameField() {
+  CustomInputButton _productNameField() {
     return CustomInputButton(
       enabled: true,
       keyboardType: TextInputType.number,
@@ -182,7 +182,7 @@ class _ContentItemEditState extends State<ContentItemEdit> {
     );
   }
 
-  _productValueField() {
+  CustomInput _productValueField() {
     double valor = 0;
     String valorStr = "";
     return CustomInput(
@@ -216,7 +216,7 @@ class _ContentItemEditState extends State<ContentItemEdit> {
     );
   }
 
-  _productQuantityField() {
+  CustomInput _productQuantityField() {
     return CustomInput(
       title: 'Quantidade',
       keyboardType: TextInputType.number,
@@ -236,7 +236,7 @@ class _ContentItemEditState extends State<ContentItemEdit> {
     );
   }
 
-  _productDiscountAliq() {
+  CustomInput _productDiscountAliq() {
     double valor = 0;
     String valorStr = "";
     return CustomInput(
@@ -269,7 +269,7 @@ class _ContentItemEditState extends State<ContentItemEdit> {
     );
   }
 
-  _productDiscountValue() {
+  CustomInput _productDiscountValue() {
     double valor = 0;
     String valorStr = "";
     return CustomInput(
@@ -302,7 +302,7 @@ class _ContentItemEditState extends State<ContentItemEdit> {
     );
   }
 
-  _productSubtotal() {
+  CustomInput _productSubtotal() {
     return CustomInput(
       title: 'Subtotal',
       readOnly: true,

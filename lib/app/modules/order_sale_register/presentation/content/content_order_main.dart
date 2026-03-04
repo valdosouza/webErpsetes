@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:appweb/app/core/shared/utils/toast.dart';
 import 'package:appweb/app/core/shared/widgets/custom_imput_button.dart';
 import 'package:appweb/app/core/shared/widgets/custom_input.dart';
@@ -11,16 +9,11 @@ import 'package:appweb/app/modules/order_sale_register/order_sale_register_modul
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
-import 'package:bluetooth_print/bluetooth_print.dart';
-import 'package:bluetooth_print/bluetooth_print_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:appweb/app/core/shared/theme.dart';
-import 'package:appweb/app/core/shared/helpers/local_storage.dart';
-import 'package:appweb/app/core/shared/local_storage_key.dart';
 
 class ContentOrderMain extends StatefulWidget {
   const ContentOrderMain({
@@ -37,8 +30,6 @@ class _ContentOrderMainState extends State<ContentOrderMain>
   late MaskedTextController controllerDate;
   bool selectPaymentTime = false;
   final _formKey = GlobalKey<FormState>();
-  BluetoothDevice? _device;
-  BluetoothPrint bluetoothPrint = BluetoothPrint.instance;
 
   @override
   void initState() {
@@ -47,218 +38,6 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     Future.delayed(const Duration(milliseconds: 100)).then((_) async {
       await Modular.isModuleReady<OrderSaleRegisterModule>();
     });
-    getPrinter();
-  }
-
-  getPrinter() async {
-    var strPrinter = await LocalStorageService.instance
-        .get(key: LocalStorageKey.blthPrinter, defaultValue: '');
-
-    if (strPrinter.isNotEmpty) {
-      Map<String, dynamic> jsonPrinter = json.decode(strPrinter);
-      _device = BluetoothDevice.fromJson(jsonPrinter);
-    }
-  }
-
-  printerOder() async {
-    Map<String, dynamic> config = {};
-    int nrColums = 32;
-    int columsString = 0;
-
-    config['width'] = 40;
-    config['height'] = 70;
-    config['gap'] = 2;
-    List<LineText> list = [];
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: '================================',
-        weight: 1,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1));
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: '======= Estabelecimento =========',
-        weight: 1,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1));
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: '================================',
-        weight: 1,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1));
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: "N. PEDIDO : ${bloc.orderMain.order.id}",
-        weight: 1,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1));
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: "DATA      : ${bloc.orderMain.order.dtRecord}",
-        weight: 1,
-        align: LineText.ALIGN_LEFT,
-        linefeed: 1));
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: '================================',
-        weight: 1,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1));
-    columsString = bloc.orderMain.orderSale.nameCustomer.length;
-    if (columsString < nrColums) {
-      nrColums = columsString;
-    }
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content:
-            'CLIENTE   : ${bloc.orderMain.orderSale.nameCustomer.substring(0, nrColums)}',
-        weight: 1,
-        align: LineText.ALIGN_LEFT,
-        linefeed: 1));
-    nrColums = 32;
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: '================================',
-        weight: 1,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1));
-
-    columsString = bloc.orderMain.orderSale.nameSalesman.length;
-    if (columsString < nrColums) {
-      nrColums = columsString;
-    }
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content:
-            'VENDEDOR  : ${bloc.orderMain.orderSale.nameSalesman.substring(0, nrColums)}',
-        weight: 1,
-        align: LineText.ALIGN_LEFT,
-        linefeed: 1));
-    nrColums = 32;
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: '================================',
-        weight: 1,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1));
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: 'Descricao dos Produtos  ',
-        weight: 1,
-        align: LineText.ALIGN_LEFT,
-        linefeed: 1));
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: 'Qte  X   VL.Unit =     Sub-Total',
-        weight: 1,
-        align: LineText.ALIGN_LEFT,
-        linefeed: 1));
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: '================================',
-        weight: 1,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1));
-
-    // Imprime itens do pedido...
-    double subtotal = 0.0;
-    double qttyItens = 0;
-    for (int i = 0; i < bloc.orderMain.items.length; i++) {
-      columsString = bloc.orderMain.items[i].nameProduct.length;
-      if (columsString < nrColums) {
-        nrColums = columsString;
-      }
-
-      list.add(LineText(
-          type: LineText.TYPE_TEXT,
-          content: bloc.orderMain.items[i].nameProduct.substring(0, nrColums),
-          weight: 1,
-          align: LineText.ALIGN_LEFT,
-          linefeed: 1));
-      nrColums = 32;
-
-      subtotal =
-          bloc.orderMain.items[i].quantity * bloc.orderMain.items[i].unitValue;
-
-      list.add(LineText(
-          type: LineText.TYPE_TEXT,
-          content:
-              '${bloc.orderMain.items[i].quantity.toStringAsFixed(2)} X ${bloc.orderMain.items[i].unitValue.toStringAsFixed(2)} = ${subtotal.toStringAsFixed(2)}',
-          weight: 1,
-          align: LineText.ALIGN_LEFT,
-          linefeed: 1));
-
-      qttyItens += bloc.orderMain.items[i].quantity;
-
-      list.add(LineText(
-          type: LineText.TYPE_TEXT,
-          content: '================================',
-          weight: 1,
-          align: LineText.ALIGN_CENTER,
-          linefeed: 1));
-    }
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: 'TOTAL ITENS : ${qttyItens.toStringAsFixed(2)}',
-        weight: 1,
-        align: LineText.ALIGN_LEFT,
-        linefeed: 1));
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content: '================================',
-        weight: 1,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1));
-
-    if (bloc.orderMain.orderTotalizer.discountValue > 0) {
-      list.add(LineText(
-          type: LineText.TYPE_TEXT,
-          content:
-              'Subtotal    : ${bloc.orderMain.orderTotalizer.productValue.toStringAsFixed(2)}',
-          weight: 1,
-          align: LineText.ALIGN_LEFT,
-          linefeed: 1));
-
-      list.add(LineText(
-          type: LineText.TYPE_TEXT,
-          content:
-              'Desconto    : ${bloc.orderMain.orderTotalizer.discountValue.toStringAsFixed(2)}',
-          weight: 1,
-          align: LineText.ALIGN_LEFT,
-          linefeed: 1));
-    }
-
-    list.add(LineText(
-        type: LineText.TYPE_TEXT,
-        content:
-            'Valor total : ${bloc.orderMain.orderTotalizer.totalValue.toStringAsFixed(2)}',
-        weight: 1,
-        align: LineText.ALIGN_LEFT,
-        linefeed: 1));
-
-    if (!kIsWeb) {
-      bool? connect = await bluetoothPrint.isConnected;
-      if (!connect!) {
-        await bluetoothPrint.connect(_device!);
-      }
-      await bluetoothPrint.printReceipt(config, list);
-      //await bluetoothPrint.disconnect();
-    }
   }
 
   @override
@@ -292,9 +71,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
               PopupMenuButton(
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                    onTap: (() async {
-                      await printerOder();
-                    }),
+                    onTap: (() async {}),
                     value: 0,
                     child: const Text("Imprimir"),
                   ),
@@ -379,7 +156,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _date() {
+  CustomInput _date() {
     return CustomInput(
       title: "Data",
       controller: MaskedTextController(
@@ -391,7 +168,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _number() {
+  CustomInput _number() {
     return CustomInput(
         readOnly: (bloc.orderMain.order.status == "F"),
         title: "Número",
@@ -402,7 +179,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
             {bloc.orderMain.orderSale.number = int.parse(value)});
   }
 
-  _customer() {
+  CustomInputButton _customer() {
     return CustomInputButton(
       readOnly: (bloc.orderMain.order.status != "F"),
       enabled: true,
@@ -436,7 +213,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _itemsList(List<OrderSaleItemModel> items) {
+  CustomInputButton _itemsList(List<OrderSaleItemModel> items) {
     return CustomInputButton(
       enabled: true,
       keyboardType: TextInputType.number,
@@ -458,7 +235,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _totalOrder(List<OrderSaleItemModel> items) {
+  CustomInput _totalOrder(List<OrderSaleItemModel> items) {
     double productValue = 0;
     double productQtde = 0;
     double itemsQtde = 0;
@@ -482,7 +259,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _paymentTypes() {
+  CustomInputButton _paymentTypes() {
     return CustomInputButton(
       enabled: true,
       keyboardType: TextInputType.number,
@@ -507,7 +284,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _plots() {
+  Column _plots() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -576,7 +353,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _deadline() {
+  CustomInput _deadline() {
     return CustomInput(
       readOnly: false,
       title: "Parcelamento em dias ex: 028/056",
@@ -595,7 +372,7 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     );
   }
 
-  _observation() {
+  CustomInput _observation() {
     return CustomInput(
         readOnly: (bloc.orderMain.order.status == "F"),
         title: "Observações",

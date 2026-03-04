@@ -35,7 +35,7 @@ class _ContentOrderListState extends State<ContentOrderList> {
     bloc = Modular.get<OrderBonusRegisterBloc>();
   }
 
-  infiniteScrolling() {
+  void infiniteScrolling() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       bloc.add(
@@ -165,7 +165,7 @@ class _ContentOrderListState extends State<ContentOrderList> {
     );
   }
 
-  buildSearchInput() {
+  CustomSearchFilter buildSearchInput() {
     return CustomSearchFilter(
       title: "Pesquisa ou Filtre aqui",
       readOnly: false,
@@ -195,7 +195,7 @@ class _ContentOrderListState extends State<ContentOrderList> {
     );
   }
 
-  buildListView() {
+  Expanded buildListView() {
     return Expanded(
       child: widget.orderlist.isEmpty
           ? const Center(

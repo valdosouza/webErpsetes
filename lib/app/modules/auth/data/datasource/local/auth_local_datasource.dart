@@ -1,4 +1,3 @@
-import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/modules/auth/data/model/auth_model.dart';
 
 abstract class AuthLocalDatasource {

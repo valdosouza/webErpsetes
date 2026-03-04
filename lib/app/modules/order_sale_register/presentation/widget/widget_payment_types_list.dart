@@ -32,7 +32,7 @@ class WidgetPaymentTypesListtState extends State<WidgetPaymentTypesList> {
     bloc = Modular.get<OrderSaleRegisterBloc>();
   }
 
-  infiniteScrolling() {
+  void infiniteScrolling() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       bloc.add(
@@ -62,7 +62,7 @@ class WidgetPaymentTypesListtState extends State<WidgetPaymentTypesList> {
     );
   }
 
-  _orderStockAdjustEntitiesList(OrderSaleRegisterState state) {
+  Scaffold _orderStockAdjustEntitiesList(OrderSaleRegisterState state) {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(

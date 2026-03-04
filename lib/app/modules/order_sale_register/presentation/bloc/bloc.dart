@@ -19,7 +19,6 @@ import 'package:appweb/app/modules/order_sale_register/domain/usecase/reopen.dar
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
 import 'package:bloc/bloc.dart';
-import 'dart:developer' as developer;
 
 class OrderSaleRegisterBloc
     extends Bloc<OrderSaleRegisterEvent, OrderSaleRegisterState> {
@@ -51,6 +50,7 @@ class OrderSaleRegisterBloc
   int pageProduct = 1;
 
   String searchOrder = "";
+  String searchStatusOrder = "A";
   String searchCustomer = "";
   String searchPaymentType = "";
   String searchProduct = "";
@@ -102,7 +102,7 @@ class OrderSaleRegisterBloc
     _reopen();
   }
 
-  _getOrderList() {
+  void _getOrderList() {
     on<GetOrderListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -121,7 +121,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _searchOrderList() {
+  void _searchOrderList() {
     on<SearchOrderEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -140,7 +140,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _filterOrderList() {
+  void _filterOrderList() {
     on<FilterOrderEvent>((event, emit) async {
       emit(LoadingState());
       List<OrderSaleListModel> orderListFilter = orderList;
@@ -157,14 +157,14 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _returnOrderList() {
+  void _returnOrderList() {
     on<ReturnToOrderMainEvent>((event, emit) async {
       emit(LoadingState());
       emit(OrderListLoadedState(orderList: orderList));
     });
   }
 
-  _getNewFormOrder() {
+  void _getNewFormOrder() {
     on<NewFormOrderEvent>((event, emit) async {
       emit(LoadingState());
       orderMain = OrderSaleMainModel.empty();
@@ -172,7 +172,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _getFormOrder() {
+  void _getFormOrder() {
     on<FormOrderEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -180,14 +180,14 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _getFormItem() {
+  void _getFormItem() {
     on<FormItemsEvent>((event, emit) async {
       emit(LoadingState());
       emit(FormItemsLoadedState(tbOrderId: event.tbOrderId));
     });
   }
 
-  _getOrderMain() {
+  void _getOrderMain() {
     on<GetOrderMainEvent>((event, emit) async {
       emit(LoadingState());
       if (event.tbOrderId == 0) {
@@ -203,7 +203,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _getCustomerList() {
+  void _getCustomerList() {
     on<GetCustomerListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -222,7 +222,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _searchCustomerList() {
+  void _searchCustomerList() {
     on<SearchCustomerEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -241,7 +241,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _filterCustomerList() {
+  void _filterCustomerList() {
     on<FilterCustomerEvent>((event, emit) async {
       emit(LoadingState());
       List<CustomerListModel> customerListFilter = customerList;
@@ -258,7 +258,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _getPaymentTypesList() {
+  void _getPaymentTypesList() {
     on<GetPaymentTypesListEvent>((event, emit) async {
       emit(LoadingState());
       var response = await getPaymentTypesList.call(event.params);
@@ -270,7 +270,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _filterPaymentTypesList() {
+  void _filterPaymentTypesList() {
     on<FilterPaymentTypeEvent>((event, emit) async {
       emit(LoadingState());
       var paymentTypeListFilter = paymentTypesList.where((element) {
@@ -284,14 +284,14 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _getItemsList() {
+  void _getItemsList() {
     on<GetItemsListEvent>((event, emit) async {
       emit(LoadingState());
       emit(ItemsListLoadedSate(itemsList: orderMain.items));
     });
   }
 
-  _getProductList() {
+  void _getProductList() {
     on<GetProductListEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -310,7 +310,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _searchProductList() {
+  void _searchProductList() {
     on<SearchProductEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -329,7 +329,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _filterProductList() {
+  void _filterProductList() {
     on<FilterProductEvent>((event, emit) async {
       emit(LoadingState());
       List<ProductListModel> productListFilter = productList;
@@ -346,14 +346,14 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _getFormProductList() {
+  void _getFormProductList() {
     on<GetFormProductListEvent>((event, emit) async {
       emit(LoadingState());
       emit(ProductListLoadedState(productList: productList));
     });
   }
 
-  _getProductPrices() {
+  void _getProductPrices() {
     on<GetProductPricesEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -367,7 +367,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _getItemToEdit() {
+  void _getItemToEdit() {
     on<GetItemToEditEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -375,7 +375,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _deleteItem() {
+  void _deleteItem() {
     on<DeleteItemEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -387,7 +387,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _setitemsUpdate() {
+  void _setitemsUpdate() {
     on<SetItemUpdateEvent>((event, emit) {
       if (event.item.id > 0) {
         event.item.updateStatus = "E";
@@ -404,7 +404,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _post() {
+  void _post() {
     on<PostOrderEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -419,7 +419,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _put() {
+  void _put() {
     on<PutOrderEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -434,7 +434,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _delete() {
+  void _delete() {
     on<DeleteOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;
@@ -451,15 +451,15 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _closure() {
+  void _closure() {
     on<ClosureOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;
       var response = await closure.call(event.params);
-      response.fold((l) {
+
+      response.fold((l) async {
         emit(ErrorState(message: l.toString()));
-      }, (r) {
-        developer.log('Resultado: ${r.result}');
+      }, (r) async {
         if (r.result) {
           orderList[orderList.indexWhere((element) => element.id == orderId)]
               .status = "F";
@@ -469,7 +469,7 @@ class OrderSaleRegisterBloc
     });
   }
 
-  _reopen() {
+  void _reopen() {
     on<ReopenOrderEvent>((event, emit) async {
       emit(LoadingState());
       final orderId = event.params.tbOrderId;

@@ -37,7 +37,7 @@ class HomeDatasourceImpl extends HomeDatasource {
       method: HTTPMethod.post,
       data: body,
       (payload) {
-        final data = jsonDecode(payload);
+        final data = json.decode(payload);
         final List<HomeSalesPaymentTypeModel> homeSalesPaymentTypesModel =
             (data as List).map((json) {
           return HomeSalesPaymentTypeModel(

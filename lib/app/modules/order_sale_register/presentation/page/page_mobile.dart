@@ -42,6 +42,7 @@ class PageMobileState extends State<PageMobile> {
         tbSalesmanId: 0,
         nickTrade: "",
         number: 0,
+        status: bloc.searchStatusOrder,
       )));
     }
   }

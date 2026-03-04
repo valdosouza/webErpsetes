@@ -101,7 +101,7 @@ class _AuthChangePasswordPageState extends State<AuthChangePasswordPage> {
     );
   }
 
-  _buildMsgCode() {
+  Text _buildMsgCode() {
     return Text(
       'Verifique o código que foi enviado via email',
       textAlign: TextAlign.center,
@@ -109,7 +109,7 @@ class _AuthChangePasswordPageState extends State<AuthChangePasswordPage> {
     );
   }
 
-  _buildCode() {
+  Column _buildCode() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -149,7 +149,7 @@ class _AuthChangePasswordPageState extends State<AuthChangePasswordPage> {
     );
   }
 
-  _buildNewPassword() {
+  Column _buildNewPassword() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -203,7 +203,7 @@ class _AuthChangePasswordPageState extends State<AuthChangePasswordPage> {
     );
   }
 
-  _buildConfirmNewPassword() {
+  Column _buildConfirmNewPassword() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -259,7 +259,7 @@ class _AuthChangePasswordPageState extends State<AuthChangePasswordPage> {
     );
   }
 
-  _buildChangePasswordBtn(AuthState state) {
+  SizedBox _buildChangePasswordBtn(AuthState state) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(
@@ -304,7 +304,7 @@ class _AuthChangePasswordPageState extends State<AuthChangePasswordPage> {
     );
   }
 
-  _buildBackBtn() {
+  SizedBox _buildBackBtn() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(

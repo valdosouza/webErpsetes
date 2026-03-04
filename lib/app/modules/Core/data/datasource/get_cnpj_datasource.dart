@@ -3,6 +3,7 @@ import 'package:appweb/app/core/shared/constants.dart';
 import 'package:appweb/app/modules/Core/data/model/identification_company_model.dart';
 
 import 'package:appweb/app/core/error/exceptions.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:http/http.dart' as http;
 
 abstract class GetCnpjDatasource {
@@ -23,7 +24,7 @@ class GetCnpjDatasourceImpl implements GetCnpjDatasource {
         uri,
       );
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
+        var data = json.decode(response.body);
         //Pega o codigo da Cidade
         final cityCode = await getCityID(data['uf'], data['municipio']);
         data['tb_city_id'] = cityCode;
@@ -34,7 +35,8 @@ class GetCnpjDatasourceImpl implements GetCnpjDatasource {
       } else {
         throw ServerException();
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }
@@ -49,7 +51,8 @@ class GetCnpjDatasourceImpl implements GetCnpjDatasource {
       } else {
         return 4004;
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }
@@ -64,7 +67,8 @@ class GetCnpjDatasourceImpl implements GetCnpjDatasource {
       } else {
         return 41;
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }

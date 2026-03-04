@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/core/gateway.dart';
+import 'package:appweb/app/core/shared/utils/log_events.dart';
 import 'package:appweb/app/modules/Core/data/model/customer_list_model.dart';
 import 'package:appweb/app/modules/Core/data/model/order_result_action_model.dart';
 import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/Core/data/model/product_list_model.dart';
+import 'package:appweb/app/modules/log/data/model/log_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/order_sale_list_model.dart';
 import 'package:appweb/app/modules/order_sale_register/data/model/payment_types_list_model.dart';
@@ -18,8 +20,8 @@ import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_produc
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_product_prices.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/reopen.dart';
+
 import 'package:flutter/foundation.dart';
-import 'dart:developer' as developer;
 
 abstract class DataSource extends Gateway {
   DataSource({required super.httpClient});
@@ -75,16 +77,19 @@ class DataSourceImpl extends DataSource {
     });
     final body = jsonEncode(params.toJson());
     return await request(
-      'orderSale/getlist',
+      'ordersale/getlist',
       method: HTTPMethod.post,
       data: body,
       (payload) {
-        final data = json.decode(payload);
+        orderList.clear();
+        if (payload.toString().isNotEmpty) {
+          final data = json.decode(payload);
 
-        if (data.length > 0) {
-          orderList = (data as List).map((json) {
-            return OrderSaleListModel.fromJson(json);
-          }).toList();
+          if (data.length > 0) {
+            orderList = (data as List).map((json) {
+              return OrderSaleListModel.fromJson(json);
+            }).toList();
+          }
         }
         return orderList;
       },
@@ -106,7 +111,7 @@ class DataSourceImpl extends DataSource {
     });
 
     return await request(
-      'orderSale/get/$tbInstitutionId/$tbSalesmanId/${tbOrderId.toString()}',
+      'ordersale/get/$tbInstitutionId/$tbSalesmanId/${tbOrderId.toString()}',
       (payload) {
         final data = json.decode(payload);
 
@@ -330,7 +335,7 @@ class DataSourceImpl extends DataSource {
 
     final body = jsonEncode(params.toJson());
     return request(
-      'OrderSale',
+      'ordersale',
       method: HTTPMethod.delete,
       data: body,
       (payload) {
@@ -347,32 +352,49 @@ class DataSourceImpl extends DataSource {
   @override
   Future<OrderResultActionModel> closure(
       {required ParamsClosureOrder params}) async {
-    developer.log('Pega o TbInstitutionId');
     await getInstitutionId().then((value) {
       params.tbInstitutionId = int.parse(value);
     });
-    developer.log('Pega o tbUserId');
+
     await getUserId().then((value) {
       params.tbUserId = int.parse(value);
     });
-    developer.log('Monta o bodyjon');
+
     final body = jsonEncode(params.toJson());
-    const String orderSaleClosureEndpoint = 'orderSale/closure';
-    developer.log('faz o request');
+    setLog(
+        params: LogModel(
+      interfaceName: 'ordersale',
+      operation: 'closure',
+      reference: params.tbOrderId.toString(),
+      note: "Antes do Envio",
+    ));
     return request(
-      orderSaleClosureEndpoint,
+      'ordersale/closure',
       method: HTTPMethod.post,
-      timeout: const Duration(milliseconds: 15000),
+      //timeout: const Duration(milliseconds: 15000),
       data: body,
       (payload) {
-        developer.log('Retorna o payload');
-        developer.log(payload);
-        final data = json.decode(payload);
-        developer.log(data.toString());
-        return OrderResultActionModel.fromJson(data);
+        if (payload.toString().isNotEmpty) {
+          final data = json.decode(payload);
+          setLog(
+              params: LogModel(
+                  interfaceName: 'ordersale',
+                  operation: 'closure',
+                  reference: 'request',
+                  note: '${data['result']} -  ${data['message']}'));
+          return OrderResultActionModel.fromJson(data);
+        } else {
+          setLog(
+              params: LogModel(
+                  interfaceName: 'ordersale',
+                  operation: 'closure',
+                  reference: 'request',
+                  note: 'Retorno vazio'));
+          return OrderResultActionModel.empty();
+        }
       },
       onError: (error) {
-        return ServerException;
+        return ServerLog(message: error.toString());
       },
     );
   }
@@ -389,18 +411,41 @@ class DataSourceImpl extends DataSource {
     });
 
     final body = jsonEncode(params.toJson());
+    setLog(
+        params: LogModel(
+      interfaceName: 'ordersale',
+      operation: 'reopen',
+      reference: params.tbOrderId.toString(),
+      note: "Antes do Envio",
+    ));
     return request(
-      'orderSale/reopen',
+      'ordersale/reopen',
       method: HTTPMethod.post,
       timeout: const Duration(milliseconds: 15000),
       data: body,
       (payload) {
-        final data = json.decode(payload);
-
-        return OrderResultActionModel.fromJson(data);
+        if (payload.toString().isNotEmpty) {
+          final data = json.decode(payload);
+          setLog(
+              params: LogModel(
+                  interfaceName: 'ordersale',
+                  operation: 'reopen',
+                  reference: 'request',
+                  note: '${data['result']} -  ${data['message']}'));
+          return OrderResultActionModel.fromJson(data);
+        } else {
+          setLog(
+              params: LogModel(
+                  interfaceName: 'ordersale',
+                  operation: 'reopen',
+                  reference: 'request',
+                  note: 'Retorno vazio'));
+          return OrderResultActionModel.empty();
+        }
       },
       onError: (error) {
-        return ServerException;
+        return ServerLog(message: error.toString());
+        //return ServerException;
       },
     );
   }

@@ -4,6 +4,7 @@ import 'package:appweb/app/modules/user_register/data/datasource/user_register_d
 import 'package:appweb/app/modules/user_register/data/model/user_register_model.dart';
 import 'package:appweb/app/modules/user_register/domain/repository/user_register_respository.dart';
 import 'package:dartz/dartz.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 class UserRegisterRepositoryImpl implements UserRegisterRepository {
   final UserRegisterDataSource datasource;
@@ -38,7 +39,8 @@ class UserRegisterRepositoryImpl implements UserRegisterRepository {
     try {
       final result = await datasource.delete(id: tbUserId);
       return Right(result);
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return Left(ServerFailure());
     }
   }
@@ -49,7 +51,8 @@ class UserRegisterRepositoryImpl implements UserRegisterRepository {
     try {
       final result = await datasource.put(model: model);
       return Right(result);
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       return Left(ServerFailure());
     }
   }

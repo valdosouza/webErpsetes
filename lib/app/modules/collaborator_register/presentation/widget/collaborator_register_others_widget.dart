@@ -32,47 +32,32 @@ class _CollaboratorRegisterOthersWidgetState
         children: [
           const Text("Ativo", style: kLabelStyle),
           const SizedBox(height: 0.0),
-          Row(
-            children: [
-              Row(
-                children: [
-                  Radio(
-                    value: true,
-                    groupValue: active,
-                    activeColor: Colors.red,
-                    onChanged: active
-                        ? (value) {}
-                        : (value) {
-                            setState(() {
-                              active = true;
-                            });
-                            bloc.model.collaborator.active = "S";
-                          },
-                  ),
-                  const SizedBox(width: 5.0),
-                  const Text("Sim", style: kLabelStyle),
-                ],
-              ),
-              const SizedBox(width: 10.0),
-              Row(
-                children: [
-                  Radio(
-                      value: false,
-                      groupValue: active,
-                      activeColor: Colors.red,
-                      onChanged: active
-                          ? (value) {
-                              setState(() {
-                                active = false;
-                              });
-                              bloc.model.collaborator.active = "N";
-                            }
-                          : (value) {}),
-                  const SizedBox(width: 5.0),
-                  const Text("Não", style: kLabelStyle),
-                ],
-              ),
-            ],
+          RadioGroup<bool>(
+            groupValue: active,
+            onChanged: (value) {
+              final newActive = value ?? false;
+              bloc.model.collaborator.active = newActive ? "S" : "N";
+              setState(() {});
+            },
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    Radio<bool>(value: true, activeColor: Colors.red),
+                    const SizedBox(width: 5.0),
+                    const Text("Sim", style: kLabelStyle),
+                  ],
+                ),
+                const SizedBox(width: 10.0),
+                Row(
+                  children: [
+                    Radio<bool>(value: false, activeColor: Colors.red),
+                    const SizedBox(width: 5.0),
+                    const Text("Não", style: kLabelStyle),
+                  ],
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 30.0),
           Column(

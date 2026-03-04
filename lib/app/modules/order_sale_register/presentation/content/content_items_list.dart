@@ -107,7 +107,7 @@ class _ContentItemsListState extends State<ContentItemsList> {
     );
   }
 
-  buildListView() {
+  Expanded buildListView() {
     final List<OrderSaleItemModel> itemslistEnabled =
         widget.itemslist.where((i) => i.updateStatus != "D").toList();
     return Expanded(

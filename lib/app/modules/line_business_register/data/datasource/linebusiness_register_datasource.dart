@@ -4,6 +4,7 @@ import 'package:appweb/app/core/error/exceptions.dart';
 import 'package:appweb/app/core/gateway.dart';
 import 'package:appweb/app/core/shared/constants.dart';
 import 'package:appweb/app/modules/line_business_register/data/model/linebusiness_model.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
 abstract class LinebusinessRegisterDataSource extends Gateway {
@@ -44,7 +45,8 @@ class LinebusinessRegisterDataSourceImpl
       } else {
         throw ServerException();
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }
@@ -73,7 +75,8 @@ class LinebusinessRegisterDataSourceImpl
           return ServerException;
         },
       );
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }
@@ -104,7 +107,8 @@ class LinebusinessRegisterDataSourceImpl
       } else {
         throw ServerException();
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }
@@ -121,7 +125,8 @@ class LinebusinessRegisterDataSourceImpl
       } else {
         throw ServerException();
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
       throw ServerException();
     }
   }

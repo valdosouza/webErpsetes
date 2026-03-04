@@ -35,7 +35,7 @@ class StockBalanceBloc extends Bloc<StockBalanceEvent, StockBalanceState> {
     _filterStockBalanceList();
   }
 
-  _getStockList() {
+  void _getStockList() {
     on<GetStockListEvent>((event, emit) async {
       emit(LoadingState());
 
@@ -55,7 +55,7 @@ class StockBalanceBloc extends Bloc<StockBalanceEvent, StockBalanceState> {
     });
   }
 
-  _searchStockList() {
+  void _searchStockList() {
     on<SearchStockEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -74,7 +74,7 @@ class StockBalanceBloc extends Bloc<StockBalanceEvent, StockBalanceState> {
     });
   }
 
-  _filterStockList() {
+  void _filterStockList() {
     on<FilterStockEvent>((event, emit) async {
       emit(LoadingState());
       List<StockListModel> stockListFilter = stockList;
@@ -91,14 +91,14 @@ class StockBalanceBloc extends Bloc<StockBalanceEvent, StockBalanceState> {
     });
   }
 
-  _retunrStockList() {
+  void _retunrStockList() {
     on<GetStockListReturnEvent>((event, emit) async {
       emit(LoadingState());
       emit(StockListLoadedState(stockList: stockList));
     });
   }
 
-  _getStockBalanceList() {
+  void _getStockBalanceList() {
     on<GetStockBalanceListEvent>((event, emit) async {
       emit(LoadingState());
       tbStockListId = event.params.tbStockListId!;
@@ -119,7 +119,7 @@ class StockBalanceBloc extends Bloc<StockBalanceEvent, StockBalanceState> {
     });
   }
 
-  _searchStockBalanceList() {
+  void _searchStockBalanceList() {
     on<SearchStockBalanceEvent>((event, emit) async {
       emit(LoadingState());
       if (event.params.page == 0) {
@@ -138,7 +138,7 @@ class StockBalanceBloc extends Bloc<StockBalanceEvent, StockBalanceState> {
     });
   }
 
-  _filterStockBalanceList() {
+  void _filterStockBalanceList() {
     on<FilterStockBalanceEvent>((event, emit) async {
       emit(LoadingState());
       List<StockBalanceItemsModel> stockBalanceListFilter = stockBalanceList;

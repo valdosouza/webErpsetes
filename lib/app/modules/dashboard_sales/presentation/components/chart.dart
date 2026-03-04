@@ -70,7 +70,7 @@ List<PieChartSectionData> paiChartSelectionDatas = [
     radius: 16,
   ),
   PieChartSectionData(
-    color: kPrimaryColor.withOpacity(0.1),
+    color: kPrimaryColor.withValues(alpha: 0.15),
     value: 25,
     showTitle: false,
     radius: 13,

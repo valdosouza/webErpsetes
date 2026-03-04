@@ -31,7 +31,7 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
     });
   }
 
-  cashierIsOpen() {
+  void cashierIsOpen() {
     on<CashierIsOpenEvent>((event, emit) async {
       emit(LoadingState());
       var dtCurrent = CustomDate.newDate();
@@ -72,7 +72,7 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
     });
   }
 
-  userLogged() {
+  void userLogged() {
     on<UserLoggedEvent>((event, emit) async {
       emit(LoadingState());
       userName =

@@ -81,19 +81,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       'type': build.type,
       'isPhysicalDevice': build.isPhysicalDevice,
       'systemFeatures': build.systemFeatures,
-      'displaySizeInches':
-          ((build.displayMetrics.sizeInches * 10).roundToDouble() / 10),
-      'displayWidthPixels': build.displayMetrics.widthPx,
-      'displayWidthInches': build.displayMetrics.widthInches,
-      'displayHeightPixels': build.displayMetrics.heightPx,
-      'displayHeightInches': build.displayMetrics.heightInches,
-      'displayXDpi': build.displayMetrics.xDpi,
-      'displayYDpi': build.displayMetrics.yDpi,
-      'serialNumber': build.serialNumber,
+      'displaySizeInches': 0.0,
+      'displayWidthPixels': 0,
+      'displayWidthInches': 0.0,
+      'displayHeightPixels': 0,
+      'displayHeightInches': 0.0,
+      'displayXDpi': 0.0,
+      'displayYDpi': 0.0,
+      'serialNumber': 'unknown',
     };
   }
 
-  login() async {
+  Future<void> login() async {
     on<AuthLoginEvent>((event, emit) async {
       emit(AuthLoadingState());
       var status = PermissionStatus.granted;
@@ -150,7 +149,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
-  logout() async {
+  Future<void> logout() async {
     on<AuthLogoutEvent>((event, emit) async {
       LocalStorageService.instance.saveItem(
         key: LocalStorageKey.token,
@@ -163,7 +162,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
-  recoveryPassword() async {
+  Future<void> recoveryPassword() async {
     on<AuthRecoveryEvent>((event, emit) async {
       emit(AuthLoadingState());
 
@@ -177,7 +176,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
-  changePassword() async {
+  Future<void> changePassword() async {
     on<AuthChangeEvent>((event, emit) async {
       emit(AuthLoadingState());
 

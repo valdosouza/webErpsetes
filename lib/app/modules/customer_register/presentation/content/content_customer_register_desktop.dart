@@ -56,7 +56,8 @@ class _ContentCustomerRegisterDesktopState
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (_) async {
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         bloc.add(
           GetListEvent(
             params: ParamsList(

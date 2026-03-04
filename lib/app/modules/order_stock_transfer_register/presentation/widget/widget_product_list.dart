@@ -34,7 +34,7 @@ class WidgetProductListtState extends State<WidgetProductList> {
     bloc = Modular.get<OrderStockTransferRegisterBloc>();
   }
 
-  infiniteScrolling() {
+  void infiniteScrolling() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       bloc.add(
@@ -67,7 +67,8 @@ class WidgetProductListtState extends State<WidgetProductList> {
     );
   }
 
-  _orderStockAdjustEntitiesList(OrderStockTransferRegisterState state) {
+  Scaffold _orderStockAdjustEntitiesList(
+      OrderStockTransferRegisterState state) {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(

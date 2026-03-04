@@ -33,7 +33,7 @@ class WidgetCustomerListtState extends State<WidgetCustomerList> {
     bloc = Modular.get<OrderSaleRegisterBloc>();
   }
 
-  infiniteScrolling() {
+  void infiniteScrolling() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       bloc.add(
@@ -66,7 +66,7 @@ class WidgetCustomerListtState extends State<WidgetCustomerList> {
     );
   }
 
-  _orderStockAdjustEntitiesList(OrderSaleRegisterState state) {
+  Scaffold _orderStockAdjustEntitiesList(OrderSaleRegisterState state) {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
@@ -151,6 +151,17 @@ class WidgetCustomerListtState extends State<WidgetCustomerList> {
                               minFontSize: 10,
                               maxFontSize: 16,
                               maxLines: 1,
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
+                                Modular.to.navigate(
+                                    '/ordersale/mobile/register/customer-register/',
+                                    arguments: [
+                                      widget.customerList[index].id,
+                                      '/ordersale/'
+                                    ]);
+                              },
                             ),
                           ),
                           Padding(

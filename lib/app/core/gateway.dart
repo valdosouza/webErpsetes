@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:appweb/app/core/shared/constants.dart';
 import 'package:appweb/app/core/shared/helpers/local_storage.dart';
 import 'package:appweb/app/core/shared/local_storage_key.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
@@ -16,12 +17,12 @@ class Gateway {
     return await LocalStorageService.instance.get(key: LocalStorageKey.token);
   }
 
-  getInstitutionId() async {
+  Future getInstitutionId() async {
     return await LocalStorageService.instance
         .get(key: LocalStorageKey.tbInstitutionId);
   }
 
-  getUserId() async {
+  Future getUserId() async {
     return await LocalStorageService.instance
         .get(key: LocalStorageKey.tbUserId);
   }
@@ -70,8 +71,11 @@ class Gateway {
           break;
       }
       statusCode = response.statusCode;
+
       return fromJson(response.body);
-    } on Exception catch (e) {
+    } on Exception catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(e, s);
+
       debugPrint(
           'Failed fetching $url from API => HTTP CODE: $statusCode -> ${e.toString()}');
 
@@ -101,6 +105,7 @@ class Gateway {
           body: data,
         )
         .timeout(timeout);
+
     return response;
   }
 
