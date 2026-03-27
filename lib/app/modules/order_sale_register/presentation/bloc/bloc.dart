@@ -19,6 +19,7 @@ import 'package:appweb/app/modules/order_sale_register/domain/usecase/reopen.dar
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 
 class OrderSaleRegisterBloc
     extends Bloc<OrderSaleRegisterEvent, OrderSaleRegisterState> {
@@ -407,12 +408,23 @@ class OrderSaleRegisterBloc
   void _post() {
     on<PostOrderEvent>((event, emit) async {
       emit(LoadingState());
+      if (kDebugMode) {
+        debugPrint('[OrderSaleRegisterBloc] PostOrderEvent → POST ordersale');
+      }
 
       var response = await post.call(orderMain);
 
       response.fold((l) {
+        if (kDebugMode) {
+          debugPrint('[OrderSaleRegisterBloc] PostOrder failed: $l');
+        }
         emit(OrderPostPutErrorState(message: l.toString()));
       }, (r) {
+        if (kDebugMode) {
+          debugPrint(
+            '[OrderSaleRegisterBloc] PostOrder ok id=${r.id} number=${r.number}',
+          );
+        }
         orderList.insert(0, r);
         emit(OrderPostSuccessState(orderlist: orderList));
       });
@@ -422,12 +434,25 @@ class OrderSaleRegisterBloc
   void _put() {
     on<PutOrderEvent>((event, emit) async {
       emit(LoadingState());
+      if (kDebugMode) {
+        debugPrint(
+          '[OrderSaleRegisterBloc] PutOrderEvent → PUT ordersale id=${orderMain.order.id}',
+        );
+      }
 
       var response = await put.call(orderMain);
 
       response.fold((l) {
+        if (kDebugMode) {
+          debugPrint('[OrderSaleRegisterBloc] PutOrder failed: $l');
+        }
         emit(OrderPostPutErrorState(message: l.toString()));
       }, (r) {
+        if (kDebugMode) {
+          debugPrint(
+            '[OrderSaleRegisterBloc] PutOrder ok id=${r.id} number=${r.number}',
+          );
+        }
         orderList[orderList.indexWhere((element) => element.id == r.id)] = r;
         emit(OrderPutSuccessState());
       });
@@ -482,7 +507,7 @@ class OrderSaleRegisterBloc
           orderList[orderList.indexWhere((element) => element.id == orderId)]
               .status = "A";
         }
-        emit(OrderClosureSuccessState());
+        emit(OrderReopenSuccessState());
       });
     });
   }

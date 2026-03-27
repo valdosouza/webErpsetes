@@ -1,4 +1,3 @@
-import 'package:appweb/app/core/shared/utils/toast.dart';
 import 'package:appweb/app/core/shared/widgets/custom_imput_button.dart';
 import 'package:appweb/app/core/shared/widgets/custom_input.dart';
 import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
@@ -44,13 +43,9 @@ class _ContentOrderMainState extends State<ContentOrderMain>
   Widget build(BuildContext context) {
     final List<OrderSaleItemModel> itemslistEnabled =
         bloc.orderMain.items.where((i) => i.updateStatus != "D").toList();
-    return BlocConsumer<OrderSaleRegisterBloc, OrderSaleRegisterState>(
+    // Toasts para erros: PageMobile (listener global do módulo)
+    return BlocBuilder<OrderSaleRegisterBloc, OrderSaleRegisterState>(
       bloc: bloc,
-      listener: (context, state) {
-        if (state is ErrorState) {
-          CustomToast.showToast("Erro: ${state.message}");
-        }
-      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(

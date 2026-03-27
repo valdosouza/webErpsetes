@@ -53,7 +53,10 @@ class PageMobileState extends State<PageMobile> {
       bloc: bloc,
       listener: (context, state) {
         if (state is ErrorState) {
-          CustomToast.showToast(state.message);
+          CustomToast.showToast('Erro: ${state.message}');
+        }
+        if (state is OrderPostPutErrorState) {
+          CustomToast.showToast('Erro ao salvar pedido: ${state.message}');
         }
       },
       builder: (context, state) {
@@ -61,6 +64,9 @@ class PageMobileState extends State<PageMobile> {
           return const Center(
             child: CustomCircularProgressIndicator(),
           );
+        }
+        if (state is OrderPostPutErrorState) {
+          return const ContentOrderMain();
         }
         if (state is OrderListLoadedState) {
           return ContentOrderList(orderlist: state.orderList);

@@ -9,7 +9,7 @@ class AnalyticsEngine {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    return FirebaseAnalytics.instance.logAppOpen();
+    await FirebaseAnalytics.instance.logAppOpen();
   }
 
   static void logEvent(

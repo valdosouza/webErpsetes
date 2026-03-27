@@ -12,9 +12,13 @@ import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.d
 class WidgetProductPrices extends StatefulWidget {
   final ProductPricesModel productPrices;
 
+  /// When set (e.g. in tests), used instead of [Modular.get].
+  final OrderSaleRegisterBloc? injectedBloc;
+
   const WidgetProductPrices({
     super.key,
     required this.productPrices,
+    this.injectedBloc,
   });
 
   @override
@@ -27,7 +31,7 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
   @override
   void initState() {
     super.initState();
-    bloc = Modular.get<OrderSaleRegisterBloc>();
+    bloc = widget.injectedBloc ?? Modular.get<OrderSaleRegisterBloc>();
   }
 
   @override
@@ -65,20 +69,16 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
           children: [
             _productField(),
             const SizedBox(height: 10.0),
-            gradeListView(),
+            Expanded(child: gradeListView()),
           ],
         ),
       ),
     );
   }
 
-  SizedBox gradeListView() {
-    final Size size = MediaQuery.of(context).size;
-    return SizedBox(
-      height: size.height - 180,
-      child: GridView.count(
+  Widget gradeListView() {
+    return GridView.count(
         crossAxisCount: 3,
-        // Gera 100 Widgets que exibem o seu índice
         children: List.generate(
           widget.productPrices.items.length,
           (index) {
@@ -107,47 +107,48 @@ class _WidgetProductPricesState extends State<WidgetProductPrices> {
                     ),
                   );
                 },
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: SizedBox(
-                        height: 30,
-                        child: AutoSizeText(
-                          widget.productPrices.items[index].namePriceList,
-                          minFontSize: 8,
-                          maxFontSize: 12,
-                          maxLines: 2,
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            fontSize: 10.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'OpenSans',
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: SizedBox(
+                          height: 30,
+                          child: AutoSizeText(
+                            widget.productPrices.items[index].namePriceList,
+                            minFontSize: 8,
+                            maxFontSize: 12,
+                            maxLines: 2,
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'OpenSans',
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    AutoSizeText(
-                      widget.productPrices.items[index].priceTag
-                          .toStringAsFixed(2),
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        letterSpacing: 1.5,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'OpenSans',
+                      const SizedBox(height: 5),
+                      AutoSizeText(
+                        widget.productPrices.items[index].priceTag
+                            .toStringAsFixed(2),
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          letterSpacing: 1.5,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'OpenSans',
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
           },
         ),
-      ),
     );
   }
 

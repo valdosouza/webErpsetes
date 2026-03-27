@@ -1,0 +1,27 @@
+# Example GitHub Actions workflow for Flutter (not active — copy to .github/workflows/flutter_ci.yml)
+#
+# name: Flutter CI
+#
+# on:
+#   push:
+#     branches: [ main, develop ]
+#   pull_request:
+#     branches: [ main, develop ]
+#
+# jobs:
+#   analyze_and_test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: '3.29.x'
+#           channel: 'stable'
+#       - run: flutter pub get
+#       - run: flutter analyze
+#       - run: flutter test
+#       # Produto: Android + Web apenas. Integração E2E: use emulador Android no CI, por exemplo:
+#       # - uses: reactivecircus/android-emulator-runner@v2
+#       #   with:
+#       #     api-level: 34
+#       #     script: flutter test integration_test

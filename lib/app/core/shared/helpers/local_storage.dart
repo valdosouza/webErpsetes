@@ -12,12 +12,17 @@ class LocalStorageService implements LocalStorage {
   static LocalStorage get instance => _instance ??= LocalStorageService._();
 
   SharedPreferences? _storage;
+  Future<void>? _initFuture;
 
   Future<void> initializeIfNeeded() async {
-    if (_storage == null) {
-      debugPrint('Initializing storage');
-      _storage = await SharedPreferences.getInstance();
-    }
+    if (_storage != null) return;
+    _initFuture ??= _loadStorage();
+    await _initFuture;
+  }
+
+  Future<void> _loadStorage() async {
+    debugPrint('Initializing storage');
+    _storage = await SharedPreferences.getInstance();
   }
 
   @override

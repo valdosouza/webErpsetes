@@ -12,9 +12,14 @@ import 'package:appweb/app/core/shared/theme.dart';
 
 class WidgetPaymentTypesList extends StatefulWidget {
   final List<PaymentTypesListModel> paymentTypesList;
+
+  /// When set (e.g. in tests), used instead of [Modular.get].
+  final OrderSaleRegisterBloc? injectedBloc;
+
   const WidgetPaymentTypesList({
     super.key,
     required this.paymentTypesList,
+    this.injectedBloc,
   });
 
   @override
@@ -29,7 +34,7 @@ class WidgetPaymentTypesListtState extends State<WidgetPaymentTypesList> {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(infiniteScrolling);
-    bloc = Modular.get<OrderSaleRegisterBloc>();
+    bloc = widget.injectedBloc ?? Modular.get<OrderSaleRegisterBloc>();
   }
 
   void infiniteScrolling() {

@@ -1,7 +1,7 @@
 import 'package:appweb/app/core/shared/theme.dart';
 
 import 'package:appweb/app/modules/drawer/presentation/drawer_page_mobile.dart';
-import 'package:appweb/app/modules/home/presentation/content/content_mobile_home.dart';
+import 'package:appweb/app/modules/log/presentation/page/page_mobile.dart';
 import 'package:flutter/material.dart';
 
 class PageTablet extends StatelessWidget {
@@ -14,10 +14,10 @@ class PageTablet extends StatelessWidget {
         flexibleSpace: Container(
           decoration: kBoxDecorationflexibleSpace,
         ),
-        title: const Text("Venda"),
+        title: const Text('Log do sistema'),
       ),
       drawer: const DrawerPageMobile(),
-      body: const ContentMobileHome(),
+      body: const PageMobile(),
     );
   }
 }

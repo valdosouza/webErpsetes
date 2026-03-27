@@ -15,7 +15,8 @@
         android:label="E.R.P - Setes"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -42,5 +43,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Skia em vez de Impeller: evita erros E/gralloc4 em alguns aparelhos Mali (ex.: Motorola). -->
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
     </application>
 </manifest>

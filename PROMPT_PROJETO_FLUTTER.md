@@ -155,7 +155,7 @@ SizedBox(height: 800, child: MeuWidget(bloc: bloc))
 1. Evitar `pumpAndSettle` com timeout longo; preferir pumps explícitos.
 2. Não depender de rede, relógio ou aleatoriedade; usar fakes determinísticos.
 3. Assertivas estáveis; evitar textos que mudam com i18n.
-4. Rodar integration tests com `-d windows` ou `-d chrome` para dispositivo definido.
+4. Rodar integration tests com `-d <emulador-ou-dispositivo-android>` (Web não suporta `integration_test` no Flutter atual).
 
 ---
 
@@ -239,7 +239,7 @@ Evitar declarações duplicadas de constantes (ex: `baseApiUrl`); manter uma ún
 | Objetivo                | Comando |
 |-------------------------|---------|
 | Unit + widget tests     | `flutter test` |
-| Integration tests       | `flutter test integration_test -d windows` |
+| Integration tests       | `flutter test integration_test -d emulator-5554` (ou ID do aparelho Android) |
 | Analisar código         | `flutter analyze` |
 | Limpar e obter deps     | `flutter clean && flutter pub get` |
 | Cobertura               | `flutter test --coverage` |
@@ -298,7 +298,7 @@ dev_dependencies:
 4. [ ] Criar unit tests dos models em `test/app/modules/<modulo>/data/model/`.
 5. [ ] Adicionar fluxo E2E em `integration_test/app_test.dart`.
 6. [ ] Atualizar `TESTING.md`.
-7. [ ] Rodar `flutter test` e `flutter test integration_test -d windows`.
+7. [ ] Rodar `flutter test` e `flutter test integration_test -d <android>`.
 8. [ ] Garantir `flutter analyze` sem issues.
 
 ---

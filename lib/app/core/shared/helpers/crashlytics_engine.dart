@@ -5,28 +5,21 @@ class CrashlyticsEngine {
   static final _instance = FirebaseCrashlytics.instance;
 
   static Future<void> init() async {
-    const fatalError = true;
-    // Non-async exceptions
+    debugPrint(
+      '[Firebase Crashlytics] handlers registered — debug console output enabled from here',
+    );
+
+    // Non-async exceptions: keep IDE / flutter run console output, then Crashlytics
     FlutterError.onError = (errorDetails) {
-      if (fatalError) {
-        // If you want to record a "fatal" exception
-        FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-        // ignore: dead_code
-      } else {
-        // If you want to record a "non-fatal" exception
-        FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
-      }
+      FlutterError.presentError(errorDetails);
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
     };
-    // Async exceptions
+
+    // Async exceptions: mirror to debug console, then Crashlytics
     PlatformDispatcher.instance.onError = (error, stack) {
-      if (fatalError) {
-        // If you want to record a "fatal" exception
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-        // ignore: dead_code
-      } else {
-        // If you want to record a "non-fatal" exception
-        FirebaseCrashlytics.instance.recordError(error, stack);
-      }
+      debugPrint('[Firebase Crashlytics] async zone error: $error');
+      debugPrint(stack.toString());
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
   }
