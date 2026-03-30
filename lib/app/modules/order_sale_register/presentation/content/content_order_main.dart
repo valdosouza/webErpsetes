@@ -1,3 +1,9 @@
+import 'dart:convert';
+
+import 'package:appweb/app/core/shared/helpers/bluetooth_print_messages.dart';
+import 'package:appweb/app/core/shared/helpers/local_storage.dart';
+import 'package:appweb/app/core/shared/local_storage_key.dart';
+import 'package:appweb/app/core/shared/utils/toast.dart';
 import 'package:appweb/app/core/shared/widgets/custom_imput_button.dart';
 import 'package:appweb/app/core/shared/widgets/custom_input.dart';
 import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
@@ -8,7 +14,11 @@ import 'package:appweb/app/modules/order_sale_register/order_sale_register_modul
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/state.dart';
+import 'package:bluetooth_print_v2/bluetooth_print_v2.dart';
+import 'package:bluetooth_print_v2/bluetooth_print_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -29,6 +39,8 @@ class _ContentOrderMainState extends State<ContentOrderMain>
   late MaskedTextController controllerDate;
   bool selectPaymentTime = false;
   final _formKey = GlobalKey<FormState>();
+  BluetoothDevice? _device;
+  BluetoothPrint bluetoothPrint = BluetoothPrint.instance;
 
   @override
   void initState() {
@@ -37,6 +49,228 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     Future.delayed(const Duration(milliseconds: 100)).then((_) async {
       await Modular.isModuleReady<OrderSaleRegisterModule>();
     });
+    getPrinter();
+  }
+
+  Future<void> getPrinter() async {
+    var strPrinter = await LocalStorageService.instance
+        .get(key: LocalStorageKey.blthPrinter, defaultValue: '');
+
+    if (strPrinter.isNotEmpty) {
+      Map<String, dynamic> jsonPrinter = json.decode(strPrinter);
+      _device = BluetoothDevice.fromJson(jsonPrinter);
+    }
+  }
+
+  Future<void> printerOrder() async {
+    Map<String, dynamic> config = {};
+    int nrColums = 32;
+    int columsString = 0;
+
+    config['width'] = 40;
+    config['height'] = 70;
+    config['gap'] = 2;
+    List<LineText> list = [];
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: '================================',
+        weight: 1,
+        align: LineText.ALIGN_CENTER,
+        linefeed: 1));
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: '======= Estabelecimento =========',
+        weight: 1,
+        align: LineText.ALIGN_CENTER,
+        linefeed: 1));
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: '================================',
+        weight: 1,
+        align: LineText.ALIGN_CENTER,
+        linefeed: 1));
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: "N. PEDIDO : ${bloc.orderMain.order.id}",
+        weight: 1,
+        align: LineText.ALIGN_CENTER,
+        linefeed: 1));
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: "DATA      : ${bloc.orderMain.order.dtRecord}",
+        weight: 1,
+        align: LineText.ALIGN_LEFT,
+        linefeed: 1));
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: '================================',
+        weight: 1,
+        align: LineText.ALIGN_CENTER,
+        linefeed: 1));
+    columsString = bloc.orderMain.orderSale.nameCustomer.length;
+    if (columsString < nrColums) {
+      nrColums = columsString;
+    }
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content:
+            'CLIENTE   : ${bloc.orderMain.orderSale.nameCustomer.substring(0, nrColums)}',
+        weight: 1,
+        align: LineText.ALIGN_LEFT,
+        linefeed: 1));
+    nrColums = 32;
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: '================================',
+        weight: 1,
+        align: LineText.ALIGN_CENTER,
+        linefeed: 1));
+
+    columsString = bloc.orderMain.orderSale.nameSalesman.length;
+    if (columsString < nrColums) {
+      nrColums = columsString;
+    }
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content:
+            'VENDEDOR  : ${bloc.orderMain.orderSale.nameSalesman.substring(0, nrColums)}',
+        weight: 1,
+        align: LineText.ALIGN_LEFT,
+        linefeed: 1));
+    nrColums = 32;
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: '================================',
+        weight: 1,
+        align: LineText.ALIGN_CENTER,
+        linefeed: 1));
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: 'Descricao dos Produtos  ',
+        weight: 1,
+        align: LineText.ALIGN_LEFT,
+        linefeed: 1));
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: 'Qte  X   VL.Unit =     Sub-Total',
+        weight: 1,
+        align: LineText.ALIGN_LEFT,
+        linefeed: 1));
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: '================================',
+        weight: 1,
+        align: LineText.ALIGN_CENTER,
+        linefeed: 1));
+
+    // Imprime itens do pedido...
+    double subtotal = 0.0;
+    double qttyItens = 0;
+    for (int i = 0; i < bloc.orderMain.items.length; i++) {
+      columsString = bloc.orderMain.items[i].nameProduct.length;
+      if (columsString < nrColums) {
+        nrColums = columsString;
+      }
+
+      list.add(LineText(
+          type: LineText.TYPE_TEXT,
+          content: bloc.orderMain.items[i].nameProduct.substring(0, nrColums),
+          weight: 1,
+          align: LineText.ALIGN_LEFT,
+          linefeed: 1));
+      nrColums = 32;
+
+      subtotal =
+          bloc.orderMain.items[i].quantity * bloc.orderMain.items[i].unitValue;
+
+      list.add(LineText(
+          type: LineText.TYPE_TEXT,
+          content:
+              '${bloc.orderMain.items[i].quantity.toStringAsFixed(2)} X ${bloc.orderMain.items[i].unitValue.toStringAsFixed(2)} = ${subtotal.toStringAsFixed(2)}',
+          weight: 1,
+          align: LineText.ALIGN_LEFT,
+          linefeed: 1));
+
+      qttyItens += bloc.orderMain.items[i].quantity;
+
+      list.add(LineText(
+          type: LineText.TYPE_TEXT,
+          content: '================================',
+          weight: 1,
+          align: LineText.ALIGN_CENTER,
+          linefeed: 1));
+    }
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: 'TOTAL ITENS : ${qttyItens.toStringAsFixed(2)}',
+        weight: 1,
+        align: LineText.ALIGN_LEFT,
+        linefeed: 1));
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: '================================',
+        weight: 1,
+        align: LineText.ALIGN_CENTER,
+        linefeed: 1));
+
+    if (bloc.orderMain.orderTotalizer.discountValue > 0) {
+      list.add(LineText(
+          type: LineText.TYPE_TEXT,
+          content:
+              'Subtotal    : ${bloc.orderMain.orderTotalizer.productValue.toStringAsFixed(2)}',
+          weight: 1,
+          align: LineText.ALIGN_LEFT,
+          linefeed: 1));
+
+      list.add(LineText(
+          type: LineText.TYPE_TEXT,
+          content:
+              'Desconto    : ${bloc.orderMain.orderTotalizer.discountValue.toStringAsFixed(2)}',
+          weight: 1,
+          align: LineText.ALIGN_LEFT,
+          linefeed: 1));
+    }
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content:
+            'Valor total : ${bloc.orderMain.orderTotalizer.totalValue.toStringAsFixed(2)}',
+        weight: 1,
+        align: LineText.ALIGN_LEFT,
+        linefeed: 1));
+
+    if (!kIsWeb) {
+      if (_device?.address == null || _device!.address!.isEmpty) {
+        CustomToast.showToast(
+            'Nenhuma impressora selecionada. Configure no menu Impressora.');
+        return;
+      }
+      try {
+        final bool? connected = await bluetoothPrint.isConnected;
+        if (connected != true) {
+          await bluetoothPrint.connect(_device!);
+        }
+        await bluetoothPrint.printReceipt(config, list);
+      } on PlatformException catch (e) {
+        CustomToast.showToast(bluetoothPrintUserMessage(e));
+      } catch (_) {
+        CustomToast.showToast('Falha ao imprimir o pedido.');
+      }
+    }
   }
 
   @override
@@ -44,8 +278,13 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     final List<OrderSaleItemModel> itemslistEnabled =
         bloc.orderMain.items.where((i) => i.updateStatus != "D").toList();
     // Toasts para erros: PageMobile (listener global do módulo)
-    return BlocBuilder<OrderSaleRegisterBloc, OrderSaleRegisterState>(
+    return BlocConsumer<OrderSaleRegisterBloc, OrderSaleRegisterState>(
       bloc: bloc,
+      listener: (context, state) {
+        if (state is ErrorState) {
+          CustomToast.showToast("Erro: ${state.message}");
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -66,7 +305,9 @@ class _ContentOrderMainState extends State<ContentOrderMain>
               PopupMenuButton(
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                    onTap: (() async {}),
+                    onTap: (() async {
+                      await printerOrder();
+                    }),
                     value: 0,
                     child: const Text("Imprimir"),
                   ),

@@ -32,6 +32,7 @@ Com vários dispositivos (`flutter devices`), escolha o Android explicitamente, 
 - `test/unit/` — pure Dart / small widget helpers, **mocktail** mocks in `test/helpers/`.
 - `test/widget/` — widget tests (`MaterialApp`, `pump` / `pumpAndSettle`).
 - `test/app/modules/order_sale_register/` — models, `GetOrderMain` / `GetProductPrices`, widgets com `injectedBloc`.
+- `test/app/modules/printer/` + `test/app/app_module_printer_route_test.dart` — `PrinterModule` expõe `PrinterPage`; rota `/printer` no `AppModule`.
 - `test/integration/` — same E2E scenarios as `integration_test/`, runnable without a platform integration build.
 - `integration_test/` — `IntegrationTestWidgetsFlutterBinding` + lightweight UI harness (`test_harness.dart`, no Modular/Firebase/HTTP).
 - `test/test_config.dart` — shared `configureTestEnvironment()` (binding init).
