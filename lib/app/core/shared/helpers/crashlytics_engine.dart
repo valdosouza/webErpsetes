@@ -1,5 +1,13 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+
+bool _isBluetoothPrintUserError(Object error) {
+  if (error is! PlatformException) return false;
+  final code = error.code.toLowerCase();
+  final msg = (error.message ?? '').toLowerCase();
+  return code.contains('not connect') || msg.contains('state not right');
+}
 
 class CrashlyticsEngine {
   static final _instance = FirebaseCrashlytics.instance;
@@ -19,6 +27,9 @@ class CrashlyticsEngine {
     PlatformDispatcher.instance.onError = (error, stack) {
       debugPrint('[Firebase Crashlytics] async zone error: $error');
       debugPrint(stack.toString());
+      if (_isBluetoothPrintUserError(error)) {
+        return true;
+      }
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
