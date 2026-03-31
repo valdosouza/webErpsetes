@@ -10,6 +10,7 @@ import 'package:appweb/app/modules/Core/data/model/order_sale_item_model.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_customer_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_items_list.dart';
 import 'package:appweb/app/modules/order_sale_register/domain/usecase/get_payment_types_list.dart';
+import 'package:appweb/app/modules/order_sale_register/data/model/order_main_model.dart';
 import 'package:appweb/app/modules/order_sale_register/order_sale_register_module.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/bloc.dart';
 import 'package:appweb/app/modules/order_sale_register/presentation/bloc/event.dart';
@@ -22,6 +23,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:share_plus/share_plus.dart';
 import 'package:appweb/app/core/shared/theme.dart';
 
 class ContentOrderMain extends StatefulWidget {
@@ -273,6 +277,110 @@ class _ContentOrderMainState extends State<ContentOrderMain>
     }
   }
 
+  List<pw.Widget> _buildOrderPdfContent(OrderSaleMainModel om) {
+    final widgets = <pw.Widget>[
+      pw.Text('================================', textAlign: pw.TextAlign.center),
+      pw.Text('======= Estabelecimento =========',
+          textAlign: pw.TextAlign.center),
+      pw.Text('================================', textAlign: pw.TextAlign.center),
+      pw.SizedBox(height: 8),
+      pw.Text('N. PEDIDO : ${om.order.id}'),
+      pw.Text('DATA      : ${om.order.dtRecord}'),
+      pw.Text('================================', textAlign: pw.TextAlign.center),
+      pw.Text('CLIENTE   : ${om.orderSale.nameCustomer}'),
+      pw.Text('================================', textAlign: pw.TextAlign.center),
+      pw.Text('VENDEDOR  : ${om.orderSale.nameSalesman}'),
+      pw.Text('================================', textAlign: pw.TextAlign.center),
+      pw.Text('Forma de pagamento: ${om.orderBilling.namePayment}'),
+      if (om.orderBilling.plots > 0) ...[
+        pw.Text('Parcelas: ${om.orderBilling.plots}'),
+        if (om.orderBilling.deadline.isNotEmpty)
+          pw.Text('Prazo (dias): ${om.orderBilling.deadline}'),
+      ],
+      pw.SizedBox(height: 8),
+      pw.Text('Descrição dos Produtos'),
+      pw.Text('Qte  X   VL.Unit =     Sub-Total'),
+      pw.Text('================================', textAlign: pw.TextAlign.center),
+    ];
+
+    double qttyItens = 0;
+    for (final item in om.items) {
+      widgets.add(pw.Text(item.nameProduct));
+      final subtotal = item.quantity * item.unitValue;
+      qttyItens += item.quantity;
+      widgets.add(pw.Text(
+          '${item.quantity.toStringAsFixed(2)} X ${item.unitValue.toStringAsFixed(2)} = ${subtotal.toStringAsFixed(2)}'));
+      widgets.add(pw.Text('================================',
+          textAlign: pw.TextAlign.center));
+    }
+
+    widgets.addAll([
+      pw.Text('TOTAL ITENS : ${qttyItens.toStringAsFixed(2)}'),
+      pw.Text('================================', textAlign: pw.TextAlign.center),
+    ]);
+
+    if (om.orderTotalizer.discountValue > 0) {
+      widgets.add(pw.Text(
+          'Subtotal    : ${om.orderTotalizer.productValue.toStringAsFixed(2)}'));
+      widgets.add(pw.Text(
+          'Desconto    : ${om.orderTotalizer.discountValue.toStringAsFixed(2)}'));
+    }
+
+    widgets.add(pw.Text(
+        'Valor total : ${om.orderTotalizer.totalValue.toStringAsFixed(2)}'));
+
+    if (om.order.note.isNotEmpty) {
+      widgets.add(pw.SizedBox(height: 12));
+      widgets.add(pw.Text('Observações:'));
+      widgets.add(pw.Text(om.order.note));
+    }
+
+    return widgets;
+  }
+
+  Future<void> shareOrderPdf(BuildContext context) async {
+    final om = bloc.orderMain;
+    if (om.items.isEmpty) {
+      CustomToast.showToast('Não há itens para gerar o PDF.');
+      return;
+    }
+    try {
+      final box = context.findRenderObject() as RenderBox?;
+      final shareOrigin = box != null
+          ? box.localToGlobal(Offset.zero) & box.size
+          : null;
+      final fontData =
+          await rootBundle.load('assets/fonts/NotoSans-Regular.ttf');
+      final font = pw.Font.ttf(fontData);
+      final doc = pw.Document(
+        theme: pw.ThemeData.withFont(base: font, bold: font),
+      );
+      doc.addPage(
+        pw.MultiPage(
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.all(40),
+          build: (pw.Context c) => _buildOrderPdfContent(om),
+        ),
+      );
+      final bytes = await doc.save();
+      if (!mounted) return;
+      final name = 'pedido_${om.orderSale.number}_${om.order.id}.pdf';
+      final xfile = XFile.fromData(
+        bytes,
+        mimeType: 'application/pdf',
+        name: name,
+      );
+      await SharePlus.instance.share(ShareParams(
+        files: [xfile],
+        text: 'Pedido de venda ${om.orderSale.number}',
+        subject: 'Pedido ${om.orderSale.number}',
+        sharePositionOrigin: shareOrigin,
+      ));
+    } catch (_) {
+      CustomToast.showToast('Não foi possível gerar o PDF.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<OrderSaleItemModel> itemslistEnabled =
@@ -310,6 +418,16 @@ class _ContentOrderMainState extends State<ContentOrderMain>
                     }),
                     value: 0,
                     child: const Text("Imprimir"),
+                  ),
+                  PopupMenuItem(
+                    value: 1,
+                    child: const Text("Enviar PDF (WhatsApp)"),
+                    onTap: () {
+                      WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        if (!mounted) return;
+                        await shareOrderPdf(context);
+                      });
+                    },
                   ),
                 ],
               ),
